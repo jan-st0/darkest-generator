@@ -1,0 +1,693 @@
+# DARKEST DUNGEON: CORE SYSTEM REFERENCE & COMPENDIUM
+sys_rules:
+  turn_order: "Base SPD + 1d8 (highest acts first)"
+  acc_calc: "Hit% = Skill ACC + Mods + 5 (hidden) - Enemy DODGE; 95% displayed = 100% true hit; misses grant +4 ACC stack"
+  crit_mech:
+    atk: "1.5x Max DMG, +2 turns to Blight/Bleed, class self-buff, -3 Stress to self, 25% chance -3 Stress to allies"
+    heal: "2x HP healed, -4 Stress to target"
+  prot: "Direct DMG % reduction (excludes DoT); hard-capped at 80%"
+  stress: "100 = Resolve Check (Affliction/Virtue); 200 = Heart Attack (HP to 0 or Deathblow check)"
+  death_door: "0 HP triggers debuffs; subsequent hits trigger DeathBlow check; permadeath"
+  skills_loadout: "4/7 combat + 4/7 camping (Abomination dynamically accesses all combat skills by form)"
+
+classes:
+  Abomination:
+    rel: false
+    stats: {L0: {hp: 26, dod: 7.5, spd: 7, crit: 2.0, dmg: [6, 11]}, L6: {hp: 46, dod: 27.5, spd: 9, crit: 6.0, dmg: [11, 20]}}
+    mechanics: "Free-action shape-shift. Human: stun/blight/sustain (pos 2-3). Beast: heavy melee (pos 1-2). Transform = +8 stress to allies; +6 stress/rd active; reverts on Affliction/victory/manual"
+    skills:
+      Transform_Beast: {f: Human, pos: [4,3,2,1], tgt: Self, typ: Free, fx: "Heal 5-10 HP, SPD +1..5, DMG +10..25%, Blight Res +20..30%, Ally Stress +8 (1/battle)"}
+      Manacles: {f: Human, pos: [3,2], tgt: [1,2,3], typ: Ranged, fx: "ACC 95..115, DMG -60%, CRIT 1..5%, Stun 90..130%"}
+      Beasts_Bile: {f: Human, pos: [3,2], tgt: "2-3", typ: Ranged, fx: "ACC 95..115, DMG -90%, Blight 2..5/3rd, Blight Res -20..-33%"}
+      Absolution: {f: Human, pos: [4,3,2,1], tgt: Self, typ: Heal, fx: "Heal 3-5 HP, Stress -7..-10"}
+      Transform_Human: {f: Beast, pos: [4,3,2,1], tgt: Self, typ: Buff, fx: "Revert form, Ally Stress -2, SPD -4..0 (1/battle)"}
+      Rake: {f: Beast, pos: [2,1], tgt: "1-2", typ: Melee, fx: "ACC 90..110, DMG -50%, CRIT -3..1%, +15..25% Rake DMG stack (4rd)"}
+      Rage: {f: Beast, pos: [2,1], tgt: [1,2,3], typ: Melee, fx: "ACC 85..105, DMG +0%, CRIT 7.5..11.5%"}
+      Slam: {f: Beast, pos: [3,2,1], tgt: [1,2], typ: Melee, fx: "ACC 80..100, DMG -25%, Fwd 1, Knockback 2, DODGE -10..-20, SPD -2..-6"}
+    camp:
+      Anger_Management: {cost: 3, fx: "Self +20 Stress; Allies -10 Stress"}
+      Psych_Up: {cost: 3, fx: "Self +25% DMG (4b); Non-rel +10 Stress, Rel +20 Stress"}
+      The_Quickening: {cost: 3, fx: "Self +4 SPD (4b)"}
+      Eldritch_Blood: {cost: 3, fx: "Self +40% Blight/Bleed/Disease Res, +20% Stress received (4b)"}
+
+  Antiquarian:
+    rel: false
+    stats: {L0: {hp: 17, dod: 10.0, spd: 5, crit: 1.0, dmg: [3, 5]}, L6: {hp: 29, dod: 30.0, spd: 7, crit: 5.0, dmg: [5, 9]}}
+    mechanics: "Max gold +750/stack (+15% Farmstead shards). Interacting w/ curios drops Minor (500g, stack 20) or Rare (1250g, stack 5) Antiques"
+    skills:
+      Nervous_Stab: {pos: [4,3,2,1], tgt: [1,2,3], typ: Melee, fx: "ACC 85..105, DMG +0%, CRIT 3..7%"}
+      Festering_Vapours: {pos: [4,3,2,1], tgt: [1,2,3,4], typ: Ranged, fx: "ACC 95..115, DMG -75%, Blight 1..4/3rd, Blight Res -20..-36%"}
+      Get_Down: {pos: [4,3,2,1], tgt: Self, typ: Buff, fx: "Back 2, DODGE +15..25, SPD +1..5, Blight Skill +10..15% (4rd)"}
+      Flashpowder: {pos: [4,3,2,1], tgt: [1,2,3,4], typ: Ranged, fx: "ACC 95..115, DMG -100%, ACC -10..-15, Bypass/De-stealth"}
+      Fortifying_Vapours: {pos: [4,3], tgt: [1,2,3,4], typ: Heal, fx: "Heal 1..3 HP, Bleed/Blight Res +10..15% (3rd)"}
+      Invigorating_Vapours: {pos: [4,3], tgt: All_Allies, typ: Buff, fx: "Party DODGE +3..10 (3rd)"}
+      Protect_Me: {pos: [4,3,2,1], tgt: Ally, typ: Buff, fx: "Forces Ally Guard (2rd), Ally +4..8 DODGE, +10..20% PROT, Marks Target (3/battle)"}
+    camp:
+      Resupply: {cost: 1, fx: "Self: gain random supply item (3 uses)"}
+      Trinket_Scrounge: {cost: 2, fx: "Self: gain random common-rare trinket"}
+      Strange_Powders: {cost: 2, fx: "Ally: +20% Bleed/Blight/Move/Debuff/Disease Res (4b)"}
+      Curious_Incantation: {cost: 1, fx: "Self: -50% Stress received (4b)"}
+
+  Arbalest:
+    rel: false
+    stats: {L0: {hp: 27, dod: 0.0, spd: 3, crit: 6.0, dmg: [4, 8]}, L6: {hp: 47, dod: 20.0, spd: 5, crit: 10.0, dmg: [7, 14]}}
+    mechanics: "Backline sniper (pos 3-4). Mark synergy, anti-stun/mark utility, boost received healing"
+    skills:
+      Sniper_Shot: {pos: [4,3], tgt: [2,3,4], typ: Ranged, fx: "ACC 95..115, DMG +0%, CRIT 5..9%, vs Marked: +50..100% DMG & +9..13% CRIT"}
+      Suppressing_Fire: {pos: [4,3], tgt: "2-3-4", typ: Ranged, fx: "ACC 95..115, DMG -80%, CRIT -10..-6%, Debuff: -15..-20 ACC & -15..-19% CRIT (100..140% base, 2rd)"}
+      Snipers_Mark: {pos: [4,3,2,1], tgt: [2,3,4], typ: Ranged, fx: "ACC 100..120, DMG -100%, Mark (3rd), Debuff: -20..-30 DODGE (100..140% base, 2rd)"}
+      Bola: {pos: [4,3], tgt: "1-2", typ: Ranged, fx: "ACC 95..115, DMG -50%, CRIT 2..6%, Knockback 1 (75..105%)"}
+      Blindfire: {pos: [4,3,2,1], tgt: Random, typ: Ranged, fx: "ACC 75..95, DMG -10%, CRIT 0..4%, Self +3..5 SPD (4rd)"}
+      Battlefield_Bandage: {pos: [4,3], tgt: Ally, typ: Heal, fx: "Heal 2-3..4-5 HP, Target +20..38% Heal Received (3rd)"}
+      Rallying_Flare: {pos: [4,3,2,1], tgt: All_Allies, typ: Ranged, fx: "ACC 95..115, DMG -100%, De-stealth targets, Clear Stun/Mark on other allies, Stress -1..-3 (60..67%), Torch +3..7"}
+    camp:
+      Field_Dressing: {cost: 2, fx: "Ally: Heal 35% HP (75%) or 50% HP (25%), Cure Bleed"}
+      Marching_Plan: {cost: 3, fx: "Party: +2 SPD (4b)"}
+      Restring_Crossbow: {cost: 3, fx: "Self: +10 ACC, +20% DMG, +8% CRIT to Ranged, -2 SPD (4b)"}
+      Triage: {cost: 3, fx: "Party: Heal 20% HP"}
+
+  Bounty_Hunter:
+    rel: false
+    stats: {L0: {hp: 25, dod: 5.0, spd: 5, crit: 4.0, dmg: [5, 10]}, L6: {hp: 45, dod: 25.0, spd: 7, crit: 8.0, dmg: [8, 16]}}
+    mechanics: "Pos 1-3. High burst vs Marked/Stunned; pulls, shuffles, stuns, PROT debuffs"
+    skills:
+      Collect_Bounty: {pos: [3,2,1], tgt: [1,2], typ: Melee, fx: "ACC 85..105, DMG +0%, CRIT 7..11%, vs Marked +90% DMG, vs Human +15..35% DMG"}
+      Mark_for_Death: {pos: [4,3,2,1], tgt: [4,3,2,1], typ: Ranged, fx: "ACC 100..120, DMG -100%, Mark (3rd), Debuff -10..-20% PROT (100..140%, 3rd), Self +3..5 SPD (2rd)"}
+      Come_Hither: {pos: [4,3,2,1], tgt: [3,4], typ: Ranged, fx: "ACC 90..110, DMG -80%, CRIT 0..4%, Mark (2rd), Pull 2 (100..140%)"}
+      Uppercut: {pos: [2,1], tgt: [1,2], typ: Melee, fx: "ACC 90..110, DMG -67%, CRIT 0..4%, Knockback 2 (100..140%), Stun (100..140%)"}
+      Flashbang: {pos: [4,3,2], tgt: [2,3,4], typ: Ranged, fx: "ACC 95..115, DMG -100%, Stun (110..150%), Shuffle (100..140%)"}
+      Finish_Him: {pos: [3,2,1], tgt: [1,2,3], typ: Melee, fx: "ACC 85..105, DMG +0%, CRIT 5..9%, vs Stunned +25..60% DMG"}
+      Caltrops: {pos: [4,3], tgt: "3-4", typ: Ranged, fx: "ACC 90..110, DMG -95%, CRIT 5..9%, Bleed 2..4/3rd (100..140%), Debuff: +10..20% DMG Taken & -4..-8 SPD (100..140%, 3rd)"}
+    camp:
+      This_Is_How_We_Do_It: {cost: 2, fx: "Self: +10 ACC, +8% CRIT (4b)"}
+      Tracking: {cost: 2, fx: "Self: Party Surprise -15%, Monster Surprise +10% (4b)"}
+      Planned_Takedown: {cost: 4, fx: "Self: vs Size 2+ +25% DMG, +15 ACC (4b)"}
+      Scout_Ahead: {cost: 3, fx: "Self: +25% Scouting (4b)"}
+
+  Crusader:
+    rel: true
+    stats: {L0: {hp: 33, dod: 5.0, spd: 1, crit: 3.0, dmg: [6, 12]}, L6: {hp: 61, dod: 25.0, spd: 3, crit: 7.0, dmg: [10, 19]}}
+    mechanics: "Frontline tank/bruiser (pos 1-2; pos 3 Holy Lance). High HP, Unholy slayer, stun, off-heal, stress heal, anti-ambush. Starts w/ Kleptomaniac"
+    skills:
+      Smite: {pos: [2,1], tgt: [1,2], typ: Melee, fx: "ACC 85..105, DMG +0%, CRIT 0..4%, vs Unholy +15..35% DMG"}
+      Zealous_Accusation: {pos: [2,1], tgt: "1-2", typ: Ranged, fx: "ACC 85..105, DMG -40%, CRIT -4..0%"}
+      Stunning_Blow: {pos: [2,1], tgt: [1,2], typ: Melee, fx: "ACC 90..110, DMG -50%, CRIT 0..4%, Stun (100..140%)"}
+      Bulwark_of_Faith: {pos: [2,1], tgt: Self, typ: Buff, fx: "Torch +24, Self +20..30% PROT, Mark Self (1 battle) (1/battle)"}
+      Battle_Heal: {pos: [2,1], tgt: Ally, typ: Heal, fx: "Heal 2-3..5-6 HP"}
+      Holy_Lance: {pos: [4,3], tgt: [2,3,4], typ: Melee, fx: "ACC 85..105, DMG +0%, CRIT 6.5..10.5%, Fwd 1, vs Unholy +15..35% DMG"}
+      Inspiring_Cry: {pos: [4,3,2,1], tgt: Ally, typ: Heal, fx: "Heal 1..2 HP, Stress -5..-8, Torch +5..10"}
+    camp:
+      Unshakable_Leader: {cost: 2, fx: "Self: -25% Stress Received (4b)"}
+      Stand_Tall: {cost: 3, fx: "Ally: -15 Stress, Clear Mortality debuffs"}
+      Zealous_Speech: {cost: 5, fx: "Party: -15 Stress, -15% Stress Received (4b)"}
+      Zealous_Vigil: {cost: 4, fx: "Self: -25 Stress (-15 extra if Afflicted), Prevents Ambush"}
+
+  Flagellant:
+    rel: true
+    stats: {L0: {hp: 22, dod: 0.0, spd: 6, crit: 2.0, dmg: [3, 6]}, L6: {hp: 38, dod: 20.0, spd: 9, crit: 6.0, dmg: [5, 11]}}
+    mechanics: "Frontline bleed/martyr (pos 1-2 for attacks). Spikes <40% HP & Death's Door. No virtues (always Rapturous at 100 Stress: +25% DMG, +3 SPD, -20 DODGE). Hamlet: Penance Hall only. Max 1/party. No generic camp skills"
+    skills:
+      Punish: {pos: [2,1], tgt: [1,2], typ: Melee, fx: "ACC 95..115, DMG +0%, CRIT 5..9%, Bleed 4..6/3rd (100..140%), Debuff -20..-33% Bleed Res (100..140%, 3rd)"}
+      Rain_of_Sorrows: {pos: [2,1], tgt: "3-4", typ: Melee, fx: "ACC 95..115, DMG -67%, CRIT 2..6%, Bleed 3..5/3rd (100..140%), Debuff -20..-33% Bleed Res (100..140%, 3rd)"}
+      Exsanguinate: {pos: [2,1], tgt: [1,2], typ: Melee, fx: "ACC 90..110, DMG +0%, CRIT 3..7%, Bleed 5..9/3rd (100..140%), Self-heal 35..50% max HP, Self-debuff: -25% Heal/Heal Recv, -3 SPD (3rd) (Req <40% HP, 3/battle)"}
+      Reclaim: {pos: [4,3,2,1], tgt: Ally, typ: Heal, fx: "Restoration 2/2rd..4/3rd, Self Bleed 3/3rd..5/3rd (120..160%)"}
+      Redeem: {pos: [4,3,2,1], tgt: Ally, typ: Heal, fx: "Target heal 33..43% max HP, Self-heal 35..50% max HP, Self-debuff: -25% Heal/Heal Recv, -3 SPD (3rd) (Req <40% HP, 2/battle)"}
+      Endure: {pos: [4,3,2,1], tgt: Ally, typ: Heal, fx: "Target Stress -10..-14, Self Stress +10..+6, Self +1..3 SPD (4rd)"}
+      Suffer: {pos: [4,3,2,1], tgt: Ally, typ: Buff, fx: "Transfer Mark/Blight/Bleed to Self. Self: Mark (2rd), Stress Recv -20..-40% (4rd), +6..10% DeathBlow Res (4rd)"}
+    camp:
+      Lashs_Anger: {cost: 1, fx: "Self: +40 Stress"}
+      Lashs_Solace: {cost: 3, fx: "Self: -50 Stress"}
+      Lashs_Kiss: {cost: 3, fx: "Self: Heal 33% HP, Cure Bleed/Blight, +3 SPD (4b)"}
+      Lashs_Cure: {cost: 2, fx: "Self: Cure Disease"}
+
+  Grave_Robber:
+    rel: false
+    stats: {L0: {hp: 20, dod: 10.0, spd: 8, crit: 6.0, dmg: [4, 8]}, L6: {hp: 36, dod: 30.0, spd: 10, crit: 10.0, dmg: [7, 14]}}
+    mechanics: "High SPD/CRIT mobile dancer (pos 1-3). Armor Piercing (AP), stealth burst, blight synergy, self-cure, highest base trap disarm"
+    skills:
+      Pick_to_the_Face: {pos: [3,2,1], tgt: [1,2], typ: Melee, fx: "ACC 90..110, DMG -15%, CRIT 1..5%, AP"}
+      Lunge: {pos: [4,3], tgt: [1,2,3], typ: Melee, fx: "ACC 95..115, DMG +40%, CRIT 8..12%, Fwd 2, vs Blighted +20..33% DMG"}
+      Flashing_Daggers: {pos: [4,3,2], tgt: "2-3", typ: Ranged, fx: "ACC 90..110, DMG -33%, CRIT -5..-1%, Debuff -20..-33% Bleed Res (100..140%, 3rd)"}
+      Shadow_Fade: {pos: [2,1], tgt: Self, typ: Buff, fx: "Back 2, Stealth (2rd), DMG +80..100% (2rd), CRIT +4..8% (2rd), DODGE +10..15 (4rd)"}
+      Thrown_Dagger: {pos: [4,3,2], tgt: [2,3,4], typ: Ranged, fx: "ACC 90..110, DMG -10%, CRIT 8..12%, vs Marked +25..40% DMG, vs Blighted +20..33% DMG, Self +5..10 ACC (4rd)"}
+      Poison_Dart: {pos: [4,3,2], tgt: [1,2,3,4], typ: Ranged, fx: "ACC 95..115, DMG -60%, CRIT 7.5..11.5%, Blight 2..4/4rd (100..140%), Blight Res -20..-33% (100..140%, 3rd)"}
+      Toxin_Trickery: {pos: [4,3,2,1], tgt: Self, typ: Buff, fx: "Cure Blight/Bleed, DODGE +9..13, SPD +2..4 (1 battle) (1/battle)"}
+    camp:
+      Snuff_Box: {cost: 3, fx: "Self & Ally: Cure Disease"}
+      Gallows_Humor: {cost: 4, fx: "Self: -25 Stress; Party: -20 Stress (75%) or +10 Stress (25%)"}
+      Night_Moves: {cost: 2, fx: "Self: +20% Scouting (4b)"}
+      Pilfer: {cost: 1, fx: "Self: gain random supply item"}
+
+  Hellion:
+    rel: false
+    stats: {L0: {hp: 26, dod: 10.0, spd: 4, crit: 5.0, dmg: [6, 12]}, L6: {hp: 46, dod: 30.0, spd: 6, crit: 9.0, dmg: [10, 19]}}
+    mechanics: "Pos 1 brawler. Reaches rank 4 (Iron Swan). Powerful skills inflict uncleansable Winded self-debuffs (-DMG/-SPD)"
+    skills:
+      Wicked_Hack: {pos: [2,1], tgt: [1,2], typ: Melee, fx: "ACC 85..105, DMG +0%, CRIT 4..8%"}
+      Iron_Swan: {pos: [1], tgt: [4], typ: Melee, fx: "ACC 85..105, DMG +0%, CRIT 5..9%"}
+      Barbaric_YAWP: {pos: [2,1], tgt: "1-2", typ: Melee, fx: "ACC 95..115, DMG -100%, Stun (110..150%), Self -20% DMG & -3 SPD (3rd) (3/battle)"}
+      If_It_Bleeds: {pos: [3,2,1], tgt: [2,3], typ: Melee, fx: "ACC 85..105, DMG -35%, CRIT 0..4%, Bleed 2..4/3rd (100..140%)"}
+      Breakthrough: {pos: [4,3,2], tgt: "1-2-3", typ: Melee, fx: "ACC 85..105, DMG -50%, CRIT -1..3%, Fwd 1, Self -10% DMG & -1 SPD (3rd)"}
+      Adrenaline_Rush: {pos: [4,3,2,1], tgt: Self, typ: Heal, fx: "Heal 1..4 HP, Cure Blight/Bleed, Self +5..10 ACC & +20..30% DMG (4rd)"}
+      Bleed_Out: {pos: [1], tgt: [1], typ: Melee, fx: "ACC 85..105, DMG +20%, CRIT 6..10%, Bleed 3..5/3rd (100..140%), Self -20% DMG & -3 SPD (3rd)"}
+    camp:
+      Battle_Trance: {cost: 3, fx: "Self: +25% DMG if pos 1, -25% DMG if not pos 1 (4b)"}
+      Revel: {cost: 3, fx: "Party: -5 ACC, -2 SPD, -20 Stress, -10% Stress Recv (4b)"}
+      Reject_the_Gods: {cost: 2, fx: "Self -30 Stress; Non-rel +7 Stress, Rel +15 Stress"}
+      Sharpen_Spear: {cost: 3, fx: "Self: +10% CRIT (4b)"}
+
+  Highwayman:
+    rel: false
+    stats: {L0: {hp: 23, dod: 10.0, spd: 5, crit: 5.0, dmg: [5, 10]}, L6: {hp: 43, dod: 30.0, spd: 7, crit: 9.0, dmg: [9, 16]}}
+    mechanics: "Pure DPS & mobile (pos 1-3). Rank 1 PBS burst, ranged reach, bleed, Riposte via Duelist's Advance. No CC"
+    skills:
+      Wicked_Slice: {pos: [3,2,1], tgt: [1,2], typ: Melee, fx: "ACC 85..105, DMG +15%, CRIT 5..9%"}
+      Pistol_Shot: {pos: [4,3,2], tgt: [2,3,4], typ: Ranged, fx: "ACC 85..105, DMG -15%, CRIT 7.5..11.5%, vs Marked +25..50% DMG"}
+      Point_Blank_Shot: {pos: [1], tgt: [1], typ: Ranged, fx: "ACC 95..115, DMG +50%, CRIT 5..9%, Knockback 1 (100..140%), Back 1"}
+      Grapeshot_Blast: {pos: [3,2], tgt: "1-2-3", typ: Ranged, fx: "ACC 75..95, DMG -50%, CRIT -9..-5%, Debuff +4..8% CRIT Taken (100..140%, 3rd)"}
+      Tracking_Shot: {pos: [4,3,2,1], tgt: [2,3,4], typ: Ranged, fx: "ACC 95..115, DMG -80%, CRIT 0..1%, De-stealth, Self +6..10 ACC, +4..8% CRIT, +12..20% DMG (1 battle) (1/battle)"}
+      Duelists_Advance: {pos: [4,3,2], tgt: [1,2,3], typ: Melee, fx: "ACC 90..110, DMG -20%, CRIT 5..9%, Fwd 1, Riposte (3rd; Riposte: -40..-15% DMG, +0..5% CRIT)"}
+      Open_Vein: {pos: [3,2,1], tgt: [1,2], typ: Melee, fx: "ACC 95..115, DMG -15%, CRIT 0..4%, Bleed 2..4/3rd (100..140%), Debuff -20..-33% Bleed Res & -1..-3 SPD (100..140%, 3rd)"}
+    camp:
+      Gallows_Humor: {cost: 4, fx: "Self: -25 Stress; Party: -20 Stress (75%) or +10 Stress (25%)"}
+      Unparalleled_Finesse: {cost: 4, fx: "Self: +10 DODGE, +2 SPD, +20% Melee DMG, +10 Melee ACC (4b)"}
+      Clean_Guns: {cost: 4, fx: "Self: +10 Ranged ACC, +20% Ranged DMG, +6% Ranged CRIT (4b)"}
+      Bandits_Sense: {cost: 4, fx: "Self: Prevents Ambush, Party Surprise -20%, Monster Surprise +20% (4b)"}
+
+  Houndmaster:
+    rel: false
+    stats: {L0: {hp: 21, dod: 10.0, spd: 5, crit: 4.0, dmg: [4, 7]}, L6: {hp: 37, dod: 30.0, spd: 7, crit: 8.0, dmg: [7, 13]}}
+    mechanics: "Operates in all ranks. Bonus vs Beasts/Marked. 2x Dog Treats/dungeon (+50% DMG, +15 ACC for 3rd). AoE bleed, stress heal, guard (+DODGE)"
+    skills:
+      Hounds_Rush: {pos: [4,3,2], tgt: [1,2,3,4], typ: Ranged, fx: "ACC 85..105, DMG +0%, CRIT 5..9%, Bleed 1..2/3rd (100..140%), vs Beast +15..35% DMG, vs Marked +60..100% DMG"}
+      Hounds_Harry: {pos: [4,3,2,1], tgt: "1-2-3-4", typ: Ranged, fx: "ACC 85..105, DMG -75%, CRIT -5..-1%, Bleed 1..3/3rd (110..150%)"}
+      Target_Whistle: {pos: [4,3,2,1], tgt: [1,2,3,4], typ: Ranged, fx: "ACC 100..120, DMG -100%, Mark (3rd), Debuff -20..-30% PROT (130..170%, 4rd)"}
+      Cry_Havoc: {pos: [4,3], tgt: All_Allies, typ: Heal, fx: "Party Stress -2..-6 (66..74% chance/hero)"}
+      Guard_Dog: {pos: [4,3,2,1], tgt: Ally, typ: Buff, fx: "Guard Ally (2rd), Self +10..20 DODGE (3rd)"}
+      Lick_Wounds: {pos: [4,3,2], tgt: Self, typ: Heal, fx: "Heal 4..8 HP"}
+      Blackjack: {pos: [2,1], tgt: [1,2,3], typ: Melee, fx: "ACC 95..115, DMG -65%, CRIT 5..9%, Stun (110..150%)"}
+    camp:
+      Hounds_Watch: {cost: 4, fx: "Self: Prevents Ambush, Party Surprise -20%, Monster Surprise +20% (4b)"}
+      Therapy_Dog: {cost: 3, fx: "Party: -10 Stress, -10% Stress Recv (4b)"}
+      Mans_Best_Friend: {cost: 2, fx: "Self: -20 Stress"}
+      Release_the_Hound: {cost: 4, fx: "Self: +30% Scouting (4b)"}
+
+  Jester:
+    rel: false
+    stats: {L0: {hp: 19, dod: 15.0, spd: 7, crit: 4.0, dmg: [4, 7]}, L6: {hp: 35, dod: 35.0, spd: 9, crit: 8.0, dmg: [7, 13]}}
+    mechanics: "Buffer/stress healer/dancer (pos 3-4 support, pos 1-2 Finale). Mid-rank bleeds. Skills stack Finale buffs; Finale deals massive burst but inflicts heavy self-debuffs"
+    skills:
+      Dirk_Stab: {pos: [4,3,2,1], tgt: [1,2,3], typ: Melee, fx: "ACC 85..105, DMG +0%, CRIT 5..9%, Fwd 1, Bypass Guard, Buff Finale: +30% DMG (8rd)"}
+      Harvest: {pos: [3,2], tgt: "2-3", typ: Melee, fx: "ACC 90..110, DMG -50%, CRIT 0..4%, Bleed 2..4/3rd (100..140%), Buff Finale: +30% DMG (8rd)"}
+      Finale: {pos: [2,1], tgt: [1,2,3,4], typ: Melee, fx: "ACC 140..160, DMG +50%, CRIT 5..9%, Back 3, Self -25 DODGE, -3 SPD, +100% Stress (1 battle) (1/battle)"}
+      Solo: {pos: [4,3], tgt: "1-2-3-4", typ: Ranged, fx: "ACC 125..145, DMG -100%, Fwd 3, Mark Self (3rd), Self +20..30 DODGE (4rd), Buff Finale: +75% DMG & +8% CRIT (8rd) (2/battle)"}
+      Slice_Off: {pos: [3,2], tgt: [2,3], typ: Melee, fx: "ACC 95..115, DMG -33%, CRIT 8..12%, Bleed 3..5/3rd (100..140%), Buff Finale: +30% DMG (8rd)"}
+      Battle_Ballad: {pos: [4,3], tgt: All_Allies, typ: Buff, fx: "Party +5..10 ACC, +2..6% CRIT, +2..4 SPD (4rd), Buff Finale: +30% DMG & +8% CRIT (8rd)"}
+      Inspiring_Tune: {pos: [4,3], tgt: Ally, typ: Heal, fx: "Target Stress -8..-12, Target Stress Recv -10..-20% (3rd), Buff Finale: +30% DMG & +8% CRIT (8rd)"}
+    camp:
+      Turn_Back_Time: {cost: 3, fx: "Ally: -30 Stress (-15 extra if Afflicted)"}
+      Every_Rose_Has_Its_Thorn: {cost: 3, fx: "Party: -15 Stress, -15% Stress Recv (4b)"}
+      Tigers_Eye: {cost: 3, fx: "Ally: +10 ACC, +8% CRIT (4b)"}
+      Mockery: {cost: 2, fx: "Target Ally +20 Stress; All Other Allies -20 Stress"}
+
+  Leper:
+    rel: true
+    stats: {L0: {hp: 35, dod: 0.0, spd: 2, crit: 1.0, dmg: [8, 16]}, L6: {hp: 63, dod: 20.0, spd: 4, crit: 5.0, dmg: [13, 26]}}
+    mechanics: "Frontline bruiser (pos 1-2). Highest HP & raw DMG, low ACC, zero reach past rank 2. Self-sufficient HP/stress/PROT sustain"
+    skills:
+      Chop: {pos: [2,1], tgt: [1,2], typ: Melee, fx: "ACC 75..95, DMG +0%, CRIT 3..7%"}
+      Hew: {pos: [2,1], tgt: "1-2", typ: Melee, fx: "ACC 75..95, DMG -50%, CRIT -4..0%"}
+      Purge: {pos: [1], tgt: [1], typ: Melee, fx: "ACC 85..105, DMG -40%, CRIT 0..4%, Knockback 3 (100..140%), Clear Corpses, Self +5 ACC (4rd)"}
+      Revenge: {pos: [4,3,2,1], tgt: Self, typ: Buff, fx: "Self +10..15 ACC, +25..35% DMG, +7..11% CRIT; Self -10 DODGE, +25% DMG Taken (1 battle) (1/battle)"}
+      Withstand: {pos: [3,2,1], tgt: Self, typ: Buff, fx: "Mark Self, Self +20..30% PROT, +30% Bleed/Blight/Move/Debuff Res (1 battle) (1/battle)"}
+      Solemnity: {pos: [2,1], tgt: Self, typ: Heal, fx: "Heal 6..10 HP, Stress -5..-7"}
+      Intimidate: {pos: [1], tgt: [1,2,3,4], typ: Melee, fx: "ACC 95..115, DMG -85..-80%, CRIT 0%, De-stealth, Debuff -20..-33% DMG & -3..-5 SPD (100..140%, 3rd), Mark Self, Self +2..4 SPD (4rd)"}
+    camp:
+      Let_the_Mask_Down: {cost: 1, fx: "Self -25 Stress; Party +5 Stress"}
+      Bloody_Shroud: {cost: 2, fx: "Self: +25% Bleed/Blight/Move/Debuff Res (4b)"}
+      Reflection: {cost: 3, fx: "Self: -20 Stress, +10 ACC, +8% CRIT (4b)"}
+      Quarantine: {cost: 3, fx: "Self suffers 20% HP DMG; Party -15 Stress (50%) or -20 Stress (50%)"}
+
+  Man_at_Arms:
+    rel: false
+    stats: {L0: {hp: 31, dod: 5.0, spd: 3, crit: 2.0, dmg: [5, 9]}, L6: {hp: 55, dod: 25.0, spd: 5, crit: 6.0, dmg: [8, 14]}}
+    mechanics: "Pos 1-3 tank/buffer. Guards allies, Riposte, party buffs (Dodge/ACC/CRIT), SPD/DODGE debuffs via Bellow"
+    skills:
+      Crush: {pos: [2,1], tgt: [1,2,3], typ: Melee, fx: "ACC 85..105, DMG +0%, CRIT 5..9%"}
+      Rampart: {pos: [3,2,1], tgt: [1,2], typ: Melee, fx: "ACC 90..110, DMG -60%, CRIT 5..9%, Fwd 1, Knockback 1 (100..140%), Stun (100..140%)"}
+      Bellow: {pos: [4,3,2,1], tgt: "1-2-3-4", typ: Ranged, fx: "ACC 90..110, DMG -100%, Debuff -5..-10 DODGE, -5..-7 SPD, +5% CRIT Taken vs Marked (100..140%, 3rd)"}
+      Defender: {pos: [4,3,2,1], tgt: Ally, typ: Buff, fx: "Guard Ally (3rd), Self +15..30% PROT (4rd)"}
+      Retribution: {pos: [3,2,1], tgt: [1,2,3], typ: Melee, fx: "ACC 85..105, DMG -75%, CRIT 2.5..6.5%, Mark Self (2rd), Riposte (3rd; Riposte: -40..-20% DMG, +0..4% CRIT)"}
+      Command: {pos: [4,3,2,1], tgt: All_Allies, typ: Buff, fx: "Party +5..10 ACC, +4..8% CRIT, +15..25% DMG while Guarded (3rd)"}
+      Bolster: {pos: [4,3,2,1], tgt: All_Allies, typ: Buff, fx: "Party +5..10 DODGE, -10..-20% Stress Recv (1 battle) (1/battle)"}
+    camp:
+      Maintain_Equipment: {cost: 4, fx: "Self: +15% PROT, +15% DMG (4b)"}
+      Tactics: {cost: 4, fx: "Party: +10 DODGE, +5% CRIT (4b)"}
+      Instruction: {cost: 3, fx: "Ally: +10 ACC, +3 SPD (4b)"}
+      Weapons_Practice: {cost: 4, fx: "Party: +10% DMG (4b), +8% CRIT (75%, 4b)"}
+
+  Musketeer:
+    rel: false
+    stats: {L0: {hp: 27, dod: 0.0, spd: 3, crit: 6.0, dmg: [4, 8]}, L6: {hp: 47, dod: 20.0, spd: 5, crit: 10.0, dmg: [7, 14]}}
+    mechanics: "Arbalest reskin (pos 3-4 sniper, mark synergy, healing boost, anti-stealth/stun/mark utility)"
+    skills:
+      Aimed_Shot: {pos: [4,3], tgt: [2,3,4], typ: Ranged, fx: "ACC 95..115, DMG +0%, CRIT 5..9%, vs Marked +50..100% DMG & +9..13% CRIT"}
+      Smokescreen: {pos: [4,3], tgt: "3-4", typ: Ranged, fx: "ACC 95..115, DMG -80%, CRIT -10..-6%, Debuff -15..-20 ACC & -15..-19% CRIT (100..140%, 2rd)"}
+      Call_the_Shot: {pos: [4,3], tgt: [2,3,4], typ: Ranged, fx: "ACC 100..120, DMG -100%, Mark (3rd), Debuff -20..-30 DODGE (100..140%, 2rd)"}
+      Buckshot: {pos: [4,3], tgt: "1-2", typ: Ranged, fx: "ACC 95..115, DMG -50%, CRIT 2..6%, Knockback 1 (75..105%)"}
+      Sidearm: {pos: [4,3,2,1], tgt: Random, typ: Ranged, fx: "ACC 75..95, DMG -10%, CRIT 0..4%, Self +3..5 SPD (3rd)"}
+      Patch_Up: {pos: [4,3], tgt: Ally, typ: Heal, fx: "Heal 2-3..4-5 HP, Target +20..38% Heal Recv (3rd)"}
+      Skeet_Shot: {pos: [4,3,2,1], tgt: "1-2-3-4", typ: Ranged, fx: "ACC 95..115, DMG -100%, De-stealth, Torch +3..7, Clear Stun/Mark on other allies, Stress -1..-3 (60..67%)"}
+    camp:
+      Field_Dressing: {cost: 2, fx: "Ally: Heal 35% HP (75%) or 50% HP (25%), Cure Bleed"}
+      Marching_Plan: {cost: 3, fx: "Party: +2 SPD (4b)"}
+      Clean_Musket: {cost: 3, fx: "Self: +10 ACC, +20% DMG, +8% CRIT to Ranged, -2 SPD (4b)"}
+      Triage: {cost: 3, fx: "Party: Heal 20% HP"}
+
+  Occultist:
+    rel: false
+    stats: {L0: {hp: 19, dod: 10.0, spd: 6, crit: 6.0, dmg: [4, 7]}, L6: {hp: 35, dod: 30.0, spd: 8, crit: 10.0, dmg: [7, 13]}}
+    mechanics: "All ranks. High CRIT, vs Eldritch bonus, pulls, frontline stuns, debuffs. High-variance heal (0..max + bleed chance)"
+    skills:
+      Sacrificial_Stab: {pos: [3,2,1], tgt: [1,2,3], typ: Melee, fx: "ACC 80..100, DMG +0%, CRIT 9..13%, vs Eldritch +15..35% DMG"}
+      Abyssal_Artillery: {pos: [4,3], tgt: "3-4", typ: Ranged, fx: "ACC 85..105, DMG -33%, CRIT 0..4%, vs Eldritch +15..25% DMG"}
+      Weakening_Curse: {pos: [4,3,2,1], tgt: [1,2,3,4], typ: Ranged, fx: "ACC 95..115, DMG -75%, CRIT 5..9%, Debuff -10..-20% DMG & -10..-20% PROT (100..140%, 3rd)"}
+      Wyrd_Reconstruction: {pos: [4,3,2,1], tgt: Ally, typ: Heal, fx: "Heal 0-13..0-22 HP, Bleed 1..3/3rd (60..85% chance)"}
+      Vulnerability_Hex: {pos: [4,3,2,1], tgt: [1,2,3,4], typ: Ranged, fx: "ACC 95..115, DMG -90%, CRIT 5..9%, Mark (3rd), Debuff -15..-20 DODGE (100..140%, 3rd)"}
+      Hands_from_the_Abyss: {pos: [2,1], tgt: [1,2,3], typ: Ranged, fx: "ACC 90..110, DMG -50%, CRIT 9..13%, Torch -5, Stun (110..150%)"}
+      Daemons_Pull: {pos: [4,3,2], tgt: [3,4], typ: Ranged, fx: "ACC 90..110, DMG -50%, CRIT 5..9%, Pull 2 (100..140%), Clear Corpses"}
+    camp:
+      Abandon_Hope: {cost: 1, fx: "Self -25 Stress; Party +10 Stress (50%) or +5 Stress (50%)"}
+      Dark_Ritual: {cost: 3, fx: "Self: Torch -100, +15 Stress; Ally: Heal 50% HP, Clear Mortality debuffs"}
+      Dark_Strength: {cost: 2, fx: "Self +15 Stress; Ally +20% DMG (4b)"}
+      Unspeakable_Commune: {cost: 3, fx: "Self: Prevents Ambush; Party +7 Stress"}
+
+  Plague_Doctor:
+    rel: false
+    stats: {L0: {hp: 22, dod: 0.0, spd: 7, crit: 2.0, dmg: [4, 7]}, L6: {hp: 38, dod: 20.0, spd: 9, crit: 6.0, dmg: [7, 13]}}
+    mechanics: "Pos 3-4 DoT & CC. Backline double stun (Blinding Gas), heavy blight, cure DoT/disease, ally DMG/SPD buffs"
+    skills:
+      Noxious_Blast: {pos: [4,3,2], tgt: [1,2], typ: Ranged, fx: "ACC 95..115, DMG -80%, CRIT 5..9%, Blight 5..7/3rd (100..140%), Debuff -5..-7 ACC (100..140%, 3rd)"}
+      Plague_Grenade: {pos: [4,3], tgt: "3-4", typ: Ranged, fx: "ACC 95..115, DMG -90%, CRIT 0..4%, Blight 4..6/3rd (100..140%)"}
+      Blinding_Gas: {pos: [4,3], tgt: "3-4", typ: Ranged, fx: "ACC 95..115, DMG -100%, Stun (100..140%) (3/battle)"}
+      Incision: {pos: [3,2,1], tgt: [1,2], typ: Melee, fx: "ACC 85..105, DMG +0%, CRIT 5..9%, Bleed 2..4/3rd (100..140%)"}
+      Battlefield_Medicine: {pos: [4,3], tgt: Ally, typ: Heal, fx: "Heal 1..3 HP, Cure Blight/Bleed on Target & Self"}
+      Emboldening_Vapours: {pos: [4,3,2,1], tgt: Ally, typ: Buff, fx: "Ally +20..25% DMG, +3..5 SPD (1 battle) (2/battle)"}
+      Disorienting_Blast: {pos: [4,3,2], tgt: [2,3,4], typ: Ranged, fx: "ACC 95..115, DMG -100%, Shuffle (100..140%), Stun (100..140%), Clear Corpses"}
+    camp:
+      Experimental_Vapours: {cost: 4, fx: "Ally: Heal 50% HP, +33% Heal Recv (4b)"}
+      Leeches: {cost: 3, fx: "Ally: Heal 15% HP, Cure Blight/Disease"}
+      The_Cure: {cost: 1, fx: "Self: Cure Disease, +20% Disease Res (4b)"}
+      Self_Medicate: {cost: 3, fx: "Self: -10 Stress, Heal 20% HP, Cure Blight/Bleed, +10 ACC (4b)"}
+
+  Shieldbreaker:
+    rel: false
+    stats: {L0: {hp: 20, dod: 8.0, spd: 5, crit: 6.0, dmg: [5, 10]}, L6: {hp: 36, dod: 28.0, spd: 9, crit: 10.0, dmg: [9, 18]}}
+    mechanics: "High-speed frontline dancer (pos 1-3). Armor-piercing (Pierce), guard break/pull (Puncture), Aegis damage immunity blocks. Camp triggers Nightmares (50% chance, 20 Horror/6rd) until all 7 flashbacks cleared"
+    skills:
+      Pierce: {pos: [3,2,1], tgt: [1,2,3,4], typ: Melee, fx: "ACC 90..150, DMG -10%, CRIT 5..9%, AP, Fwd 1"}
+      Puncture: {pos: [4,3,2,1], tgt: [1,2,3,4], typ: Ranged, fx: "ACC 90..110, DMG -50%, CRIT 0%, Break/Bypass Guard, Can't Guard (500%, 2rd), Pull 2 (100..140%), Debuff -1..-3 SPD (100..140%, 4rd), Fwd 1"}
+      Adders_Kiss: {pos: [1], tgt: [1,2], typ: Melee, fx: "ACC 90..110, DMG +0%, CRIT 5..9%, Blight 3..5/3rd (100..140%), Back 1"}
+      Impale: {pos: [1], tgt: "1-2-3-4", typ: Ranged, fx: "ACC 90..110, DMG -60%, CRIT -6..-2%, Blight (L1-2: 0, L3-4: 1, L5: 2/3rd, 120..140%), Back 1"}
+      Expose: {pos: [3,2,1], tgt: [1,2,3], typ: Melee, fx: "ACC 85..110, DMG -40%, CRIT 2.5..6.5%, De-stealth, Debuff +8..10% CRIT Taken (100..140%, 3rd) & -4..-8 SPD (100..140%, 4rd), Back 1"}
+      Captivate: {pos: [3,2], tgt: [2,3], typ: Ranged, fx: "ACC 85..105, DMG -25%, CRIT 4..8%, vs Marked +40..60% DMG, Blight 3..5/3rd (100..140%)"}
+      Serpent_Sway: {pos: [3,2,1], tgt: Self, typ: Buff, fx: "Fwd 1, Gain 2 Aegis Blocks, +1..4 SPD (4rd) (2/battle)"}
+    camp:
+      Snake_Eyes: {cost: 3, fx: "Party: +15% AP (4b)"}
+      Snake_Skin: {cost: 3, fx: "Self: +15% PROT, +15% Max HP (4b)"}
+      Sandstorm: {cost: 2, fx: "Ally: Immune to Mark (4b)"}
+      Adders_Embrace: {cost: 2, fx: "Self: +20% Blight Skill, +20% Blight Res (4b)"}
+
+  Vestal:
+    rel: true
+    stats: {L0: {hp: 24, dod: 0.0, spd: 4, crit: 1.0, dmg: [4, 8]}, L6: {hp: 44, dod: 20.0, spd: 6, crit: 5.0, dmg: [7, 14]}}
+    mechanics: "Dedicated healer (pos 3-4 support, pos 1-2 battle cleric). Single/party HP recovery, ranged stun, de-stealth, torchlight"
+    skills:
+      Mace_Bash: {pos: [2,1], tgt: [1,2], typ: Melee, fx: "ACC 85..105, DMG +0%, CRIT 0..4%, vs Unholy +15..35% DMG"}
+      Judgement: {pos: [4,3], tgt: [1,2,3,4], typ: Ranged, fx: "ACC 85..105, DMG -25%, CRIT 5..9%, Self-heal 3..5 HP"}
+      Dazzling_Light: {pos: [4,3,2], tgt: [1,2,3], typ: Ranged, fx: "ACC 90..110, DMG -75%, CRIT 5..9%, Torch +6, Stun (100..140%)"}
+      Divine_Grace: {pos: [4,3], tgt: Ally, typ: Heal, fx: "Heal 4-5..8-9 HP"}
+      Divine_Comfort: {pos: [4,3,2], tgt: All_Allies, typ: Heal, fx: "Party heal 1-3..4-5 HP"}
+      Illumination: {pos: [3,2,1], tgt: [1,2,3,4], typ: Ranged, fx: "ACC 90..110, DMG -75%, CRIT 0%, De-stealth, Torch +5..10, Debuff -20..-30 DODGE (100..140%, 4rd)"}
+      Hand_of_Light: {pos: [2,1], tgt: [1,2,3], typ: Ranged, fx: "ACC 85..105, DMG -50%, CRIT 1..5%, vs Unholy +15..35% DMG, Self +6..10 ACC & +25..35% DMG (4rd)"}
+    camp:
+      Bless: {cost: 3, fx: "Ally: +10 ACC, +10 DODGE (4b)"}
+      Chant: {cost: 3, fx: "Ally: If rel: -20% Stress (4b), -15 Stress; If non-rel: -10% Stress (4b), -5 Stress"}
+      Pray: {cost: 3, fx: "Party: If rel: -15 Stress, +15% PROT (4b); If non-rel: -5 Stress, +5% PROT (4b)"}
+      Sanctuary: {cost: 4, fx: "Self: If rel: Prevents Ambush; Party: If Mortality debuffed: Heal 50% HP, -25 Stress"}
+
+trinkets:
+  generic:
+    # Format: [Name, Rarity, Effects]
+    - [Accuracy Stone, VC, "+4 ACC, -1 SPD"]
+    - [Bleed Charm, VC, "+20% Bleed Res, -2 DODGE"]
+    - [Bleed Stone, VC, "+15% Bleed Skill, -1 SPD"]
+    - [Blight Charm, VC, "+20% Blight Res, -2 DODGE"]
+    - [Blight Stone, VC, "+15% Blight Skill, -1 SPD"]
+    - [Critical Stone, VC, "+3% CRIT, -1 SPD"]
+    - [Debuff Charm, VC, "+20% Debuff Res, -2 DODGE"]
+    - [Debuff Stone, VC, "+15% Debuff Skill, -1 SPD"]
+    - [Disease Charm, VC, "+20% Disease Res, -2 DODGE"]
+    - [Dodge Stone, VC, "+4 DODGE, -1 SPD"]
+    - [Health Stone, VC, "+10% Max HP, -1 SPD"]
+    - [Move Charm, VC, "+20% Move Res, -1 SPD"]
+    - [Move Stone, VC, "+15% Move Skill, -1 SPD"]
+    - [Protection Stone, VC, "+5% PROT, -1 SPD"]
+    - [Stun Charm, VC, "+20% Stun Res, -2 DODGE"]
+    - [Stun Stone, VC, "+10% Stun Skill, -1 SPD"]
+    - [Archer's Ring, C, "+5 Ranged ACC, -1 SPD"]
+    - [Bloodied Fetish, C, "+20% Blight/Bleed Res, -20% Disease Res"]
+    - [Book of Intuition, C, "-20% Party Surprise, -1 SPD"]
+    - [Caution Cloak, C, "+10% Scouting, -10 SPD R1"]
+    - [Damage Stone, C, "+10% DMG, -4 DODGE"]
+    - [Dazzling Charm, C, "+10% Stun Skill"]
+    - [Deteriorating Bracer, C, "+10 DODGE if HP >75%, -6 DODGE if HP <50%"]
+    - [Reckless Charm, C, "+5 ACC, -2 DODGE"]
+    - [Slippery Boots, C, "+4 DODGE, -20% Move Res"]
+    - [Snake Oil, C, "-10% Stress"]
+    - [Speed Stone, C, "+1 SPD"]
+    - [Survival Guide, C, "+10% Scouting/Trap Disarm, -1 SPD"]
+    - [Warrior's Bracer, C, "+10% Melee DMG, -4 DODGE"]
+    - [Warrior's Cap, C, "+5 Melee ACC"]
+    - [Bleed Amulet, U, "+20% Bleed Skill/Res, -20% Blight Res"]
+    - [Blight Amulet, U, "+20% Blight Skill/Res, -20% Bleed Res"]
+    - [Blood Charm, U, "+30% Bleed Res"]
+    - [Bloodthirst Ring, U, "-100% Food Consumed, +10% Max HP, -25% Heal Recv"]
+    - [Book of Constitution, U, "+30% Blight/Disease Res, -1 SPD"]
+    - [Book of Holiness, U, "-20% Stress, -10% DeathBlow Res"]
+    - [Book of Rage, U, "If HP <33%: +20% DMG, +8% CRIT; -10% Bleed/Blight Res"]
+    - [Book of Relaxation, U, "-10% Stress, +4 ACC, -4 DODGE"]
+    - [Camouflage Cloak, U, "+15 DODGE if Torch >75, -20% Stun Res"]
+    - [Calming Crystal, U, "-15% Stress, -1 SPD"]
+    - [Chirurgeon's Charm, U, "+15% Heal Skills"]
+    - [Dark Bracer, U, "+8% CRIT if Torch <26, +5 DODGE if Torch <51, -10% DMG if Torch >51"]
+    - [Debuff Amulet, U, "+30% Debuff Skill/Res, -4 DODGE"]
+    - [Gambler's Charm, U, "+15% Max HP, -10% DeathBlow Res"]
+    - [Heavy Boots, U, "+40% Move Res, +20% PROT, -2 SPD"]
+    - [Life Crystal, U, "+20% Max HP, -1 SPD"]
+    - [Move Amulet, U, "+20% Move Skill, +30% Move Res, -10% Debuff Res"]
+    - [Seer Stone, U, "+15% Scouting, -1 SPD"]
+    - [Shimmering Cloak, U, "+8 DODGE, -33% Heal Recv"]
+    - [Solar Bracer, U, "+4% CRIT & +5 DODGE if Torch >75; -5% CRIT & -6 DODGE if Torch <51"]
+    - [Steady Bracer, U, "+10 Ranged ACC, -2 DODGE"]
+    - [Stun Amulet, U, "+10% Stun Skill, +20% Stun Res, -4 DODGE"]
+    - [Surgical Gloves, U, "+8% Melee CRIT, +5 Melee ACC, -20% Move Res, -10% Debuff Res"]
+    - [Swift Cloak, U, "+2 SPD, -20% Move Res"]
+    - [Tenacity Ring, U, "+10% DeathBlow Res, +5 DODGE, -5% CRIT"]
+    - [Worrystone, U, "+10% Virtue, -10% Stress, -1 SPD"]
+    - [Beast Slayer's Ring, R, "+25% DMG vs Beast, -8 DODGE"]
+    - [Berserk Charm, R, "+3 SPD, +15% DMG, +15% Stress, -5 ACC, -10% Virtue"]
+    - [Brawler's Gloves, R, "+25% DMG in Pos 1, -5% CRIT, -1 SPD"]
+    - [Dark Crown, R, "-25% Stress & +15% Virtue if Torch <26"]
+    - [Eldritch Slayer's Ring, R, "+25% DMG vs Eldritch, -8 DODGE"]
+    - [Fasting Seal, R, "-100% Food, -100% Starve DMG, +5 DODGE"]
+    - [Feather Crystal, R, "+2 SPD, +8 DODGE, -20% Stun/Move Res"]
+    - [Man Slayer's Ring, R, "+25% DMG vs Human, -8 DODGE"]
+    - [Moon Cloak, R, "+15% PROT & +10 DODGE if Torch <26, +10% Stress"]
+    - [Moon Ring, R, "+15% DMG & +10 ACC if Torch <26, +10% Stress"]
+    - [Quick Draw Charm, R, "+8 SPD & +12% CRIT in R1, -3 SPD after R1"]
+    - [Recovery Charm, R, "+40% Heal Recv"]
+    - [Sniper's Ring, R, "+15 ACC & +4% CRIT in Pos 4, -2 SPD"]
+    - [Solar Crown, R, "-20% Stress if Torch >75"]
+    - [Sun Cloak, R, "+5% PROT & +10 DODGE if Torch >75, +10% Stress"]
+    - [Sun Ring, R, "+10% DMG & +5 ACC if Torch >75, +10% Stress"]
+    - [Unholy Slayer's Ring, R, "+25% DMG vs Unholy, -8 DODGE"]
+    - [Book of Sanity, VR, "-20% Stress"]
+    - [Cleansing Crystal, VR, "+40% Blight/Bleed/Debuff Res, -15% Blight/Bleed/Debuff Skill"]
+    - [Ethereal Crucifix, VR, "+25% DMG vs Eldritch, +30% Bleed Res, -20% Max HP"]
+    - [Focus Ring, VR, "+10 ACC, +5% CRIT, -8 DODGE"]
+    - [Fortifying Garlic, VR, "+33% Blight/Bleed/Disease Res"]
+    - [Hero's Ring, VR, "+25% Virtue"]
+    - [Legendary Bracer, VR, "+20% DMG, -1 SPD, +10% Stress"]
+    - [Martyr's Seal, VR, "+60% DMG & +14% CRIT at Death's Door, +12% DeathBlow Res, +15% Max HP"]
+    - [Tough Ring, VR, "+10% PROT, +15% Max HP, -15% DMG, +10% Stress"]
+
+  class_specific:
+    Abomination:
+      - [Lock of Patience, C, "+10% Virtue"]
+      - [Padlock of Transference, U, "+20% Stun/Blight Skill"]
+      - [Protective Padlock, U, "+15% PROT, -1 SPD"]
+      - [Lock of Fury, R, "+10% DMG, +3 SPD, -10% Max HP"]
+      - [Restraining Padlock, VR, "Transform: -40% Party Stress, -40% Transform Stress"]
+    Antiquarian:
+      - [Bag of Marbles, C, "+10 DODGE"]
+      - [Bloodcourse Medallion, U, "+33% Heal Recv"]
+      - [Carapace Idol, U, "+25% PROT"]
+      - [Fleet Florin, R, "+4 SPD, +20% Debuff Skill"]
+      - [Candle of Life, VR, "+50% Heal Skills, +15% Max HP"]
+    Arbalest:
+      - [Sturdy Greaves, C, "+30% Move Res/Skill, -1 SPD"]
+      - [Vengeful Greaves, C, "+3% CRIT"]
+      - [Medic's Greaves, U, "+33% Heal Skills"]
+      - [Bull's Eye Bandana, R, "+8 ACC, +5% CRIT, -4 DODGE"]
+      - [Wrathful Bandana, VR, "+25% DMG in Pos 4, +30% Debuff Skill, -50% Heal Skills"]
+    Bounty_Hunter:
+      - [Agility Talon, C, "+1 SPD, +4 DODGE"]
+      - [Unmovable Helmet, C, "+30% Move Res, +20% Move Skill"]
+      - [Camper's Helmet, U, "+20% Camping Stress Heal Recv, +10% Scouting"]
+      - [Hunter's Talons, R, "+6% CRIT, +10 ACC, +50% Food"]
+      - [Wounding Helmet, VR, "+25% Melee DMG, -25% Move Skill, -20% Stun Skill"]
+    Crusader:
+      - [Defender's Seal, C, "+5% PROT, -3% CRIT"]
+      - [Knight's Crest, C, "+10% Max HP"]
+      - [Swordsman's Crest, C, "+10% Melee DMG, -50% Heal Skills"]
+      - [Paralyzer's Crest, U, "+20% Stun Skill, -2 DODGE"]
+      - [Commander's Orders, R, "+15% Stress Heal Recv, +33% Heal Skills, -10% DMG"]
+      - [Holy Orders, VR, "+15% Virtue, -20% Stress, +12% DeathBlow Res, -20% Blight/Bleed Res"]
+    Flagellant:
+      - [Heartburst Hood, C, "+4 SPD if HP <40%"]
+      - [Resurrection's Collar, U, "+33% Heal Skills, -15% Bleed Skill"]
+      - [Punishment's Hood, U, "+20% Bleed Skill, -20% Heal Skills, +15% DMG if HP <40%"]
+      - [Suffering's Collar, R, "+20% Bleed/Blight Res if HP <40%, +10% Max HP"]
+      - [Eternity's Collar, VR, "+10% DeathBlow Res, +20 DODGE at Death's Door, +20% DMG if Stress >85"]
+    Grave_Robber:
+      - [Quickening Satchel, C, "+2 SPD"]
+      - [Sickening Satchel, C, "+20% DMG vs Blighted"]
+      - [Blighting Satchel, U, "+25% Blight Skill, +1 SPD, -4 DODGE"]
+      - [Lucky Talisman, R, "+12 DODGE, +10 Ranged ACC, +10% Stress"]
+      - [Raider's Talisman, VR, "+5% CRIT, +30% Trap Disarm, +2 SPD, +15% Scouting, -10% Max HP"]
+    Hellion:
+      - [Bleeding Pendant, C, "+15% Bleed Skill"]
+      - [Selfish Pendant, C, "-15% Stress"]
+      - [Double-Edged Pendant, U, "+15% Max HP, -20% Stun Res"]
+      - [Heaven's Hairpin, R, "-25% Stress & +10 ACC if Torch >75"]
+      - [Hell's Hairpin, VR, "+10% CRIT & +15 ACC if Torch <25, -10% Debuff/Bleed Res"]
+    Highwayman:
+      - [Drifter's Buckle, C, "+10% Trap Disarm, +4 DODGE, -5% Stress Heal Recv"]
+      - [Flashfire Gunpowder, C, "+10% Ranged DMG, -20% Stun Res"]
+      - [Stalwart Buckle, C, "+5% CRIT, +5% Stress, -3% Virtue"]
+      - [Dodgy Sheath, U, "+8 DODGE, +1 SPD, -10 Ranged ACC"]
+      - [Sharpening Sheath, R, "+7% Melee CRIT, +40% Bleed Skill, -1 SPD"]
+      - [Gunslinger's Buckle, VR, "+20% Ranged DMG, +15 Ranged ACC, -10% Melee DMG, -5% Melee CRIT"]
+    Houndmaster:
+      - [Agility Whistle, C, "+4 DODGE, +1 SPD, -20% Debuff Res"]
+      - [Scouting Whistle, C, "+20% Scouting if Torch <51, +20% Trap Disarm"]
+      - [Cudgel Weight, U, "+25% Stun Skill, -1 SPD"]
+      - [Protective Collar, R, "+12 DODGE, -15% DMG"]
+      - [Spiked Collar, VR, "+20% DMG, +30% Bleed Skill, -50% Heal Skills, -20% Heal Recv"]
+    Jester:
+      - [Bloody Dice, C, "+30% Bleed Skill, -10% Bleed Res"]
+      - [Lucky Dice, C, "+4 ACC, +4 DODGE"]
+      - [Critical Dice, U, "+7% CRIT"]
+      - [Bright Tambourine, R, "+20% Stress Skills, -25% Stress if Torch >75, +15% Stress if Torch <51"]
+      - [Dark Tambourine, VR, "+12% DeathBlow Res, -25% Stress & +10% Virtue if Torch <26"]
+    Leper:
+      - [Healing Armlet, C, "+20% Heal Recv"]
+      - [Redemption Armlet, C, "+15% DMG in Pos 1, -3% Virtue"]
+      - [Fortunate Armlet, U, "+8 ACC, +3% CRIT, +10% Stress"]
+      - [Immunity Mask, R, "+40% Stun Res, +30% Blight/Bleed Res, -10% Max HP"]
+      - [Berserk Mask, VR, "+8% CRIT, +3 SPD, -10% Virtue, -33% Heal Recv"]
+    Man_at_Arms:
+      - [Cleansing Eyepatch, C, "+30% Blight Res, +20% Disease Res, -2 DODGE"]
+      - [Sly Eyepatch, C, "+4 DODGE, -10% Stun/Move Res"]
+      - [Longevity Eyepatch, U, "+15% Max HP, -2 SPD"]
+      - [Rampart Shield, R, "+40% Move Skill, +30% Stun Skill, -15% DMG"]
+      - [Guardian's Shield, VR, "If in Pos 4: +10% PROT, +50% Heal Recv, +10 DODGE"]
+    Musketeer:
+      - [Sturdy Boots, C, "+30% Move Res/Skill, -1 SPD"]
+      - [Vengeful Boots, C, "+3% CRIT"]
+      - [Medic's Boots, U, "+33% Heal Skills"]
+      - [Bull's Eye Hat, R, "+8 ACC, +5% CRIT, -4 DODGE"]
+      - [Wrathful Hat, VR, "+25% DMG in Pos 4, +30% Debuff Skill, -50% Heal Skills"]
+    Occultist:
+      - [Eldritch Killing Incense, C, "+6% CRIT & +15% DMG vs Eldritch"]
+      - [Evasion Incense, C, "+8 DODGE, -1 SPD"]
+      - [Cursed Incense, U, "+40% Debuff Skill, +20% Move Skill, -10% Max HP"]
+      - [Sacrificial Cauldron, R, "+20% DMG, +10% Stress"]
+      - [Demon's Cauldron, VR, "+30% Stun Skill, +40% Debuff Skill, +3% CRIT, -10% Virtue, +15% Stress"]
+    Plague_Doctor:
+      - [Diseased Herb, C, "+40% Disease Res"]
+      - [Rotgut Censer, C, "+8 ACC, -5% Max HP"]
+      - [Witch's Vial, C, "+15% Stun Skill"]
+      - [Poisoned Herb, U, "+40% Blight Skill, -15% Max HP"]
+      - [Bloody Herb, R, "+10 Melee ACC, +30% Bleed Skill, +20% Melee DMG"]
+      - [Blasphemous Vial, VR, "+10 Ranged ACC, +20% Stun Skill, +20% Blight Skill, +25% Stress"]
+    Shieldbreaker:
+      - [Venomous Vial, C, "+30% Blight Skill, -10% Blight Res"]
+      - [Shimmering Scale, U, "+10% PROT, +5% Stress"]
+      - [Dancer's Footwraps, U, "+40% Move Res, +2 SPD"]
+      - [Fanged Spear Tip, R, "+35% DMG vs Marked, -10% DMG"]
+      - [Cuirboilli, VR, "+33% Max HP, -2 SPD"]
+    Vestal:
+      - [Virtuous Chalice, C, "+10% Virtue, -5% Max HP"]
+      - [Haste Chalice, U, "+8 SPD R1, +2 SPD after R1, -25% Stun Skill"]
+      - [Youth Chalice, U, "+20% Max HP, -10% DMG"]
+      - [Profane Scroll, R, "+15% DMG, +15% Stress; If Pos 2: +10% PROT, +33% Heal Skills"]
+      - [Tome of Holy Healing, R, "+25% Heal Skills, -15% Max HP"]
+      - [Sacred Scroll, VR, "-10% Stress, +33% Heal Skills, -10% Stun Skill, -33% DMG"]
+
+  unique:
+    enemy_drops:
+      - [Barristan's Head, VR, "+25% PROT, +20% Stress"]
+      - [Dismas' Head, VR, "+25% DMG, -10% Max HP, +20% Stress"]
+      - [Junia's Head, VR, "+30% Heal Skills, +20% Stress"]
+      - [Aria Box, VR, "-25% Stress"]
+      - [Crescendo Box, VR, "+2 SPD, +15% DMG, +10% Stress"]
+      - [Overture Box, VR, "+15% Max HP, +8 DODGE, -2 ACC"]
+      - [Tempting Goblet, VR, "+20% Max HP, +3 SPD, +8 DODGE, +25% Stress, -10% Virtue"]
+    ancestral:
+      - [Ancestor's Coat, Anc, "+15 DODGE, +10% Stress"]
+      - [Ancestor's Handkerchief, Anc, "+50% Disease/Bleed Res, +10% Stress"]
+      - [Ancestor's Lantern, Anc, "-20% Party Surprise, +20% Monster Surprise, +10% Stress"]
+      - [Ancestor's Mustache Cream, Anc, "+50% Debuff/Blight Res, +10% Stress"]
+      - [Ancestor's Musket Ball, Anc, "+10% Ranged DMG, +8% Ranged CRIT, +10% Stress"]
+      - [Ancestor's Pen, Anc, "+10% Melee DMG, +8% Melee CRIT, +10% Stress"]
+      - [Ancestor's Pistol, Anc, "+15 Ranged ACC, +3 SPD, +10% Stress"]
+      - [Ancestor's Portrait, Anc, "+50% Resolve XP, +10% Stress"]
+      - [Ancestor's Signet Ring, Anc, "+10 ACC, +10% PROT, +10% Stress"]
+      - [Ancestor's Bottle, Anc, "+25% Max HP, +50% Food, +10% Stress"]
+      - [Ancestor's Candle, Anc, "+15% DMG, +2 SPD, +5 DODGE if Torch >50, +10% Stress"]
+      - [Ancestor's Map, Anc, "+25% Trap Disarm/Scouting, +10% Stress"]
+      - [Ancestor's Scroll, Anc, "+25% Heal/Stress Skills, +10% Stress"]
+      - [Ancestor's Tentacle Idol, Anc, "+20% Virtue, +8% DeathBlow Res"]
+    trophies:
+      - [Necromancer's Collar, Trophy, "+20% DMG & +8% CRIT vs Unholy"]
+      - [Prophet's Eye, Trophy, "If Pos 4: +15 ACC, +3 SPD, -15% Stress"]
+      - [Hag's Ladle, Trophy, "+30% Blight Skill, +40% Blight/Disease Res"]
+      - [Fuseman's Matchstick, Trophy, "+2 SPD, +10% Ranged DMG, +6% Ranged CRIT"]
+      - [Wilbur's Flag, Trophy, "+50% Stun Res, +10 DODGE"]
+      - [Flesh's Heart, Trophy, "+50% Bleed Res, +15% Max HP"]
+      - [Siren's Conch, Trophy, "+50% Debuff Res, -20% Stress"]
+      - [Crew's Bell, Trophy, "+50% Move Res, +20% Heal Recv"]
+      - [Vvulf's Tassle, Trophy, "+20% DMG & +10 ACC vs Marked, +5% CRIT vs Size 2+"]
+      - [Baron's Lash, Trophy, "If Crimson Curse: +75% Debuff Res, +4 SPD, -10% Stun Res"]
+      - [Viscount's Spices, Trophy, "If Crimson Curse: +5% CRIT, +100% Heal Eating, +100% Food"]
+      - [Countess' Fan, Trophy, "If Crimson Curse: +50% Heal Recv, -25% Bleed Res"]
+    shrieker:
+      - [Callous Talon, Shrieker, "+7% CRIT, +15% Stress, +33% Disease Res if Torch <75, +33% Bleed Skill if Torch <50"]
+      - [Distended Crowseye, Shrieker, "+10 ACC, +15% Stress, +33% Disease Res if Torch <75, +15% Scouting if Torch <50"]
+      - [Molted Tailfeather, Shrieker, "+4 SPD, +15% Stress, +33% Disease Res if Torch <75, +33% Stun Res if Torch <50"]
+      - [Molted Wingfeather, Shrieker, "+10 DODGE, +15% Stress, +33% Disease Res if Torch <75, +33% Move Res if Torch <50"]
+    crimson_court:
+      - [Ancestor's Vintage, VR, "Delayed Curse craving duration"]
+      - [Coven Signet, VR, "-25% Stress if has Crimson Curse"]
+      - [Dazzling Mirror, VR, "+4 SPD & +20% Stun Skill vs Bloodsuckers"]
+      - [Mantra of Fasting, VR, "If Wasting: +40% Max HP, +7 SPD"]
+      - [Mercurial Salve, VR, "+25% DMG vs Bloodsuckers"]
+      - [Pagan Talisman, VR, "+25% DMG vs Fanatic, -10% Stress"]
+      - [Rat Carcass, VR, "Immune to death by Crimson Curse"]
+      - [Sanguine Snuff, VR, "If Bloodlust: +8% CRIT, +15 DODGE"]
+      - [Sculptor's Tools, VR, "+40% DMG vs Stonework"]
+    crystalline_and_special:
+      - [Lens of the Comet, Cryst, "Ignores Stealth, -20% Virtue, +5% CRIT if Shard Dust"]
+      - [Crystal Pendant, Cryst, "+15% Shards Given, +15% Stress"]
+      - [Cluster Pendant, Cryst, "+25% Shards Given, +15% Stress"]
+      - [Coat Of Many Colors, Cryst, "On Monster Kill: -2% Stress (2b), +2 ACC (2b)"]
+      - [Miller's Pipe, Cryst, "On Monster Kill: Stress -2, All Monsters: Blight 2/3rd"]
+      - [Broken Key, Cryst, "Abom: +15 ACC, +35% Stun Skill, +10% Stress"]
+      - [Smoking Skull, Cryst, "Antiq: +35 DODGE if Shard Dust, -15 ACC, -15% Blight Res"]
+      - [Keening Bolts, Cryst, "Arb: +20% DMG, +7% Ranged CRIT, On Atk: Self Stress +3 (25%)"]
+      - [Mask Of The Timeless, Cryst, "BH: +2 SPD, +15 DODGE, +5% Stress"]
+      - [Non-Euclidean Hilt, Cryst, "Cru: +15% Max HP, +5% Random Tgt, +25% Stun Skill if Holy Water, On Hit: Blight 2/2rd"]
+      - [Acidic Husk Ichor, Cryst, "Flag: -25% Max HP, +30% DMG, +30% Bleed Skill vs Husk, +25% Heal Recv if HP <20%"]
+      - [Topshelf Tonic, Cryst, "GR: +15 DODGE if Medicinal Herbs, +3 SPD, -20% Blight Res, +50% Blight Duration"]
+      - [Thirsting Blade, Cryst, "Hellion: +15 ACC, -20% Bleed Res, +2 SPD, +8% CRIT vs Bleeding, On Miss: Self 5 DMG"]
+      - [Crystalline Gunpowder, Cryst, "HWM: +20% DMG, +3 SPD, -15% Stun Res"]
+      - [Huskfang Whistle, Cryst, "HM: +50% Bleed Skill if Dog Treats, +40% Stress Skills while Guarding, -10 DODGE, +66% Guard Duration"]
+      - [Dirge For The Devoured, Cryst, "Jester: +25% Stress Skills, +25% DMG if Laudanum, +10% Stress"]
+      - [Petrified Amulet, Cryst, "Leper: +10 ACC if Bandage, +15% Max HP, -15% Bleed Res"]
+      - [Mirror Shield, Cryst, "MAA: +10 DODGE, 30% DMG Reflection, +20% Stun Res"]
+      - [Icosahedric Musket Balls, Cryst, "Musk: +20% DMG, +20% Random Target Chance"]
+      - [Petrified Skull, Cryst, "Occ: +40% PROT vs Husk, -20% Heal Recv, +30% PROT vs Eldritch, +15% Max HP"]
+      - [Ashen Distillation, Cryst, "PD: +20 DODGE, +25% Blight Skill, +20% Heal Recv if Medicinal Herbs"]
+      - [Spectral Speartip, Cryst, "SB: +15% DMG, +20% Blight Skill, +15% Max HP, +5% Random Target"]
+      - [Heretical Passage, Cryst, "Vestal: +20% Heal Skills if Holy Water, +25% DMG vs Husk/Eldritch, +10% Stress"]
+      - [Mildred's Locket, Keepsake, "The Reaping -100% DMG Taken, +40% Blight Res, +3 SPD, +40% DMG vs Miller"]
+      - [Thing's Mesmerizing Eye, Thing, "+4% CRIT if HP >41%, +8% CRIT if HP <40%"]
+      - [Crystalline Fang, Thing, "+10% Stun Skill if HP >40%, +40% Stun Skill if HP <41%"]
+      - [Phase Shifting Hide, Thing, "-15% Stress if HP >41%, -50% Stress if HP <40%"]
+      - [Prismatic Heart Crystal, Thing, "+35% Bleed/Blight Skill vs Thing, +12% CRIT vs Thing"]
+
+  sets:
+    Abomination:
+      t1: {name: Shameful Shroud, fx: "-15% Stress, +10 DODGE"}
+      t2: {name: Osmond Chain, fx: "+20% Ranged DMG, +8% Ranged CRIT"}
+      bonus: "+20% DMG in Pos 1"
+    Antiquarian:
+      t1: {name: The Master's Essence, fx: "+50% Heal Skills, +35% Blight/Debuff Skill"}
+      t2: {name: Two of Three, fx: "+50% DMG vs Blighted, +8% CRIT vs Blighted"}
+      bonus: "+4 SPD, +10 DODGE"
+    Arbalest:
+      t1: {name: Childhood Treasure, fx: "+30% Heal Skills, +20% Camp Heal Skills, -15% Stress"}
+      t2: {name: Bedtime Story, fx: "+15 ACC & +8% CRIT vs Marked, +35% Debuff/Move Skill"}
+      bonus: "+25% PROT"
+    Bounty_Hunter:
+      t1: {name: Crime Lords' Molars, fx: "+20% DMG vs Marked/Stunned/Bleeding, -10 DODGE"}
+      t2: {name: Vengeful Kill List, fx: "+50% Move Skill, +35% Bleed Skill, +15 Ranged ACC"}
+      bonus: "+5% CRIT vs Marked/Stunned/Bleeding"
+    Crusader:
+      t1: {name: Glittering Spaulders, fx: "+15% PROT, +35% Move Res, -15% Stress, -2 SPD"}
+      t2: {name: Signed Conscription, fx: "+20% Heal/Stress Skills"}
+      bonus: "+20% Max HP"
+    Flagellant:
+      t1: {name: Chipped Tooth, fx: "+20% Max HP, +35% Move Res"}
+      t2: {name: Shard of Glass, fx: "+35% Bleed Skill, -20% Bleed Res"}
+      bonus: "+10% DeathBlow Res"
+    Grave_Robber:
+      t1: {name: Absinthe, fx: "+35% Disease/Blight Res, +35% Blight Skill, -10% Max HP"}
+      t2: {name: Sharpened Letter Opener, fx: "+25% Melee DMG, +10 Melee ACC, +5 DODGE"}
+      bonus: "+5% CRIT"
+    Hellion:
+      t1: {name: Lioness Warpaint, fx: "+20% DMG thresholds per HP loss, +10% Stress"}
+      t2: {name: Mark of the Outcast, fx: "+2 SPD, +35% Bleed Skill, +15% DeathBlow Res, -15% Heal Recv"}
+      bonus: "+7 ACC, +7 DODGE"
+    Highwayman:
+      t1: {name: Bloodied Neckerchief, fx: "+2 SPD, +10 DODGE"}
+      t2: {name: Shameful Locket, fx: "+10 ACC, +5% CRIT, +15% Stress"}
+      bonus: "+45% Virtue"
+    Houndmaster:
+      t1: {name: Evidence of Corruption, fx: "+25% Scouting, -15% Party Surprise, +10% Stress"}
+      t2: {name: Battered Lawman's Badge, fx: "+15 Ranged ACC, +50% Camp Stress, +25% Heal Skills, -20% Stun/Debuff Res"}
+      bonus: "+25% DMG & +5% CRIT vs Bleeding"
+    Jester:
+      t1: {name: Tyrant's Tasting Cup, fx: "+33% Stress Skills, +25% Stress"}
+      t2: {name: Tyrant's Fingerbone, fx: "+3 SPD & +20 DODGE in Pos 1"}
+      bonus: "+33% Camp Stress Skills"
+    Leper:
+      t1: {name: Last Will and Testament, fx: "+15% PROT, +15% Max HP, -10% DeathBlow Res"}
+      t2: {name: Tin Flute, fx: "-20% Stress, +33% Camp Stress Skills"}
+      bonus: "+15 ACC if HP >60%"
+    Man_at_Arms:
+      t1: {name: Old Unit Standard, fx: "+15% Stun Skill, +20% Debuff Skill, +15% DeathBlow Res, +10% Stress"}
+      t2: {name: Toy Soldier, fx: "+10% PROT, +5% CRIT"}
+      bonus: "Riposte: +25% DMG, +10 ACC"
+    Musketeer:
+      t1: {name: Second Place Trophy, fx: "+30% Heal Skills, +20% Camp Heal Skills, -15% Stress"}
+      t2: {name: Silver Musket Ball, fx: "+15 ACC & +8% CRIT vs Marked, +35% Debuff/Move Skill"}
+      bonus: "+25% PROT"
+    Occultist:
+      t1: {name: Blood Pact, fx: "+4 SPD & +25% DMG if Torch <60, -25% Bleed Skill, -10% Max HP"}
+      t2: {name: Vial of Sand, fx: "+20% Debuff/Stun/Move Skill, +20% Stun Res"}
+      bonus: "+15 DODGE"
+    Plague_Doctor:
+      t1: {name: Subject #40 Notes, fx: "+25% Max HP, +35% Disease Res"}
+      t2: {name: Dissection Kit, fx: "+35% Bleed Skill, +25% DMG"}
+      bonus: "+15% Blight/Stun Skill"
+    Shieldbreaker:
+      t1: {name: Obsidian Dagger, fx: "+40% Debuff/Blight Skill"}
+      t2: {name: Severed Hand, fx: "+50% Blight Res, -10% Stress"}
+      bonus: "+15% Max HP, +10% PROT, Can't be Guarded"
+    Vestal:
+      t1: {name: Atonement Beads, fx: "+15% Melee DMG, +8% Melee CRIT, -15% Virtue"}
+      t2: {name: Salacious Diary, fx: "+33% Camp Stress Skills, +25% Heal Skills"}
+      bonus: "+35% Debuff/Stun Skill"
