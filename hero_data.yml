@@ -1,0 +1,918 @@
+heroes:
+  abomination:
+    overview: "Shape-shifter. Human form provides stuns, blights, and self-sustain (Rank 2–3). Beast form provides high frontline melee damage (Rank 1–2) but inflicts stress on teammates upon transformation. Starts with all combat skills unlocked."
+    special_mechanics: "Uses dynamic form transformation (Free Action). Transforming to Beast inflicts +8 Stress to allies; transforms back on Affliction, victory, or manual cancel (inflicts +6 Stress/turn while active)."
+    religious: false
+    base_stats:
+      level_0: { hp: 26, dodge: 7.5, spd: 7, crit: "2.0%", base_dmg: "6–11" }
+      level_6: { hp: 46, dodge: 27.5, spd: 9, crit: "6.0%", base_dmg: "11–20" }
+    combat_skills:
+      - name: "Transform (to Beast)"
+        form: "Human"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: "Self"
+        type: "Free Action"
+        effects: "Self-heal 5–10 HP, +1 to +5 SPD, +10% to +25% DMG, +20% to +30% Blight Resist, +8 Stress to Allies (1 use/battle)"
+      - name: "Manacles"
+        form: "Human"
+        launch_rank: [3, 2]
+        target_rank: [1, 2, 3]
+        type: "Ranged"
+        effects: "ACC 95–115, DMG -60%, CRIT 1%–5%, Stun (90%–130% base)"
+      - name: "Beast's Bile"
+        form: "Human"
+        launch_rank: [3, 2]
+        target_rank: [2, 3]
+        target_mode: "Cleave"
+        type: "Ranged"
+        effects: "ACC 95–115, DMG -90%, Blight (2–5 pts/rd for 3 rds), -20% to -33% Blight Resist"
+      - name: "Absolution"
+        form: "Human"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: "Self"
+        type: "Heal"
+        effects: "Heal 3–5 HP, -7 to -10 Stress heal"
+      - name: "Transform (to Human)"
+        form: "Beast"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: "Self"
+        type: "Buff"
+        effects: "Revert form, -2 Stress to Allies, -4 to -0 SPD debuff (1 use/battle)"
+      - name: "Rake"
+        form: "Beast"
+        launch_rank: [2, 1]
+        target_rank: [1, 2]
+        target_mode: "Cleave"
+        type: "Melee"
+        effects: "ACC 90–110, DMG -50%, CRIT -3% to +1%, Self-buff (+15% to +25% Rake DMG, stacks, 4 rds)"
+      - name: "Rage"
+        form: "Beast"
+        launch_rank: [2, 1]
+        target_rank: [1, 2, 3]
+        type: "Melee"
+        effects: "ACC 85–105, DMG +0%, CRIT 7.5%–11.5%"
+      - name: "Slam"
+        form: "Beast"
+        launch_rank: [3, 2, 1]
+        target_rank: [1, 2]
+        type: "Melee"
+        effects: "ACC 80–100, DMG -25%, Forward 1, Knockback 2, -10 to -20 DODGE, -2 to -6 SPD debuff"
+    camping_skills:
+      - { name: "Anger Management", cost: 3, target: "Self & All Allies", effects: "Self: +20 Stress; All Allies: -10 Stress." }
+      - { name: "Psych Up", cost: 3, target: "Self & Allies", effects: "Self: +25% DMG (4 battles); Non-religious allies +10 Stress, Religious allies +20 Stress." }
+      - { name: "The Quickening", cost: 3, target: "Self", effects: "Self: +4 SPD (4 battles)." }
+      - { name: "Eldritch Blood", cost: 3, target: "Self", effects: "Self: +40% Blight/Bleed/Disease Resist, +20% Stress received (4 battles)." }
+
+  antiquarian:
+    overview: "Low combat stats; utility/support role. Increases gold stack limits per inventory slot and discovers bonus Antiques for selling. Provides party Dodge buffs, weak heals, and force-guard skills."
+    special_mechanics: "Increases gold capacity by +750 per stack (+15% Shards in Farmstead). Interacting with curios yields Minor (500g, stack of 20) or Rare (1250g, stack of 5) Antiques."
+    religious: false
+    base_stats:
+      level_0: { hp: 17, dodge: 10.0, spd: 5, crit: "1.0%", base_dmg: "3–5" }
+      level_6: { hp: 29, dodge: 30.0, spd: 7, crit: "5.0%", base_dmg: "5–9" }
+    combat_skills:
+      - name: "Nervous Stab"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [1, 2, 3]
+        type: "Melee"
+        effects: "ACC 85–105, DMG +0%, CRIT 3%–7%"
+      - name: "Festering Vapours"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [1, 2, 3, 4]
+        type: "Ranged"
+        effects: "ACC 95–115, DMG -75%, Blight (1–4 pts/rd for 3 rds), -20% to -36% Blight Resist"
+      - name: "Get Down!"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: "Self"
+        type: "Buff"
+        effects: "Back 2, +15 to +25 DODGE, +1 to +5 SPD, +10% to +15% Blight Skill Chance (4 rds)"
+      - name: "Flashpowder"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [1, 2, 3, 4]
+        type: "Ranged"
+        effects: "ACC 95–115, DMG -100%, -10 to -15 ACC debuff, Bypasses and Removes Stealth"
+      - name: "Fortifying Vapours"
+        launch_rank: [4, 3]
+        target_rank: [1, 2, 3, 4]
+        type: "Heal"
+        effects: "Heal 1-1 to 3-3 HP, +10% to +15% Bleed & Blight Resist (3 rds)"
+      - name: "Invigorating Vapours"
+        launch_rank: [4, 3]
+        target_rank: "All Allies"
+        type: "Buff"
+        effects: "+3 to +10 DODGE to entire party (3 rds)"
+      - name: "Protect Me!"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [1, 2, 3, 4]
+        type: "Buff"
+        effects: "Forces Ally Guard (2 rds), Target +4 to +8 DODGE, +10% to +20% PROT, Marks Target (3 Uses/Battle)"
+    camping_skills:
+      - { name: "Resupply", cost: 1, target: "Self", effects: "Produces a random supply item (3 uses)." }
+      - { name: "Trinket Scrounge", cost: 2, target: "Self", effects: "Produces a random common–rare trinket." }
+      - { name: "Strange Powders", cost: 2, target: "One Companion", effects: "+20% Bleed/Blight/Move/Debuff/Disease Resist (4 battles)." }
+      - { name: "Curious Incantation", cost: 1, target: "Self", effects: "-50% Stress received (4 battles)." }
+
+  arbalest:
+    overview: "Backline ranged snipers (Rank 3–4). Deal massive bonus damage against Marked targets. Provide secondary healing and utility."
+    special_mechanics: "Ranged specialist. Usable skills are strictly restricted to the backrow, but she has high utility to clear stun/mark on teammates and off-heal."
+    religious: false
+    base_stats:
+      level_0: { hp: 27, dodge: 0.0, spd: 3, crit: "6.0%", base_dmg: "4–8" }
+      level_6: { hp: 47, dodge: 20.0, spd: 5, crit: "10.0%", base_dmg: "7–14" }
+    combat_skills:
+      - name: "Sniper Shot"
+        launch_rank: [4, 3]
+        target_rank: [2, 3, 4]
+        type: "Ranged"
+        effects: "ACC 95–115, DMG +0%, CRIT 5%–9%, +50% to +100% DMG vs Marked, +9% to +13% CRIT vs Marked"
+      - name: "Suppressing Fire"
+        launch_rank: [4, 3]
+        target_rank: [2, 3, 4]
+        target_mode: "Cleave"
+        type: "Ranged"
+        effects: "ACC 95–115, DMG -80%, CRIT -10% to -6%, Debuffs -15 to -20 ACC (100% to 140% base), -15% to -19% CRIT (100% to 140% base) (2 rds)"
+      - name: "Sniper's Mark"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [2, 3, 4]
+        type: "Ranged"
+        effects: "ACC 100–120, DMG -100%, Mark Target (3 rds), Debuffs -20 to -30 DODGE (100% to 140% base, 2 rds)"
+      - name: "Bola"
+        launch_rank: [4, 3]
+        target_rank: [1, 2]
+        target_mode: "Cleave"
+        type: "Ranged"
+        effects: "ACC 95–115, DMG -50%, CRIT 2%–6%, Knockback 1 (75% to 105% base)"
+      - name: "Blindfire"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: "Random"
+        type: "Ranged"
+        effects: "ACC 75–95, DMG -10%, CRIT 0%–4%, Self-buff +3 to +5 SPD (4 rds), hits random enemy"
+      - name: "Battlefield Bandage"
+        launch_rank: [4, 3]
+        target_rank: [4, 3, 2, 1]
+        type: "Heal"
+        effects: "Heal 2–3 to 4–5 HP, Target +20% to +38% Healing Received (3 rds)"
+      - name: "Rallying Flare"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: "All Allies"
+        type: "Ranged"
+        effects: "ACC 95–115, DMG -100%, Bypasses and Removes Stealth on targets, Clear Stun/Mark on all other allies, Stress -1 to -3 (60% to 67% chance), Torch +3 to +7"
+    camping_skills:
+      - { name: "Field Dressing", cost: 2, target: "One Companion", effects: "Heal 35% HP (75% chance) or 50% HP (25% chance), Removes Bleeding." }
+      - { name: "Marching Plan", cost: 3, target: "All Companions", effects: "+2 SPD (4 battles)." }
+      - { name: "Restring Crossbow", cost: 3, target: "Self", effects: "+10 ACC, +20% DMG, +8% CRIT to Ranged Skills; -2 SPD (4 battles)." }
+      - { name: "Triage", cost: 3, target: "All Companions", effects: "Heal 20% HP." }
+
+  bounty_hunter:
+    overview: "Flexible damage dealer and controller (Rank 1–3). Deals heavy bonus damage to Marked and Stunned targets. Features pulls, shuffles, stuns, and PROT debuffs."
+    special_mechanics: "Highly flexible class, utilizing crowd control (stuns, shuffles, pulls) and single-target executioner skills that scale immensely with Marked or Stunned conditions."
+    religious: false
+    base_stats:
+      level_0: { hp: 25, dodge: 5.0, spd: 5, crit: "4.0%", base_dmg: "5–10" }
+      level_6: { hp: 45, dodge: 25.0, spd: 7, crit: "8.0%", base_dmg: "8–16" }
+    combat_skills:
+      - name: "Collect Bounty"
+        launch_rank: [3, 2, 1]
+        target_rank: [1, 2]
+        type: "Melee"
+        effects: "ACC 85–105, DMG +0%, CRIT 7%–11%, +90% DMG vs Marked, +15% to +35% DMG vs Human"
+      - name: "Mark for Death"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [4, 3, 2, 1]
+        type: "Ranged"
+        effects: "ACC 100–120, DMG -100%, Mark Target (3 rds), Debuffs -10% to -20% PROT (100% to 140% base, 3 rds), Self-buff +3 to +5 SPD (2 rds)"
+      - name: "Come Hither"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [3, 4]
+        type: "Ranged"
+        effects: "ACC 90–110, DMG -80%, CRIT 0%–4%, Mark Target (2 rds), Pull 2 (100% to 140% base)"
+      - name: "Uppercut"
+        launch_rank: [2, 1]
+        target_rank: [1, 2]
+        type: "Melee"
+        effects: "ACC 90–110, DMG -67%, CRIT 0%–4%, Knockback 2 (100% to 140% base), Stun (100% to 140% base)"
+      - name: "Flashbang"
+        launch_rank: [4, 3, 2]
+        target_rank: [2, 3, 4]
+        type: "Ranged"
+        effects: "ACC 95–115, DMG -100%, Stun (110% to 150% base), Shuffle Single (100% to 140% base)"
+      - name: "Finish Him"
+        launch_rank: [3, 2, 1]
+        target_rank: [1, 2, 3]
+        type: "Melee"
+        effects: "ACC 85–105, DMG +0%, CRIT 5%–9%, +25% to +60% DMG vs Stunned"
+      - name: "Caltrops"
+        launch_rank: [4, 3]
+        target_rank: [3, 4]
+        target_mode: "Cleave"
+        type: "Ranged"
+        effects: "ACC 90–110, DMG -95%, CRIT 5%–9%, Bleed (2 to 4 pts/rd for 3 rds, 100% to 140% base), Debuffs: +10% to +20% DMG Taken, -4 to -8 SPD (3 rds, 100% to 140% base)"
+    camping_skills:
+      - { name: "This Is How We Do It", cost: 2, target: "Self", effects: "+10 ACC, +8% CRIT (4 battles)." }
+      - { name: "Tracking", cost: 2, target: "Self", effects: "-15% Chance Party Surprised, +10% Chance Monsters Surprised (4 battles)." }
+      - { name: "Planned Takedown", cost: 4, target: "Self", effects: "+25% DMG, +15 ACC vs Size 2+ enemies (4 battles)." }
+      - { name: "Scout Ahead", cost: 3, target: "Self", effects: "+25% Scouting Chance (4 battles)." }
+
+  crusader:
+    overview: "Frontline tank/damage dealer (Rank 1–2; Rank 3 with Holy Lance). High HP, bonus damage vs. Unholy, reliable stun, modest heal, stress heal, and anti-ambush camp skills. Starts with Kleptomaniac quirk."
+    special_mechanics: "Slow-speed, exceptionally chonk frontline hybrid that excels in stress recovery, unholy-slaying, reliable stunning, and emergency triage."
+    religious: true
+    base_stats:
+      level_0: { hp: 33, dodge: 5.0, spd: 1, crit: "3.0%", base_dmg: "6–12" }
+      level_6: { hp: 61, dodge: 25.0, spd: 3, crit: "7.0%", base_dmg: "10–19" }
+    combat_skills:
+      - name: "Smite"
+        launch_rank: [2, 1]
+        target_rank: [1, 2]
+        type: "Melee"
+        effects: "ACC 85–105, DMG +0%, CRIT 0%–4%, +15% to +35% DMG vs Unholy"
+      - name: "Zealous Accusation"
+        launch_rank: [2, 1]
+        target_rank: [1, 2]
+        target_mode: "Cleave"
+        type: "Ranged"
+        effects: "ACC 85–105, DMG -40%, CRIT -4% to 0%"
+      - name: "Stunning Blow"
+        launch_rank: [2, 1]
+        target_rank: [1, 2]
+        type: "Melee"
+        effects: "ACC 90–110, DMG -50%, CRIT 0%–4%, Stun (100% to 140% base)"
+      - name: "Bulwark of Faith"
+        launch_rank: [2, 1]
+        target_rank: "Self"
+        type: "Buff"
+        effects: "Torch +24, Self +20% to +30% PROT, Marks Self (1 battle) (Limit: 1 Use per Battle)"
+      - name: "Battle Heal"
+        launch_rank: [2, 1]
+        target_rank: [4, 3, 2, 1]
+        type: "Heal"
+        effects: "Heal 2–3 to 5–6 HP"
+      - name: "Holy Lance"
+        launch_rank: [4, 3]
+        target_rank: [2, 3, 4]
+        type: "Melee"
+        effects: "ACC 85–105, DMG +0%, CRIT 6.5%–10.5%, Forward 1, +15% to +35% DMG vs Unholy"
+      - name: "Inspiring Cry"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [4, 3, 2, 1]
+        type: "Heal"
+        effects: "Heal 1-1 to 2-2 HP, Stress -5 to -8, Torch +5 to +10"
+    camping_skills:
+      - { name: "Unshakable Leader", cost: 2, target: "Self", effects: "-25% Stress Received (4 battles)." }
+      - { name: "Stand Tall", cost: 3, target: "One Companion", effects: "-15 Stress, Removes Mortality debuffs." }
+      - { name: "Zealous Speech", cost: 5, target: "Party (All Companions)", effects: "Party: -15 Stress, All Companions: -15% Stress Received (4 battles)." }
+      - { name: "Zealous Vigil", cost: 4, target: "Self", effects: "-25 Stress (-15 extra if Afflicted), Prevents Nighttime Ambush." }
+
+  flagellant:
+    overview: "High-risk frontline bleed/support (Rank 1–2). Powers spike below 50% HP or at Death's Door. Transmutates ally stress and DoTs to himself; party heal/stun on death."
+    special_mechanics: "Frontline bleed-based martyr restricted to position 1 or 2 for attacks, with powerful support from any rank. Thrives at low health (<40% HP buffs DMG/CRIT, enables emergency heals Redeem/Exsanguinate) and Death's Door (heals party, gains massive buffs). Cannot gain virtues; always becomes Rapturous (+25% DMG, +3 SPD, -20 DODGE) at 100 Stress. Will only use Penance Hall in town. Refuses to party with other Flagellants."
+    religious: true
+    base_stats:
+      level_0: { hp: 22, dodge: 0.0, spd: 6, crit: "2.0%", base_dmg: "3–6" }
+      level_6: { hp: 38, dodge: 20.0, spd: 9, crit: "6.0%", base_dmg: "5–11" }
+    combat_skills:
+      - name: "Punish"
+        launch_rank: [2, 1]
+        target_rank: [1, 2]
+        type: "Melee"
+        effects: "ACC 95–115, DMG +0%, CRIT 5%–9%, Bleed (4 to 6 pts/rd for 3 rds, 100% to 140% base), Debuff target: -20% to -33% Bleed Resist (100% to 140% base, 3 rds)"
+      - name: "Rain of Sorrows"
+        launch_rank: [2, 1]
+        target_rank: [3, 4]
+        target_mode: "Cleave"
+        type: "Melee"
+        effects: "ACC 95–115, DMG -67%, CRIT 2%–6%, Bleed (3 to 5 pts/rd for 3 rds, 100% to 140% base), Debuff target: -20% to -33% Bleed Resist (100% to 140% base, 3 rds)"
+      - name: "Exsanguinate"
+        launch_rank: [2, 1]
+        target_rank: [1, 2]
+        type: "Melee"
+        effects: "ACC 90–110, DMG +0%, CRIT 3%–7%, Bleed (5 to 9 pts/rd for 3 rds, 100% to 140% base), Self: Heal 35% to 50% max HP, Self-debuff: -25% Healing Skills, -25% Healing Received, -3 SPD (3 rds) (Limit: 3 Uses per Battle, Only usable below 40% HP)"
+      - name: "Reclaim"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [4, 3, 2, 1]
+        type: "Heal"
+        effects: "Restoration (Heal 2 pts/rd for 2 rds to Heal 4 pts/rd for 3 rds), Self-bleed: (3 pts/rd for 3 rds to 5 pts/rd for 3 rds, 120% to 160% base)"
+      - name: "Redeem"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [4, 3, 2, 1]
+        type: "Heal"
+        effects: "Heal Target (33% to 43% max HP), Self: Heal 35% to 50% max HP, Self-debuff: -25% Healing Skills, -25% Healing Received, -3 SPD (3 rds) (Limit: 2 Uses per Battle, Only usable below 40% HP)"
+      - name: "Endure"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [4, 3, 2, 1]
+        type: "Heal"
+        effects: "Stress Heal Target (-10 to -14 Stress), Self: Stress +10 to +6, Self-buff: +1 to +3 SPD (4 rds)"
+      - name: "Suffer"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [4, 3, 2, 1]
+        type: "Buff"
+        effects: "Clear Marked, Blight, and Bleed on Target and transfer them to Self. Self: Mark Self (2 rds), Debuff: -20% to -40% Stress (4 rds), Buff: +6% to +10% Death Blow Resist (4 rds)"
+    camping_skills:
+      - { name: "Lash's Anger", cost: 1, target: "Self", effects: "+40 Stress." }
+      - { name: "Lash's Solace", cost: 3, target: "Self", effects: "-50 Stress." }
+      - { name: "Lash's Kiss", cost: 3, target: "Self", effects: "Heal 33% HP, Remove Bleeding/Blight, +3 SPD (4 Battles)." }
+      - { name: "Lash's Cure", cost: 2, target: "Self", effects: "Remove Disease." }
+
+  grave_robber:
+    overview: "High-speed, high-crit mobile hybrid (Rank 1–3). Armor-piercing melee, high-damage lunges from stealth, ranged daggers/blight darts, and self-cures. Highest base trap disarm chance."
+    special_mechanics: "High-speed, high-crit mobile hybrid that advances and retreats through ranks, featuring armor-piercing melee, high-damage lunges from stealth, and self-cures."
+    religious: false
+    base_stats:
+      level_0: { hp: 20, dodge: 10.0, spd: 8, crit: "6.0%", base_dmg: "4–8" }
+      level_6: { hp: 36, dodge: 30.0, spd: 10, crit: "10.0%", base_dmg: "7–14" }
+    combat_skills:
+      - name: "Pick to the Face"
+        launch_rank: [3, 2, 1]
+        target_rank: [1, 2]
+        type: "Melee"
+        effects: "ACC 90–110, DMG -15%, CRIT 1%–5%, Armor Piercing"
+      - name: "Lunge"
+        launch_rank: [4, 3]
+        target_rank: [1, 2, 3]
+        type: "Melee"
+        effects: "ACC 95–115, DMG +40%, CRIT 8%–12%, Forward 2, +20% to +33% DMG vs Blighted"
+      - name: "Flashing Daggers"
+        launch_rank: [4, 3, 2]
+        target_rank: [2, 3]
+        target_mode: "Cleave"
+        type: "Ranged"
+        effects: "ACC 90–110, DMG -33%, CRIT -5% to -1%, Debuffs -20% to -33% Bleed Resist (100% to 140% base, 3 rds)"
+      - name: "Shadow Fade"
+        launch_rank: [2, 1]
+        target_rank: "Self"
+        type: "Buff"
+        effects: "Back 2, Stealth (2 rds), Self-buff: +80% to +100% DMG (2 rds), +4% to +8% CRIT (2 rds), +10 to +15 DODGE (4 rds)"
+      - name: "Thrown Dagger"
+        launch_rank: [4, 3, 2]
+        target_rank: [2, 3, 4]
+        type: "Ranged"
+        effects: "ACC 90–110, DMG -10%, CRIT 8%–12%, +25% to +40% DMG vs Marked, +20% to +33% DMG vs Blighted, Self-buff +5 to +10 ACC (4 rds)"
+      - name: "Poison Dart"
+        launch_rank: [4, 3, 2]
+        target_rank: [1, 2, 3, 4]
+        type: "Ranged"
+        effects: "ACC 95–115, DMG -60%, CRIT 7.5%–11.5%, Blight (2 to 4 pts/rd for 4 rds, 100% to 140% base), -20% to -33% Blight Resist (100% to 140% base, 3 rds)"
+      - name: "Toxin Trickery"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: "Self"
+        type: "Buff"
+        effects: "Cure Blight / Bleed, Self-buff: +9 to +13 DODGE, +2 to +4 SPD (1 Battle) (Limit: 1 Use per Battle)"
+    camping_skills:
+      - { name: "Snuff Box", cost: 3, target: "Self & One Companion", effects: "Self: Remove Disease, One Companion: Remove Disease." }
+      - { name: "Gallows Humor", cost: 4, target: "Self & All Companions", effects: "Self: -25 Stress; All Companions: -20 Stress (75% chance) or +10 Stress (25% chance)." }
+      - { name: "Night Moves", cost: 2, target: "Self", effects: "+20% Scouting Chance (4 battles)." }
+      - { name: "Pilfer", cost: 1, target: "Self", effects: "Produces a random supply item." }
+
+  hellion:
+    overview: "Versatile frontline brawler (Rank 1). Can target all enemy ranks (including Rank 4 via Iron Swan). Powerful abilities apply self-exhaust debuffs."
+    special_mechanics: "Versatile frontline warrior restricted to position 1, with raw reach to any enemy rank, but whose strongest moves apply self-exhaust debuffs (-DMG/-SPD) that cannot be cleared by herbs."
+    religious: false
+    base_stats:
+      level_0: { hp: 26, dodge: 10.0, spd: 4, crit: "5.0%", base_dmg: "6–12" }
+      level_6: { hp: 46, dodge: 30.0, spd: 6, crit: "9.0%", base_dmg: "10–19" }
+    combat_skills:
+      - name: "Wicked Hack"
+        launch_rank: [2, 1]
+        target_rank: [1, 2]
+        type: "Melee"
+        effects: "ACC 85–105, DMG +0%, CRIT 4%–8%"
+      - name: "Iron Swan"
+        launch_rank: [1]
+        target_rank: [4]
+        type: "Melee"
+        effects: "ACC 85–105, DMG +0%, CRIT 5%–9%"
+      - name: "Barbaric YAWP!"
+        launch_rank: [2, 1]
+        target_rank: [1, 2]
+        target_mode: "Cleave"
+        type: "Melee"
+        effects: "ACC 95–115, DMG -100%, Stun (110% to 150% base), Self-debuff: -20% DMG, -3 SPD (3 rds) (Limit: 3 Uses per Battle)"
+      - name: "If It Bleeds"
+        launch_rank: [3, 2, 1]
+        target_rank: [2, 3]
+        type: "Melee"
+        effects: "ACC 85–105, DMG -35%, CRIT 0%–4%, Bleed (2 to 4 pts/rd for 3 rds, 100% to 140% base)"
+      - name: "Breakthrough"
+        launch_rank: [4, 3, 2]
+        target_rank: [1, 2, 3]
+        target_mode: "Cleave"
+        type: "Melee"
+        effects: "ACC 85–105, DMG -50%, CRIT -1% to +3%, Forward 1, Self-debuff: -10% DMG, -1 SPD (3 rds)"
+      - name: "Adrenaline Rush"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: "Self"
+        type: "Heal"
+        effects: "Heal 1 to 4 HP, Cure Blight / Bleed, Self-buff: +5 to +10 ACC, +20% to +30% DMG (4 rds)"
+      - name: "Bleed Out"
+        launch_rank: [1]
+        target_rank: [1]
+        type: "Melee"
+        effects: "ACC 85–105, DMG +20%, CRIT 6%–10%, Bleed (3 to 5 pts/rd for 3 rds, 100% to 140% base), Self-debuff: -20% DMG, -3 SPD (3 rds)"
+    camping_skills:
+      - { name: "Battle Trance", cost: 3, target: "Self", effects: "+25% DMG if in position 1, -25% DMG if not in position 1 (4 battles)." }
+      - { name: "Revel", cost: 3, target: "Party", effects: "-5 ACC, -2 SPD, -20 Stress, -10% Stress Received (4 battles)." }
+      - { name: "Reject the Gods", cost: 2, target: "Self & All Companions", effects: "Self: -30 Stress; Non-religious companions +7 Stress, Religious companions +15 Stress." }
+      - { name: "Sharpen Spear", cost: 3, target: "Self", effects: "+10% CRIT (4 battles)." }
+
+  highwayman:
+    overview: "Pure damage and mobility (Rank 1–3). High burst from Rank 1, ranged sniping, bleed, and Riposte via Duelist's Advance. Lacks crowd-control skills."
+    special_mechanics: "Pure damage-dealing rogue with high speed and mobility, utilizing melee blades, ranged flintlocks, high-damage point-blank shots, and Riposte, but lacking crowd control."
+    religious: false
+    base_stats:
+      level_0: { hp: 23, dodge: 10.0, spd: 5, crit: "5.0%", base_dmg: "5–10" }
+      level_6: { hp: 43, dodge: 30.0, spd: 7, crit: "9.0%", base_dmg: "9–16" }
+    combat_skills:
+      - name: "Wicked Slice"
+        launch_rank: [3, 2, 1]
+        target_rank: [1, 2]
+        type: "Melee"
+        effects: "ACC 85–105, DMG +15%, CRIT 5%–9%"
+      - name: "Pistol Shot"
+        launch_rank: [4, 3, 2]
+        target_rank: [2, 3, 4]
+        type: "Ranged"
+        effects: "ACC 85–105, DMG -15%, CRIT 7.5%–11.5%, +25% to +50% DMG vs Marked"
+      - name: "Point Blank Shot"
+        launch_rank: [1]
+        target_rank: [1]
+        type: "Ranged"
+        effects: "ACC 95–115, DMG +50%, CRIT 5%–9%, Knockback 1 (100% to 140% base), Back 1"
+      - name: "Grapeshot Blast"
+        launch_rank: [3, 2]
+        target_rank: [1, 2, 3]
+        target_mode: "Cleave"
+        type: "Ranged"
+        effects: "ACC 75–95, DMG -50%, CRIT -9% to -5%, Debuffs +4% to +8% Crits Received (100% to 140% base, 3 rds)"
+      - name: "Tracking Shot"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [2, 3, 4]
+        type: "Ranged"
+        effects: "ACC 95–115, DMG -80%, CRIT 0%–1%, Bypasses and Removes Stealth, Self-buff: +6 to +10 ACC, +4% to +8% CRIT, +12% to +20% DMG (1 Battle) (Limit: 1 Use per Battle)"
+      - name: "Duelist's Advance"
+        launch_rank: [4, 3, 2]
+        target_rank: [1, 2, 3]
+        type: "Melee"
+        effects: "ACC 90–110, DMG -20%, CRIT 5%–9%, Forward 1, Activates Riposte (3 rds, Riposte: -40% to -15% DMG, +0% to +5% CRIT)"
+      - name: "Open Vein"
+        launch_rank: [3, 2, 1]
+        target_rank: [1, 2]
+        type: "Melee"
+        effects: "ACC 95–115, DMG -15%, CRIT 0%–4%, Bleed (2 to 4 pts/rd for 3 rds, 100% to 140% base), Debuffs: -20% to -33% Bleed Resist, -1 to -3 SPD (100% to 140% base, 3 rds)"
+    camping_skills:
+      - { name: "Gallows Humor", cost: 4, target: "Self & All Companions", effects: "Self: -25 Stress; All Companions: -20 Stress (75% chance) or +10 Stress (25% chance)." }
+      - { name: "Unparalleled Finesse", cost: 4, target: "Self", effects: "+10 DODGE, +2 SPD, +20% DMG Melee Skills, +10 ACC Melee Skills (4 battles)." }
+      - { name: "Clean Guns", cost: 4, target: "Self", effects: "+10 ACC, +20% DMG, +6% CRIT to Ranged Skills (4 battles)." }
+      - { name: "Bandit's Sense", cost: 4, target: "Self", effects: "Prevents nighttime ambush, -20% Chance Party Surprised, +20% Chance Monster Surprised (4 battles)." }
+
+  houndmaster:
+    overview: "Versatile bleed/support (All Ranks). Deals bonus damage vs. Beasts and Marked targets. Carries a stress heal, party guard, self-heal, and stun."
+    special_mechanics: "Versatile bleed/support hero operating across all ranks. Deals massive bonus damage vs. Beasts and Marked targets. Receives two inventory-slot Dog Treats per dungeon run (+50% DMG, +15 ACC for 3 rds)."
+    religious: false
+    base_stats:
+      level_0: { hp: 21, dodge: 10.0, spd: 5, crit: "4.0%", base_dmg: "4–7" }
+      level_6: { hp: 37, dodge: 30.0, spd: 7, crit: "8.0%", base_dmg: "7–13" }
+    combat_skills:
+      - name: "Hound's Rush"
+        launch_rank: [4, 3, 2]
+        target_rank: [1, 2, 3, 4]
+        type: "Ranged"
+        effects: "ACC 85–105, DMG +0%, CRIT 5%–9%, Bleed (1 to 2 pts/rd for 3 rds, 100% to 140% base), +15% to +35% DMG vs Beast, +60% to +100% DMG vs Marked"
+      - name: "Hound's Harry"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [1, 2, 3, 4]
+        target_mode: "Cleave"
+        type: "Ranged"
+        effects: "ACC 85–105, DMG -75%, CRIT -5% to -1%, Bleed (1 to 3 pts/rd for 3 rds, 110% to 150% base)"
+      - name: "Target Whistle"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [1, 2, 3, 4]
+        type: "Ranged"
+        effects: "ACC 100–120, DMG -100%, Mark Target (3 rds), Debuffs -20% to -30% PROT (130% to 170% base, 4 rds)"
+      - name: "Cry Havoc"
+        launch_rank: [4, 3]
+        target_rank: "All Allies"
+        type: "Heal"
+        effects: "Stress heal -2 to -6 (66% to 74% base chance to affect each ally)"
+      - name: "Guard Dog"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [4, 3, 2, 1]
+        type: "Buff"
+        effects: "Guard Ally (2 rds), Self-buff: +10 to +20 DODGE (3 rds)"
+      - name: "Lick Wounds"
+        launch_rank: [4, 3, 2]
+        target_rank: "Self"
+        type: "Heal"
+        effects: "Heal 4 to 8 HP"
+      - name: "Blackjack"
+        launch_rank: [2, 1]
+        target_rank: [1, 2, 3]
+        type: "Melee"
+        effects: "ACC 95–115, DMG -65%, CRIT 5%–9%, Stun (110% to 150% base)"
+    camping_skills:
+      - { name: "Hound's Watch", cost: 4, target: "Self", effects: "Prevents nighttime ambush, -20% Chance Party Surprised, +20% Chance Monster Surprised (4 battles)." }
+      - { name: "Therapy Dog", cost: 3, target: "All Companions", effects: "-10 Stress, -10% Stress Received (4 battles)." }
+      - { name: "Man's Best Friend", cost: 2, target: "Self", effects: "-20 Stress." }
+      - { name: "Release the Hound", cost: 4, target: "Self", effects: "+30% Scouting Chance (4 battles)." }
+
+  jester:
+    overview: "Mobile buffer/stress healer (Rank 3–4 for buffs/stress heals; Rank 1–2 for Finale). Strongest stress heal and party buffs. Builds up Finale for single-target burst."
+    special_mechanics: "Mobile buffer and stress healer. Sickle moves cause heavy bleeds on middle ranks, while lute songs buff party offense/speed or heal stress. High mobility lets him dance through ranks to setup Solo/Finale for a massive single-target nuke, which debuffs his defense and speed afterwards."
+    religious: false
+    base_stats:
+      level_0: { hp: 19, dodge: 15.0, spd: 7, crit: "4.0%", base_dmg: "4–7" }
+      level_6: { hp: 35, dodge: 35.0, spd: 9, crit: "8.0%", base_dmg: "7–13" }
+    combat_skills:
+      - name: "Dirk Stab"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [1, 2, 3]
+        type: "Melee"
+        effects: "ACC 85–105, DMG +0%, CRIT 5%–9%, Forward 1, Bypasses Guard, Buffs Finale: +30% DMG (8 rds)"
+      - name: "Harvest"
+        launch_rank: [3, 2]
+        target_rank: [2, 3]
+        target_mode: "Cleave"
+        type: "Melee"
+        effects: "ACC 90–110, DMG -50%, CRIT 0%–4%, Bleed (2 to 4 pts/rd for 3 rds, 100% to 140% base), Buffs Finale: +30% DMG (8 rds)"
+      - name: "Finale"
+        launch_rank: [2, 1]
+        target_rank: [1, 2, 3, 4]
+        type: "Melee"
+        effects: "ACC 140–160, DMG +50%, CRIT 5%–9%, Back 3, Self-debuff: -25 DODGE, -3 SPD, +100% Stress (1 Battle) (Limit: 1 Use per Battle)"
+      - name: "Solo"
+        launch_rank: [4, 3]
+        target_rank: [1, 2, 3, 4]
+        target_mode: "Cleave"
+        type: "Ranged"
+        effects: "ACC 125–145, DMG -100%, Forward 3, Marks Self (3 rds), Self-buff: +20 to +30 DODGE (4 rds), Buffs Finale: +75% DMG, +8% CRIT (8 rds) (Limit: 2 Uses per Battle)"
+      - name: "Slice Off"
+        launch_rank: [3, 2]
+        target_rank: [2, 3]
+        type: "Melee"
+        effects: "ACC 95–115, DMG -33%, CRIT 8%–12%, Bleed (3 to 5 pts/rd for 3 rds, 100% to 140% base), Buffs Finale: +30% DMG (8 rds)"
+      - name: "Battle Ballad"
+        launch_rank: [4, 3]
+        target_rank: "All Allies"
+        type: "Buff"
+        effects: "Party Buff: +5 to +10 ACC, +2% to +6% CRIT, +2 to +4 SPD (4 rds), Buffs Finale: +30% DMG, +8% CRIT (8 rds)"
+      - name: "Inspiring Tune"
+        launch_rank: [4, 3]
+        target_rank: [4, 3, 2, 1]
+        type: "Heal"
+        effects: "Stress heal -8 to -12, Target -10% to -20% Stress Received (3 rds), Buffs Finale: +30% DMG, +8% CRIT (8 rds)"
+    camping_skills:
+      - { name: "Turn Back Time", cost: 3, target: "One Companion", effects: "-30 Stress (-15 Stress if Afflicted)." }
+      - { name: "Every Rose Has Its Thorn", cost: 3, target: "All Companions", effects: "-15 Stress, -15% Stress Received (4 battles)." }
+      - { name: "Tiger's Eye", cost: 3, target: "One Companion", effects: "+10 ACC, +8% CRIT (4 battles)." }
+      - { name: "Mockery", cost: 2, target: "One Companion & All Companions", effects: "One Companion: +20 Stress; All Companions: -20 Stress." }
+
+  leper:
+    overview: "Pure frontline bruiser (Rank 1–2). Highest base HP and raw base damage in the game, offset by low base accuracy and zero reach past enemy Rank 2."
+    special_mechanics: "Pure frontline bruiser with the highest base HP and raw damage, but suffers from low base Accuracy and zero reach past enemy Rank 2. Completely self-sufficient with massive self-heals, self-protection buffs, and stress heals."
+    religious: true
+    base_stats:
+      level_0: { hp: 35, dodge: 0.0, spd: 2, crit: "1.0%", base_dmg: "8–16" }
+      level_6: { hp: 63, dodge: 20.0, spd: 4, crit: "5.0%", base_dmg: "13–26" }
+    combat_skills:
+      - name: "Chop"
+        launch_rank: [2, 1]
+        target_rank: [1, 2]
+        type: "Melee"
+        effects: "ACC 75–95, DMG +0%, CRIT 3%–7%"
+      - name: "Hew"
+        launch_rank: [2, 1]
+        target_rank: [1, 2]
+        target_mode: "Cleave"
+        type: "Melee"
+        effects: "ACC 75–95, DMG -50%, CRIT -4% to 0%"
+      - name: "Purge"
+        launch_rank: [1]
+        target_rank: [1]
+        type: "Melee"
+        effects: "ACC 85–105, DMG -40%, CRIT 0%–4%, Knockback 3 (100% to 140% base), Clear all Corpses, Self-buff: +5 ACC (4 rds)"
+      - name: "Revenge"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: "Self"
+        type: "Buff"
+        effects: "Self-buff: +10 to +15 ACC, +25% to +35% DMG, +7% to +11% CRIT, Self-debuff: -10 DODGE, +25% DMG Taken (1 Battle) (Limit: 1 Use per Battle)"
+      - name: "Withstand"
+        launch_rank: [3, 2, 1]
+        target_rank: "Self"
+        type: "Buff"
+        effects: "Marks Self, Self-buff: +20% to +30% PROT, +30% Blight/Bleed/Debuff/Move Resist (1 Battle) (Limit: 1 Use per Battle)"
+      - name: "Solemnity"
+        launch_rank: [2, 1]
+        target_rank: "Self"
+        type: "Heal"
+        effects: "Heal 6 to 10 HP, Stress -5 to -7"
+      - name: "Intimidate"
+        launch_rank: [1]
+        target_rank: [1, 2, 3, 4]
+        type: "Melee"
+        effects: "ACC 95–115, DMG -85% to -80%, CRIT 0%, Bypasses and Removes Stealth, Debuffs: -20% to -33% DMG, -3 to -5 SPD (3 rds, 100% to 140% base), Marks Self, Self-buff: +2 to +4 SPD (4 rds)"
+    camping_skills:
+      - { name: "Let the Mask Down", cost: 1, target: "Self & All Companions", effects: "Self: -25 Stress; All Companions: +5 Stress." }
+      - { name: "Bloody Shroud", cost: 2, target: "Self", effects: "+25% Bleed/Blight/Move/Debuff Resist (4 battles)." }
+      - { name: "Reflection", cost: 3, target: "Self", effects: "-20 Stress, +10 ACC, +8% CRIT (4 battles)." }
+      - { name: "Quarantine", cost: 3, target: "Self & All Companions", effects: "Self: Suffer 20% HP DMG; All Companions: -15 Stress (50% chance) or -20 Stress (50% chance)." }
+
+  man_at_arms:
+    overview: "Defensive frontline support/tank (Rank 1–3). Guards allies, activates Riposte, buffs party Dodge/ACC/CRIT, and debuffs enemy SPD/Dodge via Bellow."
+    special_mechanics: "Seasoned defender and tactical leader. Specialises in guarding teammates, buffing party stats, and retaliating with heavy shield stuns and Riposte."
+    religious: false
+    base_stats:
+      level_0: { hp: 31, dodge: 5.0, spd: 3, crit: "2.0%", base_dmg: "5–9" }
+      level_6: { hp: 55, dodge: 25.0, spd: 5, crit: "6.0%", base_dmg: "8–14" }
+    combat_skills:
+      - name: "Crush"
+        launch_rank: [2, 1]
+        target_rank: [1, 2, 3]
+        type: "Melee"
+        effects: "ACC 85–105, DMG +0%, CRIT 5%–9%"
+      - name: "Rampart"
+        launch_rank: [3, 2, 1]
+        target_rank: [1, 2]
+        type: "Melee"
+        effects: "ACC 90–110, DMG -60%, CRIT 5%–9%, Forward 1, Knockback 1 (100% to 140% base), Stun (100% to 140% base)"
+      - name: "Bellow"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [1, 2, 3, 4]
+        target_mode: "Cleave"
+        type: "Ranged"
+        effects: "ACC 90–110, DMG -100%, Debuffs: -5 to -10 DODGE, -5 to -7 SPD, +5% Crits Received while Marked (3 rds, 100% to 140% base)"
+      - name: "Defender"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: "All Allies"
+        type: "Buff"
+        effects: "Guard Ally (3 rds), Self-buff: +15% to +30% PROT (4 rds)"
+      - name: "Retribution"
+        launch_rank: [3, 2, 1]
+        target_rank: [1, 2, 3]
+        type: "Melee"
+        effects: "ACC 85–105, DMG -75%, CRIT 2.5%–6.5%, Marks Self (2 rds), Activates Riposte (3 rds, Riposte: -40% to -20% DMG, +0% to +4% CRIT)"
+      - name: "Command"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: "All Allies"
+        type: "Buff"
+        effects: "Party Buff: +5 to +10 ACC, +4% to +8% CRIT, +15% to +25% DMG while Guarded (3 rds)"
+      - name: "Bolster"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: "All Allies"
+        type: "Buff"
+        effects: "Party Buff: +5 to +10 DODGE, -10% to -20% Stress Received (1 Battle) (Limit: 1 Use per Battle)"
+    camping_skills:
+      - { name: "Maintain Equipment", cost: 4, target: "Self", effects: "+15% PROT, +15% DMG (4 battles)." }
+      - { name: "Tactics", cost: 4, target: "Party", effects: "+10 DODGE, +5% CRIT (4 battles)." }
+      - { name: "Instruction", cost: 3, target: "One Companion", effects: "+10 ACC, +3 SPD (4 battles)." }
+      - { name: "Weapons Practice", cost: 4, target: "All Companions", effects: "+10% DMG (4 battles), +8% CRIT (75% chance) (4 battles)." }
+
+  musketeer:
+    overview: "Backline ranged sniper (Rank 3–4). Functionally identical reskin of Arbalest with unique visual assets and itemization."
+    special_mechanics: "Functionally identical reskin of the Arbalest with her own visuals and name changes. High-value backline ranged damage dealer (Ranks 3-4) who relies on Marked targets for massive damage multipliers. Offers strong utility with stealth-clearing flare (Skeet Shot) and healing-enhancement support (Patch Up)."
+    religious: false
+    base_stats:
+      level_0: { hp: 27, dodge: 0.0, spd: 3, crit: "6.0%", base_dmg: "4–8" }
+      level_6: { hp: 47, dodge: 20.0, spd: 5, crit: "10.0%", base_dmg: "7–14" }
+    combat_skills:
+      - name: "Aimed Shot"
+        launch_rank: [4, 3]
+        target_rank: [2, 3, 4]
+        type: "Ranged"
+        effects: "ACC 95–115, DMG +0%, CRIT 5%–9%, +50% to +100% DMG vs Marked, +9% to +13% CRIT vs Marked"
+      - name: "Smokescreen"
+        launch_rank: [4, 3]
+        target_rank: [3, 4]
+        target_mode: "Cleave"
+        type: "Ranged"
+        effects: "ACC 95–115, DMG -80%, CRIT -10% to -6%, Debuff target: -15 to -20 ACC, -15% to -19% CRIT (100% to 140% base, 2 rds)"
+      - name: "Call the Shot"
+        launch_rank: [4, 3]
+        target_rank: [2, 3, 4]
+        type: "Ranged"
+        effects: "ACC 100–120, DMG -100%, Mark Target (3 rds), Debuff target: -20 to -30 DODGE (100% to 140% base, 2 rds)"
+      - name: "Buckshot"
+        launch_rank: [4, 3]
+        target_rank: [1, 2]
+        target_mode: "Cleave"
+        type: "Ranged"
+        effects: "ACC 95–115, DMG -50%, CRIT 2%–6%, Knockback 1 (75% to 105% base)"
+      - name: "Sidearm"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: "Random"
+        type: "Ranged"
+        effects: "ACC 75–95, DMG -10%, CRIT 0%–4%, hits random enemy, Self-buff: +3 to +5 SPD (3 rds)"
+      - name: "Patch Up"
+        launch_rank: [4, 3]
+        target_rank: [4, 3, 2, 1]
+        type: "Heal"
+        effects: "Heal 2-3 to 4-5 HP, Target: +20% to +38% Healing Received (3 rds)"
+      - name: "Skeet Shot"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [1, 2, 3, 4]
+        target_mode: "Cleave"
+        type: "Ranged"
+        effects: "ACC 95–115, DMG -100%, Bypass/Remove Stealth, Torch +3 to +7, Other Heroes: Clear Stun/Mark, Stress Heal other allies: -1 to -3 (60% to 67% chance)"
+    camping_skills:
+      - { name: "Field Dressing", cost: 2, target: "One Companion", effects: "Heal 35% HP (75% chance) or 50% HP (25% chance), Removes Bleeding." }
+      - { name: "Marching Plan", cost: 3, target: "All Companions", effects: "+2 SPD (4 battles)." }
+      - { name: "Clean Musket", cost: 3, target: "Self", effects: "+10 ACC, +20% DMG, +8% CRIT to Ranged Skills, -2 SPD (4 battles)." }
+      - { name: "Triage", cost: 3, target: "All Companions", effects: "Heal 20% HP." }
+
+  occultist:
+    overview: "Disruptor and high-variance healer (Rank 1–4). High crit rate, bonus damage vs. Eldritch, backline pulls, stuns, and Wyrd Reconstruction."
+    special_mechanics: "Disruptor and high-variance healer operating across all ranks. High critical hit rate, bonus damage against Eldritch, frontline stuns, backline pulls, damage-reducing debuffs, and Wyrd Reconstruction (0 to max HP heal with a chance of bleed)."
+    religious: false
+    base_stats:
+      level_0: { hp: 19, dodge: 10.0, spd: 6, crit: "6.0%", base_dmg: "4–7" }
+      level_6: { hp: 35, dodge: 30.0, spd: 8, crit: "10.0%", base_dmg: "7–13" }
+    combat_skills:
+      - name: "Sacrificial Stab"
+        launch_rank: [3, 2, 1]
+        target_rank: [1, 2, 3]
+        type: "Melee"
+        effects: "ACC 80–100, DMG +0%, CRIT 9%–13%, +15% to +35% DMG vs Eldritch"
+      - name: "Abyssal Artillery"
+        launch_rank: [4, 3]
+        target_rank: [3, 4]
+        target_mode: "Cleave"
+        type: "Ranged"
+        effects: "ACC 85–105, DMG -33%, CRIT 0%–4%, +15% to +25% DMG vs Eldritch"
+      - name: "Weakening Curse"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [1, 2, 3, 4]
+        type: "Ranged"
+        effects: "ACC 95–115, DMG -75%, CRIT 5%–9%, Debuffs: -10% to -20% DMG, -10% to -20% PROT (100% to 140% base, 3 rds)"
+      - name: "Wyrd Reconstruction"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [4, 3, 2, 1]
+        type: "Heal"
+        effects: "Heal 0–13 to 0–22 HP, Bleed (60% to 85% base) 1 to 3 pts/rd for 3 rds"
+      - name: "Vulnerability Hex"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [1, 2, 3, 4]
+        type: "Ranged"
+        effects: "ACC 95–115, DMG -90%, CRIT 5%–9%, Mark Target (3 rds), Debuffs -15 to -20 DODGE (100% to 140% base, 3 rds)"
+      - name: "Hands from the Abyss"
+        launch_rank: [2, 1]
+        target_rank: [1, 2, 3]
+        type: "Ranged"
+        effects: "ACC 90–110, DMG -50%, CRIT 9%–13%, Torch -5, Stun (110% to 150% base)"
+      - name: "Daemon's Pull"
+        launch_rank: [4, 3, 2]
+        target_rank: [3, 4]
+        type: "Ranged"
+        effects: "ACC 90–110, DMG -50%, CRIT 5%–9%, Pull 2 (100% to 140% base), Clear all Corpses"
+    camping_skills:
+      - { name: "Abandon Hope", cost: 1, target: "Self & All Companions", effects: "Self: -25 Stress; All Companions: +10 Stress (50% chance) or +5 Stress (50% chance)." }
+      - { name: "Dark Ritual", cost: 3, target: "Self & One Companion", effects: "Self: Reduce torchlight by 100, +15 Stress; One Companion: Heal 50% HP, Remove Mortality debuffs." }
+      - { name: "Dark Strength", cost: 2, target: "Self & One Companion", effects: "Self: +15 Stress; One Companion: +20% DMG (4 battles)." }
+      - { name: "Unspeakable Commune", cost: 3, target: "Self & All Companions", effects: "Self: Prevents nighttime ambush; All Companions: +7 Stress." }
+
+  plague_doctor:
+    overview: "Backline damage-over-time and control (Rank 3–4). Double backline stuns, high blight damage, DoT removal/minor heal, and melee bleed/disease cures."
+    special_mechanics: "Backline damage-over-time specialist and controller. Excels in blinding multiple targets, applying heavy blights, curing bleeds and blights on allies, and boosting teammate speed and damage."
+    religious: false
+    base_stats:
+      level_0: { hp: 22, dodge: 0.0, spd: 7, crit: "2.0%", base_dmg: "4–7" }
+      level_6: { hp: 38, dodge: 20.0, spd: 9, crit: "6.0%", base_dmg: "7–13" }
+    combat_skills:
+      - name: "Noxious Blast"
+        launch_rank: [4, 3, 2]
+        target_rank: [1, 2]
+        type: "Ranged"
+        effects: "ACC 95–115, DMG -80%, CRIT 5%–9%, Blight (5 to 7 pts/rd for 3 rds, 100% to 140% base), -5 to -7 ACC debuff (100% to 140% base, 3 rds)"
+      - name: "Plague Grenade"
+        launch_rank: [4, 3]
+        target_rank: [3, 4]
+        target_mode: "Cleave"
+        type: "Ranged"
+        effects: "ACC 95–115, DMG -90%, CRIT 0%–4%, Blight (4 to 6 pts/rd for 3 rds, 100% to 140% base)"
+      - name: "Blinding Gas"
+        launch_rank: [4, 3]
+        target_rank: [3, 4]
+        target_mode: "Cleave"
+        type: "Ranged"
+        effects: "ACC 95–115, DMG -100%, Stun (100% to 140% base) (Limit: 3 Uses per Battle)"
+      - name: "Incision"
+        launch_rank: [3, 2, 1]
+        target_rank: [1, 2]
+        type: "Melee"
+        effects: "ACC 85–105, DMG +0%, CRIT 5%–9%, Bleed (2 to 4 pts/rd for 3 rds, 100% to 140% base)"
+      - name: "Battlefield Medicine"
+        launch_rank: [4, 3]
+        target_rank: [4, 3, 2, 1]
+        type: "Heal"
+        effects: "Heal 1-1 to 3-3 HP, Cure Blight / Bleed on Target and Self"
+      - name: "Emboldening Vapours"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [4, 3, 2, 1]
+        type: "Buff"
+        effects: "+20% to +25% DMG, +3 to +5 SPD (1 Battle) (Limit: 2 Uses per Battle)"
+      - name: "Disorienting Blast"
+        launch_rank: [4, 3, 2]
+        target_rank: [2, 3, 4]
+        type: "Ranged"
+        effects: "ACC 95–115, DMG -100%, Shuffle Single (100% to 140% base), Stun (100% to 140% base), Clear all Corpses"
+    camping_skills:
+      - { name: "Experimental Vapours", cost: 4, target: "One Companion", effects: "Heal 50% HP, +33% Healing Received (4 Battles)." }
+      - { name: "Leeches", cost: 3, target: "One Companion", effects: "Heal 15% HP, Remove Blight, Remove Disease." }
+      - { name: "The Cure", cost: 1, target: "Self", effects: "Remove Disease, +20% Disease Resist (4 Battles)." }
+      - { name: "Self-Medicate", cost: 3, target: "Self", effects: "-10 Stress, Heal 20% HP, Remove Blight / Bleeding, +10 ACC (4 Battles)." }
+
+  shieldbreaker:
+    overview: "High-speed mobile damage dealer (Rank 1–3). Armor-piercing attacks, guard-breaking/pulls, de-stealth, and Aegis blocks."
+    special_mechanics: "High-speed, mobile frontline dancer who moves forward or backward with almost every attack. Outstanding tool against high-protection enemies (armor-piercing Pierce) and guard compositions (Puncture breaks guard). High survivability despite low base HP due to Serpent Sway Aegis blocks. Suffer from Nightmares (50% chance to face flashbacks when camping, causing 20 Horror for 6 rds unless all 7 flashbacks are defeated)."
+    religious: false
+    base_stats:
+      level_0: { hp: 20, dodge: 8.0, spd: 5, crit: "6.0%", base_dmg: "5–10" }
+      level_6: { hp: 36, dodge: 28.0, spd: 9, crit: "10.0%", base_dmg: "9–18" }
+    combat_skills:
+      - name: "Pierce"
+        launch_rank: [3, 2, 1]
+        target_rank: [1, 2, 3, 4]
+        type: "Melee"
+        effects: "ACC 90–150, DMG -10%, CRIT 5%–9%, Armor Piercing, Forward 1"
+      - name: "Puncture"
+        launch_rank: [4, 3, 2, 1]
+        target_rank: [1, 2, 3, 4]
+        type: "Ranged"
+        effects: "ACC 90–110, DMG -50%, CRIT 0%, Bypass Guard / Break Guard, Can't be Guarded (500% base, 2 rds), Pull 2 (100% to 140% base), Debuff target: -1 to -3 SPD (100% to 140% base, 4 rds), Forward 1"
+      - name: "Adder's Kiss"
+        launch_rank: [1]
+        target_rank: [1, 2]
+        type: "Melee"
+        effects: "ACC 90–110, DMG +0%, CRIT 5%–9%, Blight (3 to 5 pts/rd for 3 rds, 100% to 140% base), Back 1"
+      - name: "Impale"
+        launch_rank: [1]
+        target_rank: [1, 2, 3, 4]
+        target_mode: "Cleave"
+        type: "Ranged"
+        effects: "ACC 90–110, DMG -60%, CRIT -6% to -2%, Blight (Lvl 3-4: 1 pt/rd for 3 rds, Lvl 5: 2 pts/rd for 3 rds, 120% to 140% base), Back 1"
+      - name: "Expose"
+        launch_rank: [3, 2, 1]
+        target_rank: [1, 2, 3]
+        type: "Melee"
+        effects: "ACC 85–110, DMG -40%, CRIT 2.5%–6.5%, Bypass/Remove Stealth, Debuff target: +8% to +10% Crits Received (100% to 140% base, 3 rds), Debuff target: -4 to -8 SPD (100% to 140% base, 4 rds), Back 1"
+      - name: "Captivate"
+        launch_rank: [3, 2]
+        target_rank: [2, 3]
+        type: "Ranged"
+        effects: "ACC 85–105, DMG -25%, CRIT 4%–8%, +40% to +60% DMG vs Marked, Blight (3 to 5 pts/rd for 3 rds, 100% to 140% base)"
+      - name: "Serpent Sway"
+        launch_rank: [3, 2, 1]
+        target_rank: "Self"
+        type: "Buff"
+        effects: "Forward 1, Gain 2 Aegis Blocks, Self-buff: +1 to +4 SPD (4 rds) (Limit: 2 Uses per Battle)"
+    camping_skills:
+      - { name: "Snake Eyes", cost: 3, target: "All Companions", effects: "+15% Armor Piercing (4 Battles)." }
+      - { name: "Snake Skin", cost: 3, target: "Self", effects: "+15% PROT, +15% MAX HP (4 Battles)." }
+      - { name: "Sandstorm", cost: 2, target: "One Companion", effects: "Can't be Marked (4 Battles)." }
+      - { name: "Adder's Embrace", cost: 2, target: "Self", effects: "+20% Blight Skill Chance, +20% Blight Resist (4 Battles)." }
+
+  vestal:
+    overview: "Dedicated primary healer (Rank 3–4). Reliable single-target and party-wide HP heals, ranged stun, stealth reveal, and torchlight restoration."
+    special_mechanics: "Dedicated primary healer and support. Possesses exceptionally reliable single-target and party-wide healing skills, a solid ranged stun, stealth reveal utility, and melee-focused frontline capability when specialized."
+    religious: true
+    base_stats:
+      level_0: { hp: 24, dodge: 0.0, spd: 4, crit: "1.0%", base_dmg: "4–8" }
+      level_6: { hp: 44, dodge: 20.0, spd: 6, crit: "5.0%", base_dmg: "7–14" }
+    combat_skills:
+      - name: "Mace Bash"
+        launch_rank: [2, 1]
+        target_rank: [1, 2]
+        type: "Melee"
+        effects: "ACC 85–105, DMG +0%, CRIT 0%–4%, +15% to +35% DMG vs Unholy"
+      - name: "Judgement"
+        launch_rank: [4, 3]
+        target_rank: [1, 2, 3, 4]
+        type: "Ranged"
+        effects: "ACC 85–105, DMG -25%, CRIT 5%–9%, Self: Heal 3 to 5 HP"
+      - name: "Dazzling Light"
+        launch_rank: [4, 3, 2]
+        target_rank: [1, 2, 3]
+        type: "Ranged"
+        effects: "ACC 90–110, DMG -75%, CRIT 5%–9%, Torch +6, Stun (100% to 140% base)"
+      - name: "Divine Grace"
+        launch_rank: [4, 3]
+        target_rank: [4, 3, 2, 1]
+        type: "Heal"
+        effects: "Heal 4-5 to 8-9 HP"
+      - name: "Divine Comfort"
+        launch_rank: [4, 3, 2]
+        target_rank: "All Allies"
+        type: "Heal"
+        effects: "Heal 1-3 to 4-5 HP to entire party"
+      - name: "Illumination"
+        launch_rank: [3, 2, 1]
+        target_rank: [1, 2, 3, 4]
+        type: "Ranged"
+        effects: "ACC 90–110, DMG -75%, CRIT 0%, Bypass/Remove Stealth, Torch +5 to +10, Debuff: -20 to -30 DODGE (100% to 140% base, 4 rds)"
+      - name: "Hand of Light"
+        launch_rank: [2, 1]
+        target_rank: [1, 2, 3]
+        type: "Ranged"
+        effects: "ACC 85–105, DMG -50%, CRIT 1%–5%, +15% to +35% DMG vs Unholy, Self-buff: +6 to +10 ACC, +25% to +35% DMG (4 rds)"
+    camping_skills:
+      - { name: "Bless", cost: 3, target: "One Companion", effects: "+10 ACC (4 Battles), +10 DODGE (4 Battles)." }
+      - { name: "Chant", cost: 3, target: "One Companion", effects: "If religious: -20% Stress (4 Battles), -15 Stress; If not religious: -10% Stress (4 Battles), -5 Stress." }
+      - { name: "Pray", cost: 3, target: "All Companions", effects: "If religious: -15 Stress, +15% PROT (4 Battles); If not religious: -5 Stress, +5% PROT (4 Battles)." }
+      - { name: "Sanctuary", cost: 4, target: "Self & All Companions", effects: "Self: If religious: Prevents nighttime ambush; All Companions: If has Mortality debuffs: Heal 50% HP, -25 Stress." }

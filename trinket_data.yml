@@ -1,0 +1,381 @@
+core_mechanics:
+  turn_order: "Determined each round by Base SPD + Random(1-8). Highest acts first."
+  accuracy: "Hit Chance % = Skill Base ACC + Modifiers + 5 (Hidden) - Enemy DODGE. Displayed 95% is a guaranteed hit (100%). Each consecutive miss adds +4 ACC."
+  critical_hit: "Deals 1.5 × Max Damage, extends Blight/Bleed by 2 turns, grants a class-specific self-buff, heals 3 Stress to the attacker, and gives a 25% chance to heal 3 Stress to allies. Critical heals double HP restored and relieve 4 Stress."
+  protection: "Reduces direct damage by percentage. Does not reduce Bleed or Blight damage. Hard-capped at 80%."
+  stress_and_affliction: "At 100 Stress, a hero tests resolve (Affliction or Virtue). At 200 Stress, a Heart Attack occurs, dropping HP to 0 (or causing death if already at Death's Door)."
+  deaths_door: "Reaching 0 HP puts a hero on Death's Door (inflicting debuffs). Any subsequent damage requires a DeathBlow check. Death is permanent; trinkets drop upon party victory."
+  skill_limits: "Heroes equip 4 out of 7 combat skills and 4 out of 7 camping skills (Abomination has all combat skills available dynamically based on form)."
+
+trinkets:
+  generic:
+    - { name: "Accuracy Stone", rarity: "(Very) Common", effect: "+4 ACC, -1 SPD" }
+    - { name: "Bleed Charm", rarity: "(Very) Common", effect: "+20% Bleed Resist, -2 DODGE" }
+    - { name: "Bleed Stone", rarity: "(Very) Common", effect: "+15% Bleed Skill Chance, -1 SPD" }
+    - { name: "Blight Charm", rarity: "(Very) Common", effect: "+20% Blight Resist, -2 DODGE" }
+    - { name: "Blight Stone", rarity: "(Very) Common", effect: "+15% Blight Skill Chance, -1 SPD" }
+    - { name: "Critical Stone", rarity: "(Very) Common", effect: "+3% CRIT, -1 SPD" }
+    - { name: "Debuff Charm", rarity: "(Very) Common", effect: "+20% Debuff Resist, -2 DODGE" }
+    - { name: "Debuff Stone", rarity: "(Very) Common", effect: "+15% Debuff Skill Chance, -1 SPD" }
+    - { name: "Disease Charm", rarity: "(Very) Common", effect: "+20% Disease Resist, -2 DODGE" }
+    - { name: "Dodge Stone", rarity: "(Very) Common", effect: "+4 DODGE, -1 SPD" }
+    - { name: "Health Stone", rarity: "(Very) Common", effect: "+10% MAX HP, -1 SPD" }
+    - { name: "Move Charm", rarity: "(Very) Common", effect: "+20% Move Resist, -1 SPD" }
+    - { name: "Move Stone", rarity: "(Very) Common", effect: "+15% Move Skill Chance, -1 SPD" }
+    - { name: "Protection Stone", rarity: "(Very) Common", effect: "+5% PROT, -1 SPD" }
+    - { name: "Stun Charm", rarity: "(Very) Common", effect: "+20% Stun Resist, -2 DODGE" }
+    - { name: "Stun Stone", rarity: "(Very) Common", effect: "+10% Stun Skill Chance, -1 SPD" }
+    - { name: "Archer's Ring", rarity: "Common", effect: "+5 ACC Ranged Skills, -1 SPD" }
+    - { name: "Bloodied Fetish", rarity: "Common", effect: "+20% Blight Resist, +20% Bleed Resist, -20% Disease Resist" }
+    - { name: "Book of Intuition", rarity: "Common", effect: "-20% Chance Party Surprised, -1 SPD" }
+    - { name: "Caution Cloak", rarity: "Common", effect: "+10% Scouting Chance, -10 SPD on First Round" }
+    - { name: "Damage Stone", rarity: "Common", effect: "+10% DMG, -4 DODGE" }
+    - { name: "Dazzling Charm", rarity: "Common", effect: "+10% Stun Skill Chance" }
+    - { name: "Deteriorating Bracer", rarity: "Common", effect: "+10 DODGE if HP above 75%, -6 DODGE if HP below 50%" }
+    - { name: "Reckless Charm", rarity: "Common", effect: "+5 ACC, -2 DODGE" }
+    - { name: "Slippery Boots", rarity: "Common", effect: "+4 DODGE, -20% Move Resist" }
+    - { name: "Snake Oil", rarity: "Common", effect: "-10% Stress" }
+    - { name: "Speed Stone", rarity: "Common", effect: "+1 SPD" }
+    - { name: "Survival Guide", rarity: "Common", effect: "+10% Scouting Chance, +10% Trap Disarm Chance, -1 SPD" }
+    - { name: "Warrior's Bracer", rarity: "Common", effect: "+10% DMG Melee Skills, -4 DODGE" }
+    - { name: "Warrior's Cap", rarity: "Common", effect: "+5 ACC Melee Skills" }
+    - { name: "Bleed Amulet", rarity: "Uncommon", effect: "+20% Bleed Skill Chance, +20% Bleed Resist, -20% Blight Resist" }
+    - { name: "Blight Amulet", rarity: "Uncommon", effect: "+20% Blight Skill Chance, +20% Blight Resist, -20% Bleed Resist" }
+    - { name: "Blood Charm", rarity: "Uncommon", effect: "+30% Bleed Resist" }
+    - { name: "Bloodthirst Ring", rarity: "Uncommon", effect: "-100% Food Consumed, +10% MAX HP, -25% Healing Received" }
+    - { name: "Book of Constitution", rarity: "Uncommon", effect: "+30% Blight Resist, +30% Disease Resist, -1 SPD" }
+    - { name: "Book of Holiness", rarity: "Uncommon", effect: "-20% Stress, -10% Death Blow Resist" }
+    - { name: "Book of Rage", rarity: "Uncommon", effect: "+20% DMG if HP below 33%, +8% CRIT if HP below 33%, -10% Bleed Resist, -10% Blight Resist" }
+    - { name: "Book of Relaxation", rarity: "Uncommon", effect: "-10% Stress, +4 ACC, -4 DODGE" }
+    - { name: "Camouflage Cloak", rarity: "Uncommon", effect: "+15 DODGE if Torch above 75, -20% Stun Resist" }
+    - { name: "Calming Crystal", rarity: "Uncommon", effect: "-15% Stress, -1 SPD" }
+    - { name: "Chirurgeon's Charm", rarity: "Uncommon", effect: "+15% Healing Skills" }
+    - { name: "Dark Bracer", rarity: "Uncommon", effect: "+8% CRIT if Torch below 26, +5 DODGE if Torch below 51, -10% DMG if Torch above 51" }
+    - { name: "Debuff Amulet", rarity: "Uncommon", effect: "+30% Debuff Skill Chance, +30% Debuff Resist, -4 DODGE" }
+    - { name: "Gambler's Charm", rarity: "Uncommon", effect: "+15% MAX HP, -10% Death Blow Resist" }
+    - { name: "Heavy Boots", rarity: "Uncommon", effect: "+40% Move Resist, +20% PROT, -2 SPD" }
+    - { name: "Life Crystal", rarity: "Uncommon", effect: "+20% MAX HP, -1 SPD" }
+    - { name: "Move Amulet", rarity: "Uncommon", effect: "+20% Move Skill Chance, +30% Move Resist, -10% Debuff Resist" }
+    - { name: "Seer Stone", rarity: "Uncommon", effect: "+15% Scouting Chance, -1 SPD" }
+    - { name: "Shimmering Cloak", rarity: "Uncommon", effect: "+8 DODGE, -33% Healing Received" }
+    - { name: "Solar Bracer", rarity: "Uncommon", effect: "+4% CRIT if Torch above 75, +5 DODGE if Torch above 75, -5% CRIT if Torch below 50, -6 DODGE if Torch below 51" }
+    - { name: "Steady Bracer", rarity: "Uncommon", effect: "+10 ACC Ranged Skills, -2 DODGE" }
+    - { name: "Stun Amulet", rarity: "Uncommon", effect: "+10% Stun Skill Chance, +20% Stun Resist, -4 DODGE" }
+    - { name: "Surgical Gloves", rarity: "Uncommon", effect: "+8% CRIT Melee Skills, +5 ACC Melee Skills, -20% Move Resist, -10% Debuff Resist" }
+    - { name: "Swift Cloak", rarity: "Uncommon", effect: "+2 SPD, -20% Move Resist" }
+    - { name: "Tenacity Ring", rarity: "Uncommon", effect: "+10% Death Blow Resist, +5 DODGE, -5% CRIT" }
+    - { name: "Worrystone", rarity: "Uncommon", effect: "+10% Virtue Chance, -10% Stress, -1 SPD" }
+    - { name: "Beast Slayer's Ring", rarity: "Rare", effect: "+25% DMG vs Beast, -8 DODGE" }
+    - { name: "Berserk Charm", rarity: "Rare", effect: "+3 SPD, +15% DMG, +15% Stress, -5 ACC, -10% Virtue Chance" }
+    - { name: "Brawler's Gloves", rarity: "Rare", effect: "+25% DMG if in position 1, -5% CRIT, -1 SPD" }
+    - { name: "Dark Crown", rarity: "Rare", effect: "-25% Stress if Torch below 26, +15% Virtue Chance if Torch below 26" }
+    - { name: "Eldritch Slayer's Ring", rarity: "Rare", effect: "+25% DMG vs Eldritch, -8 DODGE" }
+    - { name: "Fasting Seal", rarity: "Rare", effect: "-100% Food Consumed, -100% DMG Inflicted When Starving, +5 DODGE" }
+    - { name: "Feather Crystal", rarity: "Rare", effect: "+2 SPD, +8 DODGE, -20% Stun Resist, -20% Move Resist" }
+    - { name: "Man Slayer's Ring", rarity: "Rare", effect: "+25% DMG vs Human, -8 DODGE" }
+    - { name: "Moon Cloak", rarity: "Rare", effect: "+15% PROT if Torch below 26, +10 DODGE if Torch below 26, +10% Stress" }
+    - { name: "Moon Ring", rarity: "Rare", effect: "+15% DMG if Torch below 26, +10 ACC if Torch below 26, +10% Stress" }
+    - { name: "Quick Draw Charm", rarity: "Rare", effect: "+8 SPD on First Round, +12% CRIT on First Round, -3 SPD after First Round" }
+    - { name: "Recovery Charm", rarity: "Rare", effect: "+40% Healing Received" }
+    - { name: "Sniper's Ring", rarity: "Rare", effect: "+15 ACC if in position 4, +4% CRIT if in position 4, -2 SPD" }
+    - { name: "Solar Crown", rarity: "Rare", effect: "-20% Stress if Torch above 75" }
+    - { name: "Sun Cloak", rarity: "Rare", effect: "+5% PROT if Torch above 75, +10 DODGE if Torch above 75, +10% Stress" }
+    - { name: "Sun Ring", rarity: "Rare", effect: "+10% DMG if Torch above 75, +5 ACC if Torch above 75, +10% Stress" }
+    - { name: "Unholy Slayer's Ring", rarity: "Rare", effect: "+25% DMG vs Unholy, -8 DODGE" }
+    - { name: "Book of Sanity", rarity: "Very Rare", effect: "-20% Stress" }
+    - { name: "Cleansing Crystal", rarity: "Very Rare", effect: "+40% Blight Resist, +40% Bleed Resist, +40% Debuff Resist, -15% Blight Skill Chance, -15% Bleed Skill Chance, -15% Debuff Skill Chance" }
+    - { name: "Ethereal Crucifix", rarity: "Very Rare", effect: "+25% DMG vs Eldritch, +30% Bleed Resist, -20% MAX HP" }
+    - { name: "Focus Ring", rarity: "Very Rare", effect: "+10 ACC, +5% CRIT, -8 DODGE" }
+    - { name: "Fortifying Garlic", rarity: "Very Rare", effect: "+33% Blight Resist, +33% Bleed Resist, +33% Disease Resist" }
+    - { name: "Hero's Ring", rarity: "Very Rare", effect: "+25% Virtue Chance" }
+    - { name: "Legendary Bracer", rarity: "Very Rare", effect: "+20% DMG, -1 SPD, +10% Stress" }
+    - { name: "Martyr's Seal", rarity: "Very Rare", effect: "+60% DMG at Death's Door, +14% CRIT at Death's Door, +12% Death Blow Resist, +15% MAX HP" }
+    - { name: "Tough Ring", rarity: "Very Rare", effect: "+10% PROT, +15% MAX HP, -15% DMG, +10% Stress" }
+
+  hero_specific:
+    abomination:
+      - { name: "Lock of Patience", rarity: "Common", effect: "+10% Virtue Chance" }
+      - { name: "Padlock of Transference", rarity: "Uncommon", effect: "+20% Stun Skill Chance, +20% Blight Skill Chance" }
+      - { name: "Protective Padlock", rarity: "Uncommon", effect: "+15% PROT, -1 SPD" }
+      - { name: "Lock of Fury", rarity: "Rare", effect: "+10% DMG, +3 SPD, -10% MAX HP" }
+      - { name: "Restraining Padlock", rarity: "Very Rare", effect: "Transform: -40% Stress Inflicted on Party, -40% Transformation Stress" }
+    antiquarian:
+      - { name: "Bag of Marbles", rarity: "Common", effect: "+10 DODGE" }
+      - { name: "Bloodcourse Medallion", rarity: "Uncommon", effect: "+33% Healing Received" }
+      - { name: "Carapace Idol", rarity: "Uncommon", effect: "+25% PROT" }
+      - { name: "Fleet Florin", rarity: "Rare", effect: "+4 SPD, +20% Debuff Skill Chance" }
+      - { name: "Candle of Life", rarity: "Very Rare", effect: "+50% Healing Skills, +15% MAX HP" }
+    arbalest:
+      - { name: "Sturdy Greaves", rarity: "Common", effect: "+30% Move Resist, +30% Move Skill Chance, -1 SPD" }
+      - { name: "Vengeful Greaves", rarity: "Common", effect: "+3% CRIT" }
+      - { name: "Medic's Greaves", rarity: "Uncommon", effect: "+33% Healing Skills" }
+      - { name: "Bull's Eye Bandana", rarity: "Rare", effect: "+8 ACC, +5% CRIT, -4 DODGE" }
+      - { name: "Wrathful Bandana", rarity: "Very Rare", effect: "+25% DMG if in position 4, +30% Debuff Skill Chance, -50% Healing Skills" }
+    bounty_hunter:
+      - { name: "Agility Talon", rarity: "Common", effect: "+1 SPD, +4 DODGE" }
+      - { name: "Unmovable Helmet", rarity: "Common", effect: "+30% Move Resist, +20% Move Skill Chance" }
+      - { name: "Camper's Helmet", rarity: "Uncommon", effect: "+20% Stress Heal Received while Camping, +10% Scouting Chance" }
+      - { name: "Hunter's Talons", rarity: "Rare", effect: "+6% CRIT, +10 ACC, +50% Food Consumed" }
+      - { name: "Wounding Helmet", rarity: "Very Rare", effect: "+25% DMG Melee Skills, -25% Move Skill Chance, -20% Stun Skill Chance" }
+    crusader:
+      - { name: "Defender's Seal", rarity: "Common", effect: "+5% PROT, -3% CRIT" }
+      - { name: "Knight's Crest", rarity: "Common", effect: "+10% MAX HP" }
+      - { name: "Swordsman's Crest", rarity: "Common", effect: "+10% DMG Melee Skills, -50% Healing Skills" }
+      - { name: "Paralyzer's Crest", rarity: "Uncommon", effect: "+20% Stun Skill Chance, -2 DODGE" }
+      - { name: "Commander's Orders", rarity: "Rare", effect: "+15% Stress Heal Received, +33% Healing Skills, -10% DMG" }
+      - { name: "Holy Orders", rarity: "Very Rare", effect: "+15% Virtue Chance, -20% Stress, +12% Death Blow Resist, -20% Blight Resist, -20% Bleed Resist" }
+    flagellant:
+      - { name: "Heartburst Hood", rarity: "Common", effect: "+4 SPD if HP below 40%" }
+      - { name: "Resurrection's Collar", rarity: "Uncommon", effect: "+33% Healing Skills, -15% Bleed Skill Chance" }
+      - { name: "Punishment's Hood", rarity: "Uncommon", effect: "+20% Bleed Skill Chance, -20% Healing Skills, +15% DMG if HP below 40%" }
+      - { name: "Suffering's Collar", rarity: "Rare", effect: "+20% Bleed/Blight Resist if HP below 40%, +10% MAX HP" }
+      - { name: "Eternity's Collar", rarity: "Very Rare", effect: "+10% Death Blow Resist, +20 DODGE at Death's Door, +20% DMG if Stress above 85" }
+    grave_robber:
+      - { name: "Quickening Satchel", rarity: "Common", effect: "+2 SPD" }
+      - { name: "Sickening Satchel", rarity: "Common", effect: "+20% DMG vs Blighted" }
+      - { name: "Blighting Satchel", rarity: "Uncommon", effect: "+25% Blight Skill Chance, +1 SPD, -4 DODGE" }
+      - { name: "Lucky Talisman", rarity: "Rare", effect: "+12 DODGE, +10 ACC Ranged Skills, +10% Stress" }
+      - { name: "Raider's Talisman", rarity: "Very Rare", effect: "+5% CRIT, +30% Trap Disarm Chance, +2 SPD, +15% Scouting Chance, -10% MAX HP" }
+    hellion:
+      - { name: "Bleeding Pendant", rarity: "Common", effect: "+15% Bleed Skill Chance" }
+      - { name: "Selfish Pendant", rarity: "Common", effect: "-15% Stress" }
+      - { name: "Double-Edged Pendant", rarity: "Uncommon", effect: "+15% MAX HP, -20% Stun Resist" }
+      - { name: "Heaven's Hairpin", rarity: "Rare", effect: "-25% Stress if Torch above 75, +10 ACC if Torch above 75" }
+      - { name: "Hell's Hairpin", rarity: "Very Rare", effect: "+10% CRIT if Torch below 25, +15 ACC if Torch below 25, -10% Debuff/Bleed Resist" }
+    highwayman:
+      - { name: "Drifter's Buckle", rarity: "Common", effect: "+10% Trap Disarm Chance, +4 DODGE, -5% Stress Heal Received" }
+      - { name: "Flashfire Gunpowder", rarity: "Common", effect: "+10% DMG Ranged Skills, -20% Stun Resist" }
+      - { name: "Stalwart Buckle", rarity: "Common", effect: "+5% CRIT, +5% Stress, -3% Virtue Chance" }
+      - { name: "Dodgy Sheath", rarity: "Uncommon", effect: "+8 DODGE, +1 SPD, -10 ACC Ranged Skills" }
+      - { name: "Sharpening Sheath", rarity: "Rare", effect: "+7% CRIT Melee Skills, +40% Bleed Skill Chance, -1 SPD" }
+      - { name: "Gunslinger's Buckle", rarity: "Very Rare", effect: "+20% DMG Ranged Skills, +15 ACC Ranged Skills, -10% DMG Melee Skills, -5% CRIT Melee Skills" }
+    houndmaster:
+      - { name: "Agility Whistle", rarity: "Common", effect: "+4 DODGE, +1 SPD, -20% Debuff Resist" }
+      - { name: "Scouting Whistle", rarity: "Common", effect: "+20% Scouting Chance if Torch below 51, +20% Trap Disarm Chance" }
+      - { name: "Cudgel Weight", rarity: "Uncommon", effect: "+25% Stun Skill Chance, -1 SPD" }
+      - { name: "Protective Collar", rarity: "Rare", effect: "+12 DODGE, -15% DMG" }
+      - { name: "Spiked Collar", rarity: "Very Rare", effect: "+20% DMG, +30% Bleed Skill Chance, -50% Healing Skills, -20% Healing Received" }
+    jester:
+      - { name: "Bloody Dice", rarity: "Common", effect: "+30% Bleed Skill Chance, -10% Bleed Resist" }
+      - { name: "Lucky Dice", rarity: "Common", effect: "+4 ACC, +4 DODGE" }
+      - { name: "Critical Dice", rarity: "Uncommon", effect: "+7% CRIT" }
+      - { name: "Bright Tambourine", rarity: "Rare", effect: "+20% Stress Skills, -25% Stress if Torch above 75, +15% Stress if Torch below 51" }
+      - { name: "Dark Tambourine", rarity: "Very Rare", effect: "+12% Death Blow Resist, -25% Stress if Torch below 26, +10% Virtue Chance if Torch below 26" }
+    leper:
+      - { name: "Healing Armlet", rarity: "Common", effect: "+20% Healing Received" }
+      - { name: "Redemption Armlet", rarity: "Common", effect: "+15% DMG if in position 1, -3% Virtue Chance" }
+      - { name: "Fortunate Armlet", rarity: "Uncommon", effect: "+8 ACC, +3% CRIT, +10% Stress" }
+      - { name: "Immunity Mask", rarity: "Rare", effect: "+40% Stun Resist, +30% Blight/Bleed Resist, -10% MAX HP" }
+      - { name: "Berserk Mask", rarity: "Very Rare", effect: "+8% CRIT, +3 SPD, -10% Virtue Chance, -33% Healing Received" }
+    man_at_arms:
+      - { name: "Cleansing Eyepatch", rarity: "Common", effect: "+30% Blight Resist, +20% Disease Resist, -2 DODGE" }
+      - { name: "Sly Eyepatch", rarity: "Common", effect: "+4 DODGE, -10% Stun/Move Resist" }
+      - { name: "Longevity Eyepatch", rarity: "Uncommon", effect: "+15% MAX HP, -2 SPD" }
+      - { name: "Rampart Shield", rarity: "Rare", effect: "+40% Move Skill Chance, +30% Stun Skill Chance, -15% DMG" }
+      - { name: "Guardian's Shield", rarity: "Very Rare", effect: "+10% PROT if in position 4, +50% Healing Received if in position 4, +10 DODGE if in position 4" }
+    musketeer:
+      - { name: "Sturdy Boots", rarity: "Common", effect: "+30% Move Resist, +30% Move Skill Chance, -1 SPD" }
+      - { name: "Vengeful Boots", rarity: "Common", effect: "+3% CRIT" }
+      - { name: "Medic's Boots", rarity: "Uncommon", effect: "+33% Healing Skills" }
+      - { name: "Bull's Eye Hat", rarity: "Rare", effect: "+8 ACC, +5% CRIT, -4 DODGE" }
+      - { name: "Wrathful Hat", rarity: "Very Rare", effect: "+25% DMG if in position 4, +30% Debuff Skill Chance, -50% Healing Skills" }
+    occultist:
+      - { name: "Eldritch Killing Incense", rarity: "Common", effect: "+6% CRIT vs Eldritch, +15% DMG vs Eldritch" }
+      - { name: "Evasion Incense", rarity: "Common", effect: "+8 DODGE, -1 SPD" }
+      - { name: "Cursed Incense", rarity: "Uncommon", effect: "+40% Debuff Skill Chance, +20% Move Skill Chance, -10% MAX HP" }
+      - { name: "Sacrificial Cauldron", rarity: "Rare", effect: "+20% DMG, +10% Stress" }
+      - { name: "Demon's Cauldron", rarity: "Very Rare", effect: "+30% Stun Skill Chance, +40% Debuff Skill Chance, +3% CRIT, -10% Virtue Chance, +15% Stress" }
+    plague_doctor:
+      - { name: "Diseased Herb", rarity: "Common", effect: "+40% Disease Resist" }
+      - { name: "Rotgut Censer", rarity: "Common", effect: "+8 ACC, -5% MAX HP" }
+      - { name: "Witch's Vial", rarity: "Common", effect: "+15% Stun Skill Chance" }
+      - { name: "Poisoned Herb", rarity: "Uncommon", effect: "+40% Blight Skill Chance, -15% MAX HP" }
+      - { name: "Bloody Herb", rarity: "Rare", effect: "+10 ACC Melee Skills, +30% Bleed Skill Chance, +20% DMG Melee Skills" }
+      - { name: "Blasphemous Vial", rarity: "Very Rare", effect: "+10 ACC Ranged Skills, +20% Stun Skill Chance, +20% Blight Skill Chance, +25% Stress" }
+    shieldbreaker:
+      - { name: "Venomous Vial", rarity: "Common", effect: "+30% Blight Skill Chance, -10% Blight Resist" }
+      - { name: "Shimmering Scale", rarity: "Uncommon", effect: "+10% PROT, +5% Stress" }
+      - { name: "Dancer's Footwraps", rarity: "Uncommon", effect: "+40% Move Resist, +2 SPD" }
+      - { name: "Fanged Spear Tip", rarity: "Rare", effect: "+35% DMG vs Marked, -10% DMG" }
+      - { name: "Cuirboilli", rarity: "Very Rare", effect: "+33% MAX HP, -2 SPD" }
+    vestal:
+      - { name: "Virtuous Chalice", rarity: "Common", effect: "+10% Virtue Chance, -5% MAX HP" }
+      - { name: "Haste Chalice", rarity: "Uncommon", effect: "+8 SPD on First Round, +2 SPD after First Round, -25% Stun Skill Chance" }
+      - { name: "Youth Chalice", rarity: "Uncommon", effect: "+20% MAX HP, -10% DMG" }
+      - { name: "Profane Scroll", rarity: "Rare", effect: "+15% DMG, +10% PROT if in position 2, +33% Healing Skills if in position 2, +15% Stress" }
+      - { name: "Tome of Holy Healing", rarity: "Rare", effect: "+25% Healing Skills, -15% MAX HP" }
+      - { name: "Sacred Scroll", rarity: "Very Rare", effect: "-10% Stress, +33% Healing Skills, -10% Stun Skill Chance, -33% DMG" }
+
+  unique_trinkets:
+    enemy_drops:
+      - { name: "Barristan's Head", rarity: "Very Rare", effect: "+25% PROT, +20% Stress" }
+      - { name: "Dismas' Head", rarity: "Very Rare", effect: "+25% DMG, -10% MAX HP, +20% Stress" }
+      - { name: "Junia's Head", rarity: "Very Rare", effect: "+30% Healing Skills, +20% Stress" }
+      - { name: "Aria Box", rarity: "Very Rare", effect: "-25% Stress" }
+      - { name: "Crescendo Box", rarity: "Very Rare", effect: "+2 SPD, +15% DMG, +10% Stress" }
+      - { name: "Overture Box", rarity: "Very Rare", effect: "+15% MAX HP, +8 DODGE, -2 ACC" }
+      - { name: "Tempting Goblet", rarity: "Very Rare", effect: "+20% MAX HP, +3 SPD, +8 DODGE, +25% Stress, -10% Virtue Chance" }
+    ancestral:
+      - { name: "Ancestor's Coat", rarity: "Ancestral", effect: "+15 DODGE, +10% Stress" }
+      - { name: "Ancestor's Handkerchief", rarity: "Ancestral", effect: "+50% Disease Resist, +50% Bleed Resist, +10% Stress" }
+      - { name: "Ancestor's Lantern", rarity: "Ancestral", effect: "-20% Chance Party Surprised, +20% Chance Monsters Surprised, +10% Stress" }
+      - { name: "Ancestor's Mustache Cream", rarity: "Ancestral", effect: "+50% Debuff Resist, +50% Blight Resist, +10% Stress" }
+      - { name: "Ancestor's Musket Ball", rarity: "Ancestral", effect: "+10% DMG Ranged Skills, +8% CRIT Ranged Skills, +10% Stress" }
+      - { name: "Ancestor's Pen", rarity: "Ancestral", effect: "+10% DMG Melee Skills, +8% CRIT Melee Skills, +10% Stress" }
+      - { name: "Ancestor's Pistol", rarity: "Ancestral", effect: "+15 ACC Ranged Skills, +3 SPD, +10% Stress" }
+      - { name: "Ancestor's Portrait", rarity: "Ancestral", effect: "+50% Resolve XP, +10% Stress" }
+      - { name: "Ancestor's Signet Ring", rarity: "Ancestral", effect: "+10 ACC, +10% PROT, +10% Stress" }
+      - { name: "Ancestor's Bottle", rarity: "Ancestral", effect: "+25% MAX HP, +50% Food Consumed, +10% Stress" }
+      - { name: "Ancestor's Candle", rarity: "Ancestral", effect: "+15% DMG if Torch above 50, +2 SPD if Torch above 50, +5 DODGE if Torch above 50, +10% Stress" }
+      - { name: "Ancestor's Map", rarity: "Ancestral", effect: "+25% Trap Disarm Chance, +25% Scouting Chance, +10% Stress" }
+      - { name: "Ancestor's Scroll", rarity: "Ancestral", effect: "+25% Healing Skills, +25% Stress Skills, +10% Stress" }
+      - { name: "Ancestor's Tentacle Idol", rarity: "Ancestral", effect: "+20% Virtue Chance, +8% Death Blow Resist" }
+    trophies:
+      - { name: "Necromancer's Collar", rarity: "Trophy", effect: "+20% DMG vs Unholy, +8% CRIT vs Unholy" }
+      - { name: "Prophet's Eye", rarity: "Trophy", effect: "+15 ACC if in position 4, +3 SPD if in position 4, -15% Stress if in position 4" }
+      - { name: "Hag's Ladle", rarity: "Trophy", effect: "+30% Blight Skill Chance, +40% Blight/Disease Resist" }
+      - { name: "Fuseman's Matchstick", rarity: "Trophy", effect: "+2 SPD, +10% DMG Ranged Skills, +6% CRIT Ranged Skills" }
+      - { name: "Wilbur's Flag", rarity: "Trophy", effect: "+50% Stun Resist, +10 DODGE" }
+      - { name: "Flesh's Heart", rarity: "Trophy", effect: "+50% Bleed Resist, +15% MAX HP" }
+      - { name: "Siren's Conch", rarity: "Trophy", effect: "+50% Debuff Resist, -20% Stress" }
+      - { name: "Crew's Bell", rarity: "Trophy", effect: "+50% Move Resist, +20% Healing Received" }
+      - { name: "Vvulf's Tassle", rarity: "Trophy", effect: "+20% DMG vs Marked, +10 ACC vs Marked, +5% CRIT vs size 2+" }
+      - { name: "Baron's Lash", rarity: "Trophy", effect: "+75% Debuff Resist if has Crimson Curse, +4 SPD if has Crimson Curse, -10% Stun Resist if has Crimson Curse" }
+      - { name: "Viscount's Spices", rarity: "Trophy", effect: "+5% CRIT if has Crimson Curse, +100% Healing when Eating if has Crimson Curse, +100% Food Consumed if has Crimson Curse" }
+      - { name: "Countess' Fan", rarity: "Trophy", effect: "+50% Healing Received if has Crimson Curse, -25% Bleed Resist if has Crimson Curse" }
+    shrieker:
+      - { name: "Callous Talon", rarity: "Shrieker", effect: "+7% CRIT, +33% Disease Resist if Torch <75, +33% Bleed Skill Chance if Torch <50, +15% Stress" }
+      - { name: "Distended Crowseye", rarity: "Shrieker", effect: "+10 ACC, +33% Disease Resist if Torch <75, +15% Scouting if Torch <50, +15% Stress" }
+      - { name: "Molted Tailfeather", rarity: "Shrieker", effect: "+4 SPD, +33% Disease Resist if Torch <75, +33% Stun Resist if Torch <50, +15% Stress" }
+      - { name: "Molted Wingfeather", rarity: "Shrieker", effect: "+10 DODGE, +33% Disease Resist if Torch <75, +33% Move Resist if Torch <50, +15% Stress" }
+    crimson_court_unique:
+      - { name: "Ancestor's Vintage", rarity: "Very Rare", effect: "Delayed Curse craving duration" }
+      - { name: "Coven Signet", rarity: "Very Rare", effect: "-25% Stress if has Crimson Curse" }
+      - { name: "Dazzling Mirror", rarity: "Very Rare", effect: "+4 SPD vs Bloodsuckers, +20% Stun Skill Chance vs Bloodsuckers" }
+      - { name: "Mantra of Fasting", rarity: "Very Rare", effect: "+40% MAX HP if Wasting, +7 SPD if Wasting" }
+      - { name: "Mercurial Salve", rarity: "Very Rare", effect: "+25% DMG vs Bloodsuckers" }
+      - { name: "Pagan Talisman", rarity: "Very Rare", effect: "+25% DMG vs Fanatic, -10% Stress" }
+      - { name: "Rat Carcass", rarity: "Very Rare", effect: "Immune to death by Crimson Curse" }
+      - { name: "Sanguine Snuff", rarity: "Very Rare", effect: "+8% CRIT if Bloodlust, +15 DODGE if Bloodlust" }
+      - { name: "Sculptor's Tools", rarity: "Very Rare", effect: "+40% DMG vs Stonework" }
+    crystalline_and_dlc:
+      - { name: "Lens of the Comet", rarity: "Crystalline", hero: "Generic", effect: "Ignores Stealth, -20% Virtue Chance, +5% CRIT if Shard Dust in inventory" }
+      - { name: "Crystal Pendant", rarity: "Crystalline", hero: "Generic", effect: "+15% Shards Given, +15% Stress" }
+      - { name: "Cluster Pendant", rarity: "Crystalline", hero: "Generic", effect: "+25% Shards Given, +15% Stress" }
+      - { name: "Coat Of Many Colors", rarity: "Crystalline", hero: "Generic", effect: "On Monster Kill: -2% Stress (2 Battles), +2 ACC (2 Battles)" }
+      - { name: "Miller's Pipe", rarity: "Crystalline", hero: "Generic", effect: "On Monster Kill: Stress -2, All Monsters: Blight 2 pts/rd for 3 rds" }
+      - { name: "Broken Key", rarity: "Crystalline", hero: "Abomination", effect: "+15 ACC, +35% Stun Skill Chance, +10% Stress" }
+      - { name: "Smoking Skull", rarity: "Crystalline", hero: "Antiquarian", effect: "+35 DODGE if Shard Dust in inventory, -15 ACC, -15% Blight Resist" }
+      - { name: "Keening Bolts", rarity: "Crystalline", hero: "Arbalest", effect: "+20% DMG, +7% CRIT Ranged Skills, On Attack: Self: Stress +3 (25% chance)" }
+      - { name: "Mask Of The Timeless", rarity: "Crystalline", hero: "Bounty Hunter", effect: "+2 SPD, +15 DODGE, +5% Stress" }
+      - { name: "Non-Euclidean Hilt", rarity: "Crystalline", hero: "Crusader", effect: "+15% MAX HP, +5% Random Target, +25% Stun Skill Chance if Holy Water, On Attack Hit: Blight 2 pts/rd for 2 rds" }
+      - { name: "Acidic Husk Ichor", rarity: "Crystalline", hero: "Flagellant", effect: "-25% MAX HP, +30% DMG, +30% Bleed Skill Chance vs Husk, +25% Healing Received if HP <20%" }
+      - { name: "Topshelf Tonic", rarity: "Crystalline", hero: "Grave Robber", effect: "+15 DODGE if Medicinal Herbs, +3 SPD, -20% Blight Resist, +50% Blight Duration" }
+      - { name: "Thirsting Blade", rarity: "Crystalline", hero: "Hellion", effect: "+15 ACC, -20% Bleed Resist, +2 SPD, +8% CRIT vs Bleeding, On Attack Miss: Self: Lose 5 HP" }
+      - { name: "Crystalline Gunpowder", rarity: "Crystalline", hero: "Highwayman", effect: "+20% DMG, +3 SPD, -15% Stun Resist" }
+      - { name: "Huskfang Whistle", rarity: "Crystalline", hero: "Houndmaster", effect: "+50% Bleed Skill Chance if Dog Treats, +40% Stress Skills while Guarding, -10 DODGE, +66% Guard Duration" }
+      - { name: "Dirge For The Devoured", rarity: "Crystalline", hero: "Jester", effect: "+25% Stress Skills, +25% DMG if Laudanum in inventory, +10% Stress" }
+      - { name: "Petrified Amulet", rarity: "Crystalline", hero: "Leper", effect: "+10 ACC if Bandage, +15% MAX HP, -15% Bleed Resist" }
+      - { name: "Mirror Shield", rarity: "Crystalline", hero: "Man-at-Arms", effect: "+10 DODGE, 30% Damage Reflection, +20% Stun Resist" }
+      - { name: "Icosahedric Musket Balls", rarity: "Crystalline", hero: "Musketeer", effect: "+20% DMG, +20% Random Target Chance" }
+      - { name: "Petrified Skull", rarity: "Crystalline", hero: "Occultist", effect: "+40% PROT when attacked by Husk, -20% Healing Received, +30% PROT when attacked by Eldritch, +15% MAX HP" }
+      - { name: "Ashen Distillation", rarity: "Crystalline", hero: "Plague Doctor", effect: "+20 DODGE, +25% Blight Skill Chance, +20% Healing Received if Medicinal Herbs" }
+      - { name: "Spectral Speartip", rarity: "Crystalline", hero: "Shieldbreaker", effect: "+15% DMG, +20% Blight Skill Chance, +15% MAX HP, +5% Random Target Chance" }
+      - { name: "Heretical Passage", rarity: "Crystalline", hero: "Vestal", effect: "+20% Healing Skills if Holy Water, +25% DMG vs Husk/Eldritch, +10% Stress" }
+      - { name: "Mildred's Locket", rarity: "Keepsake", hero: "Generic", effect: "Miller: The Reaping -100% DMG Taken, +40% Blight Resist, +3 SPD, +40% DMG vs Miller" }
+      - { name: "Thing's Mesmerizing Eye", rarity: "Thing", hero: "Generic", effect: "+4% CRIT if HP >41%, +8% CRIT if HP <40%" }
+      - { name: "Crystalline Fang", rarity: "Thing", hero: "Generic", effect: "+10% Stun Skill Chance if HP >40%, +40% Stun Skill Chance if HP <41%" }
+      - { name: "Phase Shifting Hide", rarity: "Thing", hero: "Generic", effect: "-15% Stress if HP >41%, -50% Stress if HP <40%" }
+      - { name: "Prismatic Heart Crystal", rarity: "Thing", hero: "Generic", effect: "+35% Blight/Bleed Skill Chance vs Thing, +12% CRIT vs Thing" }
+
+  sets:
+    - hero: "Abomination"
+      dlc: "Crimson Court"
+      trinket_1: { name: "Shameful Shroud", effect: "-15% Stress, +10 DODGE" }
+      trinket_2: { name: "Osmond Chain", effect: "+20% DMG Ranged Skills, +8% CRIT Ranged Skills" }
+      set_bonus: "+20% DMG if in position 1"
+    - hero: "Antiquarian"
+      dlc: "Crimson Court"
+      trinket_1: { name: "The Master's Essence", effect: "+50% Healing Skills, +35% Blight/Debuff Skill Chance" }
+      trinket_2: { name: "Two of Three", effect: "+50% DMG vs Blighted, +8% CRIT vs Blighted" }
+      set_bonus: "+4 SPD, +10 DODGE"
+    - hero: "Arbalest"
+      dlc: "Crimson Court"
+      trinket_1: { name: "Childhood Treasure", effect: "+30% Healing Skills, +20% Healing Skills while Camping, -15% Stress" }
+      trinket_2: { name: "Bedtime Story", effect: "+15 ACC vs Marked, +8% CRIT vs Marked, +35% Debuff/Move Skill Chance" }
+      set_bonus: "+25% PROT"
+    - hero: "Bounty Hunter"
+      dlc: "Crimson Court"
+      trinket_1: { name: "Crime Lords' Molars", effect: "+20% DMG vs Marked/Stunned/Bleeding, -10 DODGE" }
+      trinket_2: { name: "Vengeful Kill List", effect: "+50% Move Skill Chance, +35% Bleed Skill Chance, +15 ACC Ranged Skills" }
+      set_bonus: "+5% CRIT vs Marked/Stunned/Bleeding"
+    - hero: "Crusader"
+      dlc: "Crimson Court"
+      trinket_1: { name: "Glittering Spaulders", effect: "+15% PROT, +35% Move Resist, -15% Stress, -2 SPD" }
+      trinket_2: { name: "Signed Conscription", effect: "+20% Healing Skills, +20% Stress Skills" }
+      set_bonus: "+20% MAX HP"
+    - hero: "Flagellant"
+      dlc: "Crimson Court"
+      trinket_1: { name: "Chipped Tooth", effect: "+20% MAX HP, +35% Move Resist" }
+      trinket_2: { name: "Shard of Glass", effect: "+35% Bleed Skill Chance, -20% Bleed Resist" }
+      set_bonus: "+10% Death Blow Resist"
+    - hero: "Grave Robber"
+      dlc: "Crimson Court"
+      trinket_1: { name: "Absinthe", effect: "+35% Disease/Blight Resist, +35% Blight Skill Chance, -10% MAX HP" }
+      trinket_2: { name: "Sharpened Letter Opener", effect: "+25% DMG Melee Skills, +10 ACC Melee Skills, +5 DODGE" }
+      set_bonus: "+5% CRIT"
+    - hero: "Hellion"
+      dlc: "Crimson Court"
+      trinket_1: { name: "Lioness Warpaint", effect: "+20% DMG thresholds per HP loss, +10% Stress" }
+      trinket_2: { name: "Mark of the Outcast", effect: "+2 SPD, +35% Bleed Skill Chance, +15% Death Blow Resist, -15% Healing Received" }
+      set_bonus: "+7 ACC, +7 DODGE"
+    - hero: "Highwayman"
+      dlc: "Crimson Court"
+      trinket_1: { name: "Bloodied Neckerchief", effect: "+2 SPD, +10 DODGE" }
+      trinket_2: { name: "Shameful Locket", effect: "+10 ACC, +5% CRIT, +15% Stress" }
+      set_bonus: "+45% Virtue Chance"
+    - hero: "Houndmaster"
+      dlc: "Crimson Court"
+      trinket_1: { name: "Evidence of Corruption", effect: "+25% Scouting, -15% Surprise Chance, +10% Stress" }
+      trinket_2: { name: "Battered Lawman's Badge", effect: "+15 ACC Ranged Skills, +50% Stress Camping, +25% Healing Skills, -20% Stun/Debuff Resist" }
+      set_bonus: "+25% DMG vs Bleeding, +5% CRIT vs Bleeding"
+    - hero: "Jester"
+      dlc: "Crimson Court"
+      trinket_1: { name: "Tyrant's Tasting Cup", effect: "+33% Stress Skills, +25% Stress" }
+      trinket_2: { name: "Tyrant's Fingerbone", effect: "+3 SPD in pos 1, +20 DODGE in pos 1" }
+      set_bonus: "+33% Stress Skills while Camping"
+    - hero: "Leper"
+      dlc: "Crimson Court"
+      trinket_1: { name: "Last Will and Testament", effect: "+15% PROT, +15% MAX HP, -10% Death Blow Resist" }
+      trinket_2: { name: "Tin Flute", effect: "-20% Stress, +33% Stress Skills while Camping" }
+      set_bonus: "+15 ACC if HP >60%"
+    - hero: "Man-at-Arms"
+      dlc: "Crimson Court"
+      trinket_1: { name: "Old Unit Standard", effect: "+15% Stun Skill Chance, +20% Debuff Skill Chance, +15% Death Blow Resist, +10% Stress" }
+      trinket_2: { name: "Toy Soldier", effect: "+10% PROT, +5% CRIT" }
+      set_bonus: "Riposte: +25% DMG, Riposte: +10 ACC"
+    - hero: "Musketeer"
+      dlc: "Crimson Court"
+      trinket_1: { name: "Second Place Trophy", effect: "+30% Healing Skills, +20% Healing Skills Camping, -15% Stress" }
+      trinket_2: { name: "Silver Musket Ball", effect: "+15 ACC vs Marked, +8% CRIT vs Marked, +35% Debuff/Move Skill Chance" }
+      set_bonus: "+25% PROT"
+    - hero: "Occultist"
+      dlc: "Crimson Court"
+      trinket_1: { name: "Blood Pact", effect: "+4 SPD if Torch <60, +25% DMG if Torch <60, -25% Bleed Skill Chance, -10% MAX HP" }
+      trinket_2: { name: "Vial of Sand", effect: "+20% Debuff/Stun/Move Skill Chance, +20% Stun Resist" }
+      set_bonus: "+15 DODGE"
+    - hero: "Plague Doctor"
+      dlc: "Crimson Court"
+      trinket_1: { name: "Subject #40 Notes", effect: "+25% MAX HP, +35% Disease Resist" }
+      trinket_2: { name: "Dissection Kit", effect: "+35% Bleed Skill Chance, +25% DMG" }
+      set_bonus: "+15% Blight Skill Chance, +15% Stun Skill Chance"
+    - hero: "Shieldbreaker"
+      dlc: "Shieldbreaker DLC"
+      trinket_1: { name: "Obsidian Dagger", effect: "+40% Debuff Skill Chance, +40% Blight Skill Chance" }
+      trinket_2: { name: "Severed Hand", effect: "+50% Blight Resist, -10% Stress" }
+      set_bonus: "+15% MAX HP, +10% PROT, Can't be Guarded"
+    - hero: "Vestal"
+      dlc: "Crimson Court"
+      trinket_1: { name: "Atonement Beads", effect: "+15% DMG Melee Skills, +8% CRIT Melee Skills, -15% Virtue Chance" }
+      trinket_2: { name: "Salacious Diary", effect: "+33% Stress Skills Camping, +25% Healing Skills" }
+      set_bonus: "+35% Debuff Skill Chance, +35% Stun Skill Chance"

@@ -1,0 +1,26 @@
+heroes:
+  hero_name:
+    overview: "data"
+    special_mechanics: "data"
+    religious: true # boolean
+    base_stats:
+      level_0: {hp: 0, dodge: 0, spd: 0, crit: "0%", base_dmg: "0-10"}
+      level_6: {hp: 0, dodge: 0, spd: 0, crit: "0%", base_dmg: "0-10"}
+    combat_skills:
+      - name: "data"
+      # special case for abomination
+      # form: "data"
+        launch_rank: [1, 2, 3, 4]
+        # target_rank: "Self" or list
+        # Ally positions 4, 3, 2, 1    Enemy position: 1, 2, 3, 4
+        target_rank: [1, 2, 3, 4]
+        # Possible type variants: "Melee", "Ranged", "Heal", "Buff", "Free Action"
+        type: "type"
+        effects: "data"
+    camping_skills:
+      # list
+      - {name: "data", cost: 0, target: "who", }
+
+
+
+      
