@@ -1,0 +1,7 @@
+trinkets:
+  generic:
+    # sequence
+    - { name: "data", rarity: "data", effect: "data"}
+  hero_specific:
+    hero_name:
+      # same sequence as in generic
