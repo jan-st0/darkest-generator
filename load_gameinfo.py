@@ -8,9 +8,6 @@ from pathlib import Path
 from enum import Enum
 from functools import cache
 
-type trinkets = dict[str, Any]
-type heroes = dict[str, Any]
-
 def find_project_root(marker: str = "pyproject.toml") -> Path:
     """Walk up from this file's directory to locate the repository root"""
     current = Path(__file__).resolve().parent
@@ -25,19 +22,19 @@ class FilePath(Enum):
     HERO_DATA = ROOT_DIR / 'hero_data.yml'
     TRINKET_DATA = ROOT_DIR / 'trinket_data.yml'
 
-def _load_simple_yml_no_fallback(file_path: Path | str) -> dict[Any, Any] :
+def _load_simple_yml_no_fallback(file_path: Path | str) -> dict[str, Any] :
     with open(file_path, "r", encoding="utf-8") as file:
-        yml = yaml.load(file, Loader=SafeLoader)
-
+        yml: Any = yaml.load(file, Loader=SafeLoader)
+    
     return yml if isinstance(yml, dict) else {}
 
 @cache
-def load_hero_data(file_path: str | Path = FilePath.HERO_DATA.value) -> heroes:
+def load_hero_data(file_path: str | Path = FilePath.HERO_DATA.value) -> dict[str, Any]:
     """Simple wrapper for _load_simple_yml_no_fallback."""
     return _load_simple_yml_no_fallback(file_path)
 
 @cache
-def load_trinket_data(file_path: str | Path = FilePath.TRINKET_DATA.value) -> trinkets:
+def load_trinket_data(file_path: str | Path = FilePath.TRINKET_DATA.value) -> dict[str, Any]:
     """Simple wrapper for _load_simple_yml_no_fallback."""
     return _load_simple_yml_no_fallback(file_path)
 
