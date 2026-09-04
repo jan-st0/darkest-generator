@@ -1,10 +1,4 @@
-from dataclasses import dataclass
-class Hero:
+from game_data_manager import Party
 
-
-@dataclass
-class Party:
-    team: tuple[Hero, ...] = ()
-
-
-def team_score()
+def score_party(team_comp: Party) -> float:
+    pass
