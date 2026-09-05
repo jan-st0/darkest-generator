@@ -1,4 +1,5 @@
 import re
+import numpy as np
 from typing import Any, Union, Optional
 from pathlib import Path
 from dataclasses import dataclass
@@ -32,6 +33,23 @@ class BaseStatsLvl6:
     Base_DMG: str
 
 @dataclass(frozen=True, slots=True)
+class ParsedCombatEffect:
+    stat: str
+    is_buff: bool
+    value_type: str
+    target: str
+    lvl_1: Optional[float] = None
+    lvl_5: Optional[float] = None
+    lvl_1_min: Optional[float] = None
+    lvl_1_max: Optional[float] = None
+    lvl_5_min: Optional[float] = None
+    lvl_5_max: Optional[float] = None
+    duration: Optional[int] = None
+    is_battle_long: bool = False
+    base_chance_lvl_1: Optional[float] = None
+    base_chance_lvl_5: Optional[float] = None
+
+@dataclass(frozen=True, slots=True)
 class CombatEffect:
     raw: str
     type: str
@@ -39,6 +57,7 @@ class CombatEffect:
     lvl_1: Optional[Union[int, float]] = None
     lvl_5: Optional[Union[int, float]] = None
     unit: Optional[str] = None
+    parsed: Optional[ParsedCombatEffect] = None
 
 @dataclass(frozen=True, slots=True)
 class CombatSkill:
@@ -63,6 +82,9 @@ class CombatSkill:
             return True
 
         return any('self: heal' in eff.raw.lower() or 'self-heal' in eff.raw.lower() for eff in self.effects)
+
+    def is_buff(self) -> bool:
+        return self.type == 'Buff'
 
 @dataclass(frozen=True, slots=True)
 class CampingSkill:
@@ -109,8 +131,16 @@ class TrinketSet:
     set_bonus: tuple[TrinketEffect, ...]
     set_bonus_raw: str
 
+def parse_parsed_combat_effect(data: Optional[dict[str, Any]]) -> Optional[ParsedCombatEffect]:
+    if not data:
+        return None
+    return ParsedCombatEffect(**data)
+
 def parse_combat_effect(data: dict[str, Any]) -> CombatEffect:
-    return CombatEffect(**data)
+    effect_data = dict(data)
+    if "parsed" in effect_data:
+        effect_data["parsed"] = parse_parsed_combat_effect(effect_data["parsed"])
+    return CombatEffect(**effect_data)
 
 
 def parse_combat_skill(data: dict[str, Any]) -> CombatSkill:
@@ -243,8 +273,79 @@ class GameDataManager:
             if skill.is_self_heal()
         )
         return sorted(unsorted_skills, key=lambda pair: calculate_max_self_heal(pair[0], pair[1]), reverse=True)
+    EXCLUDED_BUFF_TYPES = {'OTHER', 'STRESS_HEAL', 'CURE_BLIGHT_BLEED'}
+    @cached_property
+    def all_buff_types(self) -> tuple[str, ...]:
+        types = {
+            effect.parsed.stat
+            for hero in self._heroes
+            for skill in hero.combat_skills
+            if skill.is_buff()
+            for effect in skill.effects
+            if effect.parsed and effect.parsed.stat not in self.EXCLUDED_BUFF_TYPES
+        }
+        return tuple(sorted(types))
+
+    @cached_property
+    def max_values_for_buffs(self) -> dict[str, float]:
+        max_vals: dict[str, float] = {}
+        for hero in self._heroes:
+            for skill in hero.combat_skills:
+                if not skill.is_buff():
+                    continue
+                for effect in skill.effects:
+                    p = effect.parsed
+                    val = p.lvl_5_max
+                    if p.stat == 'STRESS_RECEIVED':
+                        val = abs(val)
+                    if not p or p.stat in self.EXCLUDED_BUFF_TYPES or p.lvl_5_max is None:
+                        continue
+                    if val > max_vals.get(p.stat, 0.0):
+                        max_vals[p.stat] = float(val)
+        return max_vals
+
+    @cached_property
+    def skills_buff_values(self) -> dict[CombatSkill, np.ndarray]:
+        buff_types = self.all_buff_types
+        if not buff_types:
+            return {}
+
+        max_map = self.max_values_for_buffs
+        # Pre-compute normalizers to replace N divisions with N multiplications: x * inv
+        inv_max = np.array(
+            [1.0 / max_map[stat] if max_map.get(stat, 0.0) != 0 else 0.0 for stat in buff_types],
+            dtype=np.float64,
+        )
+        stat_indices = {stat: i for i, stat in enumerate(buff_types)}
+        num_stats = len(buff_types)
+
+        result: dict[CombatSkill, np.ndarray] = {}
+        for hero in self._heroes:
+            for skill in hero.combat_skills:
+                if not skill.is_buff():
+                    continue
+
+                vec = np.zeros(num_stats, dtype=np.float64)
+                for effect in skill.effects:
+                    p = effect.parsed
+                    if p and p.stat in stat_indices and p.lvl_5_max is not None:
+                        vec[stat_indices[p.stat]] = abs(p.lvl_5_max)
+
+                # Vectorized scaling
+                result[skill] = vec * inv_max
+
+        return result
+
+
+
+                
+
         
 
 man = GameDataManager()
-unique = [(hero.class_name, skill.name) for skill, hero in man.self_heal_skills]
-print(unique)
+print('Buff order in vector')
+for buff_type in man.all_buff_types:
+    print(buff_type, end=' ')
+print('\n')
+for skill, vector in man.skills_buff_values.items():
+    print(f'{skill.name=}  {vector}')

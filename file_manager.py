@@ -6,7 +6,6 @@ except ImportError:
     from yaml import SafeLoader # type: ignore[assignment]
 from pathlib import Path 
 from enum import Enum
-from functools import cache
 
 def find_project_root(marker: str = "pyproject.toml") -> Path:
     """Walk up from this file's directory to locate the repository root"""
@@ -19,7 +18,7 @@ def find_project_root(marker: str = "pyproject.toml") -> Path:
 ROOT_DIR = find_project_root()
 
 class FilePaths(Enum):
-    GAME_INFO_SOURCE = ROOT_DIR / 'darkest_dungeon_data.yml'
+    GAME_INFO_SOURCE = ROOT_DIR / 'darkest_dungeon_data-v2.yml'
 
 
 def _load_simple_yml_no_fallback(file_path: Path | str) -> dict[str, Any] :
