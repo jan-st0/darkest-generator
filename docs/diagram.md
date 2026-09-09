@@ -1,115 +1,187 @@
 ```mermaid
 ---
 config:
-    maxEdges: 1000
+    maxEdges: 10000
+    maxTextSize: 500000
+    theme: dark
+    layout: elk
 ---
 flowchart TB
- subgraph s1["Hero Utils"]
-        n17["Manual data"]
-        n18["Hero desire vector"]
-        n25["Stats: DMG, SPD, ACC, CRIT chance, DODGE, PROT, Max HP, Stun res, Blight res, Bleed res, Move res, Debuf res, Stun skill chance, Blight skill chance, Bleed skill chance, Move skill chance, Healing skills, Stress skills"]
-        n26["Global stats: Disease res, death blow res, stress recieved, Healing recieved, Virtue chance"]
-  end
 
- subgraph s2["Stats"]
-		n84
-        n6["Stat Category"]
-        n5["Enemy debuffs"]
-        n4["Buffs / Self debuffs"]
-        n3["Self healing"]
-        n2["Healing"]
-        n11["Damage"]
-        n83["j"]
-        n6 --> n5 & n4 & n3 & n2 & n11
-        n4 --> n83["Create buff vector with min max scaling across all buffs"]
-  end
+    %% Global Hierarchy
+    B("Heuristics") --> n1{"Categories"}
 
-    n17 -- Vector representing befits --> n18
-    n18 --> n25 & n26
-    B("Heuristics") --> n1["Categories"]
-    n1 -.- n6
+    %% ----------------------------------------------------
+    %% SUBGRAPH 1: HERO UTILS & DESIRE VECTOR
+    %% ----------------------------------------------------
+    subgraph s1["Hero Utils"]
+        n17["Manual data"] --> n18[("Hero desire vector")]
+        n18 --> n25["Stats: DMG, SPD, ACC, CRIT, DODGE, PROT, HP, Resists, Skill Chances"]
+        n18 --> n26["Global stats: Disease, Death Blow, Stress, Healing Recv, Virtue"]
+    end
+
+    %% ----------------------------------------------------
+    %% CATEGORY BRANCHES
+    %% ----------------------------------------------------
+    n1 -.-> n6
     n1 -.-> n7["Team synergy"]
-    n7 --> n8["Skill reachability"] & n9["skill complemetns"] & n10["Team theme"] & n13["Backline range"] & n14["Stuns"] & n16["Blight / Bleed"]
-    n10 ==> n9
     n1 --> n12["Trinkets"]
-    n12 --> n15["Stats"] & n19["Special cases"] & n22["Scouting, party surprised, monster surprised, trap dissarm chance effects"]
-    n15 --> n20["Based on hero desire vector"]
-    n19 --> n21(["Torch level"]) & n27["Ranged skills or Melee skills conditions"] & n33["Penalty for hp bellow condition to stat scaling"] & n35["For conditions with enemy types lower the scaling<br>So it is like expected damage no matter the enemy type"] & n37["For conditions with hero position do binary check"] & n42["After first round and On first round"] & n44@{ label: "On death's door condition" } & n46(["Restraining padlock"]) & n48@{ label: "Camper's Helmet" } & n50["Ignore food effects for simplicity"] & n51(["Sickening Satchel"]) & n54["vs Marked effect"] & n56@{ label: "Vvulf's Tassle" } & n60["Crimson court trinkets"] & n66["Color of Madness Trinkets"]
-    n22 -- Same for every hero --> n23["Bonus for these stats based on simple stat min-max scaling"]
-    n27 --> n28["Count as 0 in trinket vector if no ranged/melee skills"]
-    n21 -- Assume that player wants to have torch level above 75 for fights --> n34["For time being, calculate stats only for if torch above 75"]
-    n35 --> n36["Disadvantage is that user has to decide if this trinket is good for dungeon type<br><br>Otherwise, these trinkets would be abandoned. And there are plenty of good trinkets with these conditions"]
-    n37 --> n38["If position matches set lower scaling if skills move the hero"]
-    n38 --> n39["`*This is rather a simple solution for this complex case<br>Other would require deciding how often hero attacks from this position, which is technically difficult to implement*`"]
-    n42 --> n43["Set custom scaling for these stats<br>After: ~0.75<br>On: ~0.25<br><br>If a stat occur in both situation - calc mean"]
-    n44 --> n45@{ label: "Give these stats really low scaling<br>Hero should be as little as possible at death's door" }
-    n46 --> n47["Custom trinket value, because effect is too abstract for algorithm and hero constraint makes the situation same for every build"]
-    n48 --> n49["Ignore stress heal effect"]
-    n51 --> n52["Lower the Damage scaling"] & n53["Set scaling to 0 if no blight skills"]
-    n54 --> n55["Set lower scaling if team theme is mark, else 0"]
-    n56 --> n57["Ignore +5% CRIT vs size 2"]
-    n58@{ label: "Viscount's Spices" } --> n59["Ignore trinket<br>Technical reasons + bad performance"]
-    n60 --> n58 & n61@{ label: "Baron's Lash" } & n62@{ label: "Countess' Fan" } & n63["Other trinkets except sets"] & n64(["Second Place Trophy"])
-    n61 --> n59
-    n62 --> n59
-    n63 --> n59
-    n64 --> n65["Ignore: +20% Healing Skills while Camping"]
-    n66 --> n67["Lens of the Comet"] & n68["Crystal Pendant"] & n69["Cluster Pendant"] & n70["Coat Of Many Colors"] & n71@{ label: "Miller's Pipe" } & n73["Smoking Skull"] & n74["Keening Bolts"] & n75["Non-Euclidean Hilt"] & n76["Petrified Skull"] & n77["Heretical Passage"] & n78["Prismatic Heart Crystal"]
-    n73 --> n79["Ignore trinket
-Technical reasons"]
-    n67 --> n79
-    n68 --> n79
-    n69 --> n79
-    n70 --> n79
-    n71 --> n79
-    n74 --> n79
 
-    n18@{ shape: h-cyl}
-    n1@{ shape: diam}
-    n6@{ shape: card}
-    n7@{ shape: card}
-    n12@{ shape: card}
-    n44@{ label: "On death's door condition" }
-    n48@{ shape: "stadium", label: "Camper's Helmet" }
-    n56@{ shape: "stadium", label: "Vvulf's Tassle" }
-    n60@{ shape: hex}
-    n66@{ shape: hex}
-    n43@{ shape: text}
-    n45@{ shape: text}
-    n49@{ shape: text}
-    n57@{ shape: text}
-    n58@{ shape: stadium}
-    n59@{ shape: text}
-    n61@{ shape: "stadium", label: "Baron's Lash" }
-    n62@{ shape: "stadium", label: "Viscount's Spices" }
-    n65@{ shape: text}
-    n71@{ label: "Miller's Pipe" }
-    style n18 fill:#000000
-    style n39 stroke-width:2px,stroke-dasharray: 2
-    style s1 fill:#000000,stroke:#757575
-    n79
-    n75
-    n75 --- n79
-    n76 --- n79
-    n77 --- n79
-    n78 --- n79
-    n66 --- n24["Acidic Husk Ichor"]
-    n24 --- n29@{ shape: "text", label: "Ignore vs Husk effect" }
-    n66 --- n30["Topshelf Tonic"]
-    n30 --- n31@{ shape: "text", label: "Ignore +15 DODGE if Medicinal Herbs in inventory" }
-    n66 --- n32["Thirsting Blade"]
-    n32 --- n79
-    n66 --- n40["Huskfang Whistle"]
-    n40 --- n79
-    n66 --- n41["Dirge For The Devoured"]
-    n41 --- n72["Ignore +25% DMG if Laudanum in inventory"]
-    n66 --- n80["Petrified Amulet"]
-    n80 --- n79
-    n66 --- n81["Mirror Shield"]
-    n81 --- n79
-    n66 --- n82["Icosahedric Musket Balls"]
-    n82 --- n79
-	style s2 fill:#000000,stroke:#737373
-	n4
-	n4 --- n84["Debuffs get negative values in buff vector"]
+    %% ----------------------------------------------------
+    %% SUBGRAPH 2: STAT CATEGORIES & SCALING
+    %% ----------------------------------------------------
+    subgraph s2["Stats Evaluation"]
+        n88["Asses debuff strength  Similar logic to buff vector, but it's general for every type of enemy  That's why weighted sum/dot product is used"]
+        n87["Same as self healing, but before taking max lower the score of aoe heals"]
+        n80["Do the same as with self healing"]
+		n79["Calculate max raw dps for skill set"] --> n80
+		n59@{ shape: "fr-rect", label: "Sum healing and devide by hyperparam, so that the value is close to 1" }
+		n69@{ shape: "text", label: "Raw hero dps" }
+        n6["Stat Category"] --> n11["Damage"]
+        n6 --> n2["Healing"]
+        n2 --> n87
+        n6 --> n3["Self healing"]
+        n6 --> n4["Buffs / Self debuffs"]
+        n6 --> n5["Enemy debuffs"]
+        n5 --> n88
+        n3 --> n85@{ shape: "st-rect", label: "Scan for self healing heroes" } --> n86@{ shape: "div-rect", label: "Search for self heal in active skills" }
+        n4 --> n83["Create buff vector (min-max scaled)"]
+        n4 --> n84["Debuffs get negative values in buff vector"]
+    end
+
+    %% ----------------------------------------------------
+    %% SUBGRAPH 3: TEAM SYNERGY
+    %% ----------------------------------------------------
+    subgraph s_syn["Team Synergy Analysis"]
+        n92["Sum all heroes with stun skills, take only the best skill - meaning with the best aoe stuns<br><br>Multiply each by base stun chance<br><br>Scale by dividing by 4"]
+        n93["For now only themes are: mark, default<br><br>This category is more like a bonus(more synergy for skills), so for weighted sum model, the team is normally default, but for some situations we consider this category<br><br>The mark theme is applied if at least 2 heroes have active mark skills and at least 1 can apply mark<br><br>[prototype]: default = 1, output is default + heroes, whose skills get increased damage from mark"]
+        n94["For each enemy position calculate how many active skills reach this position and sum expected damage for this position<br><br>"]
+        n7 --> n8["Skill reachability"]
+        n7 --> n13["Backline range"]
+        n7 --> n14["Stuns"]
+        n7 --> n16["Blight / Bleed"]
+        n7 --> n10["Team theme"]
+        n10 ==> n9["Skill complements"]
+        n9 --> n89@{ shape: "lean-r", label: "Each skill can have can have coupled skills" }
+        n90@{ label: "For now these skills are all that have bonuses against stuned enemies or marked<br><br>And they require stuns or mark from other heroes<br><br>This category results in a bonus depending on % of coupled skills" }
+        n91["After performing algorithm that detects if skill is usable discard those skills from further team analysis. This should be run first as those skill can influence other categories<br><br>Results in (big) penalty for each bad skill<br><br>The scaling can be sum of bad skill devided by number of all skills"]
+        n89 --> n90
+        n8 --> n91["After performing algorithm that detects if skill is usable discard those skills from further team analysis. This should be run first as those skills can influence other categories<br><br>Results in (big) penalty for each bad skill<br><br>The scaling can be sum of bad skill devided by number of all skills"]
+        n14 --> n92
+        n10 --> n93
+    end
+
+    %% ----------------------------------------------------
+    %% TRINKETS ROUTING
+    %% ----------------------------------------------------
+    n12 --> n15["Stats"]
+    n12 --> n22["Scouting, Surprises, Trap Disarm"]
+    n12 --> n19["Special Cases & Conditions"]
+    n12 --> n60{{"Crimson Court Trinkets"}}
+    n12 --> n66{{"Color of Madness Trinkets"}}
+
+    n15 --> n20["Based on hero desire vector"]
+    n22 -- "Same for every hero" --> n23["Stat bonus via min-max scaling"]
+
+    %% ----------------------------------------------------
+    %% SUBGRAPH 4: SPECIAL CONDITION HANDLERS
+    %% ----------------------------------------------------
+    subgraph s_cond["Conditional Stat Rules"]
+        n19 --> n21(["Torch level"])
+        n21 -- ">75 Torch Assumed" --> n34["Calculate stats only for Torch > 75"]
+
+        n19 --> n27["Ranged / Melee conditions"]
+        n27 --> n28["Count as 0 if missing required skill type"]
+
+        n19 --> n35["Enemy type conditions"]
+        n35 --> n36["Lower scaling to normalize expected value"]
+
+        n19 --> n37["Hero position conditions"]
+        n37 --> n38["Lower scaling if hero skill set causes movement"]
+        n38 -.- n39["*Simplified heuristic to avoid dynamic combat sim*"]
+
+        n19 --> n42["Round-based conditions"]
+        n42 --> n43["Custom scaling:<br>After R1: ~0.75 | On R1: ~0.25"]
+
+        n19 --> n44["On Death's Door"]
+        n44 --> n45["Heavily penalty / Minimal scaling"]
+
+        n19 --> n54["vs Marked effect"]
+        n54 --> n55["Lower scaling if Mark theme, else 0"]
+
+        n19 --> n33["Penalty for HP below condition"]
+        n19 --> n50["Ignore food effects"]
+    end
+
+    %% ----------------------------------------------------
+    %% SUBGRAPH 5: BASE TRINKET EXCEPTIONS
+    %% ----------------------------------------------------
+    subgraph s_exceptions["Specific Item Exceptions"]
+        n19 --> n46(["Restraining Padlock"]) --> n47["Custom fixed value"]
+        n19 --> n48(["Camper's Helmet"]) --> n49["Ignore stress heal effect"]
+        n19 --> n51(["Sickening Satchel"]) --> n52["Lower DMG scaling"] & n53["Set to 0 if no blight"]
+        n19 --> n56(["Vvulf's Tassel"]) --> n57["Ignore +5% CRIT vs size 2"]
+    end
+
+    %% ----------------------------------------------------
+    %% SUBGRAPH 6: CRIMSON COURT
+    %% ----------------------------------------------------
+    subgraph s_cc["Crimson Court Set Handling"]
+        n60 --> n64(["Second Place Trophy"]) --> n65["Ignore: Camp heal bonus"]
+        n60 --> n59_cc["Ignored Trinkets<br>(Technical / Low Performance)"]
+        n59_cc --- n58(["Viscount's Spices"])
+        n59_cc --- n61(["Baron's Lash"])
+        n59_cc --- n62(["Countess' Fan"])
+        n59_cc --- n63["Other trinkets (except sets)"]
+    end
+
+    %% ----------------------------------------------------
+    %% SUBGRAPH 7: COLOR OF MADNESS
+    %% ----------------------------------------------------
+    subgraph s_com["Color of Madness Handling"]
+        n66 --> n24["Acidic Husk Ichor"] --> n29["Ignore vs Husk effect"]
+        n66 --> n30["Topshelf Tonic"] --> n31["Ignore +15 DODGE with Herbs"]
+        n66 --> n41["Dirge For The Devoured"] --> n72["Ignore +25% DMG with Laudanum"]
+
+        n66 --> n79_com["Ignored CoM Trinkets<br>(Technical Reasons)"]
+        n79_com --- n67["Lens of the Comet"]
+        n79_com --- n68["Crystal / Cluster Pendant"]
+        n79_com --- n70["Coat Of Many Colors"]
+        n79_com --- n71["Miller's Pipe"]
+        n79_com --- n73["Smoking Skull"]
+        n79_com --- n74["Keening Bolts"]
+        n79_com --- n75["Non-Euclidean Hilt"]
+        n79_com --- n76["Petrified Skull / Amulet"]
+        n79_com --- n77["Heretical Passage"]
+        n79_com --- n78["Prismatic Heart Crystal"]
+        n79_com --- n32["Thirsting Blade"]
+        n79_com --- n40["Huskfang Whistle"]
+        n79_com --- n81["Mirror Shield"]
+        n79_com --- n82["Icosahedric Musket Balls"]
+    end
+
+    %% Style Overrides
+    style n18 fill:#1a1a1a,stroke:#888
+    style s1 fill:#111111,stroke:#555
+    style s2 fill:#111111,stroke:#555
+    style s_syn fill:#111111,stroke:#555
+    style s_cond fill:#111111,stroke:#555
+    style s_exceptions fill:#111111,stroke:#555
+    style s_cc fill:#111111,stroke:#555
+    style s_com fill:#111111,stroke:#555
+    style n39 stroke-dasharray: 3 3
+	n86
+	n86
+	n11
+	n11 --- n69
+	n86 --- n59
+	n69
+	n69 --- n79
+	n80 --- n59
+	style n80 stroke-width:0.5px,stroke-dasharray:5 5
+	style n79 stroke-width:0.5px,stroke-dasharray:5 5
+	style n87 stroke-width:0.5px,stroke-dasharray:5 5
+	style n88 stroke-width:0.5px,stroke-dasharray:5 5
+	style n89 stroke-width:0.5px
+	style n90 stroke-width:0px
 ```
