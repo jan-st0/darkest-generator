@@ -55,7 +55,8 @@ flowchart TB
     subgraph s_syn["Team Synergy Analysis"]
         n92["Sum all heroes with stun skills, take only the best skill - meaning with the best aoe stuns<br><br>Multiply each by base stun chance<br><br>Scale by dividing by 4"]
         n93["For now only themes are: mark, default<br><br>This category is more like a bonus(more synergy for skills), so for weighted sum model, the team is normally default, but for some situations we consider this category<br><br>The mark theme is applied if at least 2 heroes have active mark skills and at least 1 can apply mark<br><br>[prototype]: default = 1, output is default + heroes, whose skills get increased damage from mark"]
-        n94["For each enemy position calculate how many active skills reach this position and sum expected damage for this position<br><br>"]
+        n94["For each enemy position calculate how many active skills reach this position and sum expected damage for this position<br><br>For now omit expected damage. Some abilities can apply dot damage or stuns, pull enemies from the back, push to back.<br><br>Scale based on total amount of skills"]
+        n95["Make blight and bleed separate, but set scoring system the same<br><br>For each hero check for bleed blight skills, check if its aoe and how many damage it would deal overall. Check enemy coverage - how many position can be targeted.<br><br>Option 1: Create a model, like shallow ffn net, to score this category<br><br>Option 2: Set these as subcategories"]
         n7 --> n8["Skill reachability"]
         n7 --> n13["Backline range"]
         n7 --> n14["Stuns"]
@@ -184,4 +185,6 @@ flowchart TB
 	style n88 stroke-width:0.5px,stroke-dasharray:5 5
 	style n89 stroke-width:0.5px
 	style n90 stroke-width:0px
+	n13 --- n94
+	n16 --- n95
 ```
