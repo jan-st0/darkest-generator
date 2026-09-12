@@ -1,9 +1,8 @@
-import re
 import numpy as np
 from typing import Any, Union, Optional
 from pathlib import Path
 from dataclasses import dataclass
-from file_manager import GameDataHandler
+from file_manager import GameDataHandler, FilePaths
 from functools import cached_property
 
 @dataclass(frozen=True, slots=True)
@@ -33,55 +32,104 @@ class BaseStatsLvl6:
     Base_DMG: str
 
 @dataclass(frozen=True, slots=True)
-class ParsedCombatEffect:
-    stat: str
-    is_buff: bool
-    value_type: str
-    target: str
-    lvl_1: Optional[float] = None
-    lvl_5: Optional[float] = None
-    lvl_1_min: Optional[float] = None
-    lvl_1_max: Optional[float] = None
-    lvl_5_min: Optional[float] = None
-    lvl_5_max: Optional[float] = None
-    duration: Optional[int] = None
-    is_battle_long: bool = False
-    base_chance_lvl_1: Optional[float] = None
-    base_chance_lvl_5: Optional[float] = None
+class SkillCombatStats:
+    acc: Optional[float]
+    dmg_mod: Optional[float]
+    crit: Optional[float]
 
 @dataclass(frozen=True, slots=True)
-class CombatEffect:
+class StunEffect:
+    chance_lvl1: Optional[float]
+    chance_lvl5: Optional[float]
+
+@dataclass(frozen=True, slots=True)
+class DotEffect:
+    pts_lvl1: Optional[float]
+    pts_lvl5: Optional[float]
+    duration: Optional[int]
+    chance_lvl5: Optional[float]
+
+@dataclass(frozen=True, slots=True)
+class MarkEffect:
+    applies: bool
+    target: Optional[str]
+    duration: Optional[int]
+    bonus_dmg_vs_marked: Optional[float]
+    bonus_crit_vs_marked: Optional[float]
+
+@dataclass(frozen=True, slots=True)
+class HealEffect:
+    has_heal: bool
+    target: Optional[str]
+    is_percent: bool
+    min_lvl1: Optional[float]
+    max_lvl1: Optional[float]
+    min_lvl5: Optional[float]
+    max_lvl5: Optional[float]
+
+    def calc_max_expected_heal_effect(self) -> float:
+        if self.min_lvl5 is not None and self.max_lvl5 is not None:
+            return (self.min_lvl5 + self.max_lvl5) / 2
+
+        return 0.0
+
+@dataclass(frozen=True, slots=True)
+class StressHealEffect:
+    has_stress_heal: bool
+    target: Optional[str]
+    min_lvl5: Optional[float]
+    max_lvl5: Optional[float]
+
+@dataclass(frozen=True, slots=True)
+class MovementEffect:
+    forward: int
+    back: int
+    knockback: int
+    pull: int
+
+@dataclass(frozen=True, slots=True)
+class BuffDebuffEffect:
+    stat: str
+    target: str
+    value_type: str
+    val_lvl1: Optional[float]
+    val_lvl5: Optional[float]
+    duration: Optional[int]
+    chance_lvl5: Optional[float]
     raw: str
-    type: str
-    detail: Optional[str] = None
-    lvl_1: Optional[Union[int, float]] = None
-    lvl_5: Optional[Union[int, float]] = None
-    unit: Optional[str] = None
-    parsed: Optional[ParsedCombatEffect] = None
 
 @dataclass(frozen=True, slots=True)
 class CombatSkill:
     name: str
     launch_ranks: tuple[int, ...]
-    target_ranks: Union[str, tuple[Union[int, str], ...]]
+    target_ranks: tuple[int, ...]
+    target_type: str
+    is_aoe: bool
     type: str
-    effects: tuple[CombatEffect, ...]
+    is_pure_buff: bool
+    stats_lvl1: SkillCombatStats
+    stats_lvl5: SkillCombatStats
+    stun: StunEffect
+    blight: DotEffect
+    bleed: DotEffect
+    mark: MarkEffect
+    heal: HealEffect
+    stress_heal: StressHealEffect
+    movement: MovementEffect
+    buffs: tuple[BuffDebuffEffect, ...]
+    debuffs: tuple[BuffDebuffEffect, ...]
     effects_raw: str
     form: Optional[str] = None
 
+    def _is_heal_target_ranks_4321(self) -> bool:
+        return self.heal.target == 'ally' and self.target_ranks == (1, 2, 3, 4)
+
+    def _is_not_stress_heal(self) -> bool:
+        # TODO: better function name and more robust handling
+        return self.heal.max_lvl5 is not None
+
     def is_self_heal(self) -> bool:
-        has_heal_effect = any(
-            (effect.type == 'Heal' or 'heal' in effect.raw.lower()) and not self.type == 'Stress heal'
-            for effect in self.effects
-        )
-        if not has_heal_effect:
-            return False
-
-        VALID_SELF_TARGETS = {'Self', (4, 3, 2, 1)}
-        if self.target_ranks in VALID_SELF_TARGETS:
-            return True
-
-        return any('self: heal' in eff.raw.lower() or 'self-heal' in eff.raw.lower() for eff in self.effects)
+        return self.heal.has_heal and (self.heal.target in ('self', 'ally_and_self') or self._is_heal_target_ranks_4321()) and self._is_not_stress_heal()
 
     def is_buff(self) -> bool:
         return self.type == 'Buff'
@@ -131,30 +179,42 @@ class TrinketSet:
     set_bonus: tuple[TrinketEffect, ...]
     set_bonus_raw: str
 
-def parse_parsed_combat_effect(data: Optional[dict[str, Any]]) -> Optional[ParsedCombatEffect]:
-    if not data:
-        return None
-    return ParsedCombatEffect(**data)
+@dataclass(frozen=True, slots=True)
+class HeroBuild:
+    hero: Hero
+    rank: int
+    skills: tuple[CombatSkill, ...]
+    trinkets: tuple[Trinket, ...]
 
-def parse_combat_effect(data: dict[str, Any]) -> CombatEffect:
-    effect_data = dict(data)
-    if "parsed" in effect_data:
-        effect_data["parsed"] = parse_parsed_combat_effect(effect_data["parsed"])
-    return CombatEffect(**effect_data)
+@dataclass(frozen=True, slots=True)
+class Party:
+    members: tuple[HeroBuild, ...]
 
+def parse_buff_debuff(data: dict[str, Any]) -> BuffDebuffEffect:
+    return BuffDebuffEffect(**data)
 
 def parse_combat_skill(data: dict[str, Any]) -> CombatSkill:
-    target_ranks = data["target_ranks"]
-    if isinstance(target_ranks, list):
-        target_ranks = tuple(target_ranks)
-
     return CombatSkill(
-        **{
-            **data,
-            "launch_ranks": tuple(data["launch_ranks"]),
-            "target_ranks": target_ranks,
-            "effects": tuple(parse_combat_effect(eff) for eff in data["effects"]),
-        }
+        name=data["name"],
+        launch_ranks=tuple(data["launch_ranks"]),
+        target_ranks=tuple(data["target_ranks"]),
+        target_type=data["target_type"],
+        is_aoe=data["is_aoe"],
+        type=data["type"],
+        is_pure_buff=data["is_pure_buff"],
+        stats_lvl1=SkillCombatStats(**data["stats_lvl1"]),
+        stats_lvl5=SkillCombatStats(**data["stats_lvl5"]),
+        stun=StunEffect(**data["stun"]),
+        blight=DotEffect(**data["blight"]),
+        bleed=DotEffect(**data["bleed"]),
+        mark=MarkEffect(**data["mark"]),
+        heal=HealEffect(**data["heal"]),
+        stress_heal=StressHealEffect(**data["stress_heal"]),
+        movement=MovementEffect(**data["movement"]),
+        buffs=tuple(parse_buff_debuff(b) for b in data.get("buffs", [])),
+        debuffs=tuple(parse_buff_debuff(d) for d in data.get("debuffs", [])),
+        effects_raw=data.get("effects_raw", ""),
+        form=data.get("form"),
     )
 
 
@@ -218,71 +278,70 @@ def parse_raw_game_data(
     )
 
 def calculate_max_self_heal(skill: CombatSkill, hero: Hero) -> float:
-    for effect in skill.effects:
-        text = effect.raw.lower()
-        if 'heal' not in text:
-            continue
-        # Matches all integers or decimals immediately followed by a '%' symbol.
-        # Captures digits with an optional non-capturing decimal group (?:\.\d+).
-        percentage_match = re.findall(r'(\d+(?:\.\d+)?)%', text)
-        if percentage_match:
-            max_pct = float(percentage_match[-1])
-            hero_max_hp = float(hero.base_stats_lvl6.HP)
-            return (max_pct / 100.0) * hero_max_hp
-        # Matches skill level progression ranges: "A-B [hp] to C-D hp".
-        # Captures 4 numbers: Group 1 & 2 (initial range), Group 3 & 4 (maxed rank range).
-        # Handles hyphen/en-dash variants ([-–]), optional whitespace (\s*), and optional "hp" before "to".
-        progression_match = re.search(
-            r'(\d+)\s*[-–]\s*(\d+)\s+(?:hp\s+)?to\s+(\d+)\s*[-–]\s*(\d+)\s*hp',
-            text
-        )
-        if progression_match:
-            low, high = float(progression_match.group(3)), float(progression_match.group(4))
-            return (low + high) / 2.0
-        # Matches a standard single range: "A-B hp" or "A to B hp".
-        # Captures minimum (Group 1) and maximum (Group 2) values separated by a hyphen, en-dash, or "to".
-        range_match = re.search(r'(\d+)\s*(?:[-–]|to)\s*(\d+)\s*hp', text)
-        if range_match:
-            return (float(range_match.group(1)) + float(range_match.group(2))) / 2.0
-        # Matches a static, flat heal amount: "X hp".
-        # Captures the integer value directly preceding the literal "hp".
-        single_match = re.search(r'(\d+)\s*hp', text)
-        if single_match:
-            return float(single_match.group(1))
+    heal = skill.heal
+    if not heal.has_heal:
+        return 0.0
 
-    return 0.0
+    max_hp = float(hero.base_stats_lvl6.HP)
+    val = heal.calc_max_expected_heal_effect()
+    if heal.is_percent:
+        val = heal.max_lvl5 or heal.max_lvl1 or 0.0
+        return (val / 100.0) * max_hp
+    return float(val)
 
 
 class GameDataManager:
 
+    EXCLUDED_BUFF_TYPES = {'OTHER', 'STRESS_HEAL', 'CURE_BLIGHT_BLEED'}
+
     def __init__(self, file_path: Optional[Union[Path, str]] = None) -> None:
         if file_path is None:
-            self._handler = GameDataHandler()
+            self._handler = GameDataHandler(FilePaths.GAME_INFO_SOURCE_V3.value)
         else:
             self._handler = GameDataHandler(file_path)
         parsed_data = parse_raw_game_data(self._handler.raw_data)
         self._metadata, self._heroes, self._trinkets, self._trinket_sets = parsed_data
-    
+
+    @property
+    def metadata(self) -> Metadata:
+        return self._metadata
+
+    @property
+    def heroes(self) -> tuple[Hero, ...]:
+        return self._heroes
+
+    @property
+    def trinkets(self) -> tuple[Trinket, ...]:
+        return self._trinkets
+
+    @property
+    def trinket_sets(self) -> tuple[TrinketSet, ...]:
+        return self._trinket_sets
+
+    @cached_property
+    def heroes_by_name(self) -> dict[str, Hero]:
+        return {h.class_name: h for h in self._heroes}
+
     @cached_property
     def self_heal_skills(self) -> tuple[tuple[CombatSkill, Hero], ...]:
-        """Sorted by healing effect"""
+        """Sorted by maximum self-healing output at lvl 5"""
         unsorted_skills = tuple(
             (skill, hero)
             for hero in self._heroes
             for skill in hero.combat_skills
             if skill.is_self_heal()
         )
-        return sorted(unsorted_skills, key=lambda pair: calculate_max_self_heal(pair[0], pair[1]), reverse=True)
-    EXCLUDED_BUFF_TYPES = {'OTHER', 'STRESS_HEAL', 'CURE_BLIGHT_BLEED'}
+        return tuple(sorted(unsorted_skills, key=lambda pair: calculate_max_self_heal(pair[0], pair[1]), reverse=True))
+
     @cached_property
     def all_buff_types(self) -> tuple[str, ...]:
         types = {
-            effect.parsed.stat
+            buff.stat
             for hero in self._heroes
             for skill in hero.combat_skills
             if skill.is_buff()
-            for effect in skill.effects
-            if effect.parsed and effect.parsed.stat not in self.EXCLUDED_BUFF_TYPES
+            for buff in skill.buffs
+            if buff.stat not in self.EXCLUDED_BUFF_TYPES and buff.val_lvl5 is not None
         }
         return tuple(sorted(types))
 
@@ -293,15 +352,13 @@ class GameDataManager:
             for skill in hero.combat_skills:
                 if not skill.is_buff():
                     continue
-                for effect in skill.effects:
-                    p = effect.parsed
-                    val = p.lvl_5_max
-                    if p.stat == 'STRESS_RECEIVED':
-                        val = abs(val)
-                    if not p or p.stat in self.EXCLUDED_BUFF_TYPES or p.lvl_5_max is None:
+                for buff in skill.buffs:
+                    stat = buff.stat
+                    if stat in self.EXCLUDED_BUFF_TYPES or buff.val_lvl5 is None:
                         continue
-                    if val > max_vals.get(p.stat, 0.0):
-                        max_vals[p.stat] = float(val)
+                    val = abs(buff.val_lvl5) if stat == 'STRESS_RECEIVED' else float(buff.val_lvl5)
+                    if val > max_vals.get(stat, 0.0):
+                        max_vals[stat] = val
         return max_vals
 
     @cached_property
@@ -326,10 +383,9 @@ class GameDataManager:
                     continue
 
                 vec = np.zeros(num_stats, dtype=np.float64)
-                for effect in skill.effects:
-                    p = effect.parsed
-                    if p and p.stat in stat_indices and p.lvl_5_max is not None:
-                        vec[stat_indices[p.stat]] = abs(p.lvl_5_max)
+                for buff in skill.buffs:
+                    if buff.stat in stat_indices and buff.val_lvl5 is not None:
+                        vec[stat_indices[buff.stat]] = abs(buff.val_lvl5)
 
                 # Vectorized scaling
                 result[skill] = vec * inv_max
@@ -337,15 +393,14 @@ class GameDataManager:
         return result
 
 
-
-                
-
-        
-
-man = GameDataManager()
-print('Buff order in vector')
-for buff_type in man.all_buff_types:
-    print(buff_type, end=' ')
-print('\n')
-for skill, vector in man.skills_buff_values.items():
-    print(f'{skill.name=}  {vector}')
+if __name__ == "__main__":
+    man = GameDataManager()
+    print('Buff order in vector:')
+    for buff_type in man.all_buff_types:
+        print(buff_type, end=' ')
+    print('\n')
+    for skill, vector in man.skills_buff_values.items():
+        print(f'{skill.name=}  {vector}')
+    print('\nSelf-heal skills (ordered by output):')
+    for skill, hero in man.self_heal_skills:
+        print(f'{hero.class_name} -> {skill.name}: {calculate_max_self_heal(skill, hero)} HP')

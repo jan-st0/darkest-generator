@@ -1,4 +1,3 @@
-```mermaid
 ---
 config:
     maxEdges: 10000
@@ -12,6 +11,14 @@ flowchart TB
     B("Heuristics") --> n1{"Categories"}
 
     %% ----------------------------------------------------
+    %% STAGE 0: POSITION PREREQUISITE FILTER
+    %% ----------------------------------------------------
+    n1 ==> n_filter["<b>Stage 0: Rank Filter</b><br>Filter active skills executable from hero current rank.<br>Discard unusable skills & apply invalidity penalty"]
+    n_filter -.-> n6
+    n_filter -.-> n7["Team synergy"]
+    n1 --> n12["Trinkets"]
+
+    %% ----------------------------------------------------
     %% SUBGRAPH 1: HERO UTILS & DESIRE VECTOR
     %% ----------------------------------------------------
     subgraph s1["Hero Utils"]
@@ -21,22 +28,16 @@ flowchart TB
     end
 
     %% ----------------------------------------------------
-    %% CATEGORY BRANCHES
-    %% ----------------------------------------------------
-    n1 -.-> n6
-    n1 -.-> n7["Team synergy"]
-    n1 --> n12["Trinkets"]
-
-    %% ----------------------------------------------------
     %% SUBGRAPH 2: STAT CATEGORIES & SCALING
     %% ----------------------------------------------------
     subgraph s2["Stats Evaluation"]
-        n88["Asses debuff strength  Similar logic to buff vector, but it's general for every type of enemy  That's why weighted sum/dot product is used"]
-        n87["Same as self healing, but before taking max lower the score of aoe heals"]
-        n80["Do the same as with self healing"]
-		n79["Calculate max raw dps for skill set"] --> n80
-		n59@{ shape: "fr-rect", label: "Sum healing and devide by hyperparam, so that the value is close to 1" }
-		n69@{ shape: "text", label: "Raw hero dps" }
+        n88["Asses debuff strength<br>Similar logic to buff vector, but it's general for every type of enemy<br>That's why weighted sum/dot product is used"]
+        n87["Evaluate healing output<br>Score total effective HP + bonus for AoE Death's Door clearance"]
+        n80["Scale raw DPS by damage hyperparam, normalizing output close to 1"]
+        n79["Calculate max raw dps for valid skill set"] --> n80
+        n59_dmg@{ shape: "fr-rect", label: "DPS normalization hyperparam" }
+        n59_heal@{ shape: "fr-rect", label: "Sum healing and divide by heal hyperparam, so value is close to 1" }
+        n69@{ shape: "text", label: "Raw hero dps" }
         n6["Stat Category"] --> n11["Damage"]
         n6 --> n2["Healing"]
         n2 --> n87
@@ -44,7 +45,7 @@ flowchart TB
         n6 --> n4["Buffs / Self debuffs"]
         n6 --> n5["Enemy debuffs"]
         n5 --> n88
-        n3 --> n85@{ shape: "st-rect", label: "Scan for self healing heroes" } --> n86@{ shape: "div-rect", label: "Search for self heal in active skills" }
+        n3 --> n85@{ shape: "st-rect", label: "Scan for self healing heroes" } --> n86@{ shape: "div-rect", label: "Search for self heal in valid active skills" }
         n4 --> n83["Create buff vector (min-max scaled)"]
         n4 --> n84["Debuffs get negative values in buff vector"]
     end
@@ -53,21 +54,20 @@ flowchart TB
     %% SUBGRAPH 3: TEAM SYNERGY
     %% ----------------------------------------------------
     subgraph s_syn["Team Synergy Analysis"]
-        n92["Sum all heroes with stun skills, take only the best skill - meaning with the best aoe stuns<br><br>Multiply each by base stun chance<br><br>Scale by dividing by 4"]
-        n93["For now only themes are: mark, default<br><br>This category is more like a bonus(more synergy for skills), so for weighted sum model, the team is normally default, but for some situations we consider this category<br><br>The mark theme is applied if at least 2 heroes have active mark skills and at least 1 can apply mark<br><br>[prototype]: default = 1, output is default + heroes, whose skills get increased damage from mark"]
+        n92["Sum heroes with valid stun skills<br>Score coverage across enemy ranks R1-R4 + AoE coverage<br>Multiply by stun chance & normalize"]
+        n93["Mark Theme Check:<br>Requires >= 1 applier and >= 1 consumer<br>Verify relative speed: SPD(Marker) > SPD(Consumer)<br>Bonus scales with mark consumer damage potential"]
         n94["For each enemy position calculate how many active skills reach this position and sum expected damage for this position<br><br>For now omit expected damage. Some abilities can apply dot damage or stuns, pull enemies from the back, push to back.<br><br>Scale based on total amount of skills"]
-        n95["Make blight and bleed separate, but set scoring system the same<br><br>For each hero check for bleed blight skills, check if its aoe and how many damage it would deal overall. Check enemy coverage - how many position can be targeted.<br><br>Option 1: Create a model, like shallow ffn net, to score this category<br><br>Option 2: Set these as subcategories"]
+        n95["Make blight and bleed separate<br>Calculate rank-weighted Expected Value (EV = Dmg/rd * rds * Resist_Prob)<br>Option 1: Constrained Monotonic NN with tanh saturation<br>Option 2: Non-linear threshold transform into Bradley-Terry preference model"]
         n7 --> n8["Skill reachability"]
         n7 --> n13["Backline range"]
         n7 --> n14["Stuns"]
         n7 --> n16["Blight / Bleed"]
         n7 --> n10["Team theme"]
         n10 ==> n9["Skill complements"]
-        n9 --> n89@{ shape: "lean-r", label: "Each skill can have can have coupled skills" }
-        n90@{ label: "For now these skills are all that have bonuses against stuned enemies or marked<br><br>And they require stuns or mark from other heroes<br><br>This category results in a bonus depending on % of coupled skills" }
-        n91["After performing algorithm that detects if skill is usable discard those skills from further team analysis. This should be run first as those skill can influence other categories<br><br>Results in (big) penalty for each bad skill<br><br>The scaling can be sum of bad skill devided by number of all skills"]
+        n9 --> n89@{ shape: "lean-r", label: "Each skill can have coupled skills" }
+        n90@{ label: "For now these skills are all that have bonuses against stunned enemies or marked<br><br>And they require stuns or mark from other heroes<br><br>This category results in a bonus depending on % of coupled skills" }
         n89 --> n90
-        n8 --> n91["After performing algorithm that detects if skill is usable discard those skills from further team analysis. This should be run first as those skills can influence other categories<br><br>Results in (big) penalty for each bad skill<br><br>The scaling can be sum of bad skill devided by number of all skills"]
+        n8 --> n91["Evaluate rank reach and targeting bottlenecks across enemy lineup"]
         n14 --> n92
         n10 --> n93
     end
@@ -171,20 +171,20 @@ flowchart TB
     style s_cc fill:#111111,stroke:#555
     style s_com fill:#111111,stroke:#555
     style n39 stroke-dasharray: 3 3
-	n86
-	n86
-	n11
-	n11 --- n69
-	n86 --- n59
-	n69
-	n69 --- n79
-	n80 --- n59
-	style n80 stroke-width:0.5px,stroke-dasharray:5 5
-	style n79 stroke-width:0.5px,stroke-dasharray:5 5
-	style n87 stroke-width:0.5px,stroke-dasharray:5 5
-	style n88 stroke-width:0.5px,stroke-dasharray:5 5
-	style n89 stroke-width:0.5px
-	style n90 stroke-width:0px
-	n13 --- n94
-	n16 --- n95
-```
+    style n_filter fill:#222,stroke:#00aa88,stroke-width:2px
+    n86
+    n11
+    n11 --- n69
+    n86 --- n59_heal
+    n87 --- n59_heal
+    n69
+    n69 --- n79
+    n80 --- n59_dmg
+    style n80 stroke-width:0.5px,stroke-dasharray:5 5
+    style n79 stroke-width:0.5px,stroke-dasharray:5 5
+    style n87 stroke-width:0.5px,stroke-dasharray:5 5
+    style n88 stroke-width:0.5px,stroke-dasharray:5 5
+    style n89 stroke-width:0.5px
+    style n90 stroke-width:0px
+    n13 --- n94
+    n16 --- n95

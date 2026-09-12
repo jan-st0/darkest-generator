@@ -3,7 +3,6 @@ name = "darkest-generator"
 version = "0.1.0"
 dependencies = [
     "PyYAML",
-    "fastapi",
     "pydantic",
-    "httpx"
+    "numpy",
 ]
