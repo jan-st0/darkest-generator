@@ -1,7 +1,76 @@
-trinkets:
-  generic:
-    # sequence
-    - { name: "data", rarity: "data", effect: "data"}
-  hero_specific:
-    hero_name:
-      # same sequence as in generic
+# Darkest Dungeon Trinket Data v4 - Schema Documentation
+
+This schema documents the trinket and trinket set structure in `darkest_dungeon_data-v4.yml`.
+Unlike earlier versions, trinkets are stored in flat lists at the root level (`trinkets` and `trinket_sets`) with parsed numeric modifiers and conditional tags.
+
+---
+
+## 1. Trinkets (`trinkets`)
+
+The `trinkets` list contains 286 items across all rarities and classes.
+
+```yaml
+- name: string                          # Trinket name (e.g. "Accuracy Stone", "Blasphemous Vial")
+  rarity: string                        # "(Very) Common" | "Common" | "Uncommon" | "Rare" | "Very Rare" | "Ancestral" | "Crystalline" | "Crimson Court" | "Collector" | "Madman" | "Trophy"
+  class_restriction: string | null      # Hero class name (e.g. "Plague Doctor") or null for Generic
+  category: string                      # "Generic" | "Class Specific" | "Crimson Court" | "Color of Madness" | "Trophy"
+  effects: list[TrinketEffect]
+```
+
+### Trinket Effect Object (`TrinketEffect`)
+Each effect decomposes numeric modifiers, conditional triggers, and unit types:
+
+```yaml
+stat: string                            # Target stat: 'ACC', 'SPD', 'DODGE', 'PROT', 'MAX HP', 'CRIT', 'DMG',
+                                        # 'Bleed Skill Chance', 'Bleed Resist', 'Blight Skill Chance', 'Blight Resist',
+                                        # 'Stun Skill Chance', 'Stun Resist', 'Move Skill Chance', 'Move Resist',
+                                        # 'Debuff Skill Chance', 'Debuff Resist', 'Trap Disarm', 'Scouting Chance',
+                                        # 'Stress', 'Stress Skills', 'Healing Received', 'Healing Skills', 'Virtue Chance', etc.
+modifier: int | null                    # Integer delta (+4, -1, +20, -10)
+unit: string | null                     # '%' for percentage modifiers or null for flat integer ratings
+condition: string | null                # Trigger condition (e.g., "if Torch > 75", "if in position 1", "vs Bleeding", "vs Marked") or null
+raw: string                             # Raw string as shown in-game (e.g. "+4 ACC", "+20% Bleed Resist", "-10% MAX HP")
+```
+
+---
+
+## 2. Trinket Sets (`trinket_sets`)
+
+Class-specific 2-piece item sets (primarily Crimson Court trinkets) offering an active set bonus when both trinkets are equipped simultaneously on the corresponding class.
+
+```yaml
+- set_name: string                      # Identifier (e.g. "Abomination (Crimson Court)")
+  class: string                         # Required class name (e.g. "Abomination")
+  trinket_1:
+    name: string                        # Name of the first trinket piece
+    effects: list[TrinketEffect]        # Resolved effect list (anchored or inlined)
+  trinket_2:
+    name: string                        # Name of the second trinket piece
+    effects: list[TrinketEffect]        # Resolved effect list (anchored or inlined)
+  set_bonus: list[TrinketEffect]        # Bonus stat modifiers unlocked when both are equipped
+  set_bonus_raw: string                 # Raw text string for the set bonus
+```
+
+---
+
+## 3. Data Ingestion Guide (Python / `game_data_manager.py`)
+
+When loading with PyYAML and `GameDataManager`:
+```python
+from game_data_manager import GameDataManager
+
+mgr = GameDataManager()
+
+# Query generic vs class trinkets
+generic_trinkets = [t for t in mgr.trinkets if t.class_restriction is None]
+hero_trinkets = [t for t in mgr.trinkets if t.class_restriction == "Highwayman"]
+
+# Accessing structured effects
+for trinket in hero_trinkets:
+    for eff in trinket.effects:
+        print(f"[{trinket.name}] {eff.stat}: {eff.modifier}{eff.unit or ''} (cond: {eff.condition})")
+
+# Evaluating Crimson Court set bonuses
+for s in mgr.trinket_sets:
+    print(f"Set: {s.set_name} for {s.class_name} -> Bonus: {s.set_bonus_raw}")
+```

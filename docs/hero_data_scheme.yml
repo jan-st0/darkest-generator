@@ -1,26 +1,134 @@
+# Darkest Dungeon Dataset v4 - Schema Documentation
+
+This schema documents the structured YAML format of `darkest_dungeon_data-v4.yml`.
+The dataset is structured for algorithmic evaluation (genetic algorithm fitness scoring, team synergy heuristics, and combat simulations).
+
+## Root Hierarchy
+
+```yaml
+metadata:
+  game: Darkest Dungeon
+  source_grounded: true
+  description: string
+  hero_classes_count: 18
+  trinkets_count: 286
+  trinket_sets_count: 18
+
 heroes:
-  hero_name:
-    overview: "data"
-    special_mechanics: "data"
-    religious: true # boolean
-    base_stats:
-      level_0: {hp: 0, dodge: 0, spd: 0, crit: "0%", base_dmg: "0-10"}
-      level_6: {hp: 0, dodge: 0, spd: 0, crit: "0%", base_dmg: "0-10"}
-    combat_skills:
-      - name: "data"
-      # special case for abomination
-      # form: "data"
-        launch_rank: [1, 2, 3, 4]
-        # target_rank: "Self" or list
-        # Ally positions 4, 3, 2, 1    Enemy position: 1, 2, 3, 4
-        target_rank: [1, 2, 3, 4]
-        # Possible type variants: "Melee", "Ranged", "Heal", "Buff", "Free Action"
-        type: "type"
-        effects: "data"
-    camping_skills:
-      # list
-      - {name: "data", cost: 0, target: "who", }
+  <HeroClassName>:
+    class_name: string
+    base_stats_lvl0: BaseStatsLvl0
+    base_stats_lvl6: BaseStatsLvl6
+    special_mechanics: string
+    combat_skills: list[CombatSkill]
+    camping_skills: list[CampingSkill]
 
+trinkets: list[Trinket]
 
+trinket_sets: list[TrinketSet]
+```
 
-      
+---
+
+## 1. Hero Data Specification
+
+### Base Stats (`base_stats_lvl0` & `base_stats_lvl6`)
+- `HP`: integer (maximum health)
+- `Dodge`: float (base dodge rating, e.g. `7.5`, `27.5`)
+- `SPD`: integer (base turn initiative)
+- `Crit`: string formatted as percentage (e.g. `"2.0%"`)
+- `Base_DMG`: string range formatted as `"min-max"` (e.g. `"6-11"`, `"11-20"`)
+- `Religious`: string (`'Yes'` or `'No'`, present on `base_stats_lvl0`)
+
+### Combat Skills (`combat_skills`)
+Each skill is decomposed into explicit numeric properties rather than unstructured text:
+
+```yaml
+- name: string                     # Skill display name
+  form: string | null              # Optional: "Human" or "Beast" (used by Abomination)
+  launch_ranks: list[int]          # Hero ranks from which skill can be cast (1: frontline, 4: backline)
+  target_ranks: list[int]          # Target ranks skill can reach (1-4 for enemy/ally ranks, [] for self)
+  target_type: string              # 'enemy' | 'ally' | 'self' | 'party'
+  is_aoe: boolean                  # True if hitting multiple ranks simultaneously
+  type: string                     # 'Melee' | 'Ranged' | 'Heal' | 'Buff' | 'Free Action'
+  is_pure_buff: boolean            # True if the skill performs no direct damage/heal
+
+  # Accuracy, damage modifier %, and crit modifier %:
+  stats_lvl1:
+    acc: float | null              # e.g. 95.0
+    dmg_mod: float | null          # e.g. -60.0 (percentage offset against base damage)
+    crit: float | null             # e.g. 1.0 (crit modifier percentage)
+  stats_lvl5:
+    acc: float | null
+    dmg_mod: float | null
+    crit: float | null
+
+  # Status effects and synergies:
+  stun:
+    chance_lvl1: float | null      # Base percentage chance (e.g. 90.0)
+    chance_lvl5: float | null      # Base percentage chance (e.g. 130.0)
+
+  blight:
+    pts_lvl1: float | null         # DoT damage per turn
+    pts_lvl5: float | null
+    duration: int | null           # Duration in turns
+    chance_lvl5: float | null      # Base application chance percentage
+
+  bleed:
+    pts_lvl1: float | null
+    pts_lvl5: float | null
+    duration: int | null
+    chance_lvl5: float | null
+
+  mark:
+    applies: boolean               # Whether skill marks the target
+    target: string | null          # Target identifier if applied
+    duration: int | null           # Mark duration in rounds
+    bonus_dmg_vs_marked: float | null   # Percentage bonus DMG against marked
+    bonus_crit_vs_marked: float | null  # Percentage bonus CRIT against marked
+
+  heal:
+    has_heal: boolean
+    target: string | null          # 'self' | 'ally' | 'party' | 'ally_and_self'
+    can_target_self: boolean       # Explicit flag indicating if skill can target the caster (e.g. false for Flagellant's Reclaim)
+    is_percent: boolean            # True if heal is % max HP instead of flat points
+    min_lvl1: float | null
+    max_lvl1: float | null
+    min_lvl5: float | null
+    max_lvl5: float | null
+
+  stress_heal:
+    has_stress_heal: boolean
+    target: string | null
+    min_lvl5: float | null
+    max_lvl5: float | null
+
+  movement:
+    forward: int                   # Self-advance ranks
+    back: int                      # Self-retreat ranks
+    knockback: int                 # Enemy push ranks
+    pull: int                      # Enemy pull ranks
+
+  buffs: list[BuffDebuffEffect]    # Array of positive modifiers applied
+  debuffs: list[BuffDebuffEffect]  # Array of negative modifiers applied
+  effects_raw: string              # Unparsed game text representation
+```
+
+#### Buff / Debuff Object (`BuffDebuffEffect`)
+```yaml
+stat: string                       # Stat targeted (e.g. 'SPD', 'DMG', 'ACC', 'DODGE', 'STRESS')
+target: string                     # 'self' | 'ally' | 'party' | 'target'
+value_type: string                 # 'flat' | 'percent'
+val_lvl1: float | null
+val_lvl5: float | null
+duration: int | null               # Round duration (null if battle/encounter wide)
+chance_lvl5: float | null          # Debuff application probability (null for guaranteed/self buffs)
+raw: string                        # Text representation
+```
+
+### Camping Skills (`camping_skills`)
+```yaml
+- name: string                     # Camping skill name
+  cost: int                        # Respite point cost (typically 1 to 5)
+  effects: string                  # Description of camping effects and conditions
+```

@@ -66,6 +66,7 @@ class HealEffect:
     max_lvl1: Optional[float]
     min_lvl5: Optional[float]
     max_lvl5: Optional[float]
+    can_target_self: bool = False
 
     def calc_max_expected_heal_effect(self) -> float:
         if self.min_lvl5 is not None and self.max_lvl5 is not None:
@@ -121,15 +122,8 @@ class CombatSkill:
     effects_raw: str
     form: Optional[str] = None
 
-    def _is_heal_target_ranks_4321(self) -> bool:
-        return self.heal.target == 'ally' and self.target_ranks == (1, 2, 3, 4)
-
-    def _is_not_stress_heal(self) -> bool:
-        # TODO: better function name and more robust handling
-        return self.heal.max_lvl5 is not None
-
     def is_self_heal(self) -> bool:
-        return self.heal.has_heal and (self.heal.target in ('self', 'ally_and_self') or self._is_heal_target_ranks_4321()) and self._is_not_stress_heal()
+        return self.heal.has_heal and self.heal.can_target_self and self.heal.max_lvl5 is not None
 
     def is_buff(self) -> bool:
         return self.type == 'Buff'
@@ -296,7 +290,7 @@ class GameDataManager:
 
     def __init__(self, file_path: Optional[Union[Path, str]] = None) -> None:
         if file_path is None:
-            self._handler = GameDataHandler(FilePaths.GAME_INFO_SOURCE_V3.value)
+            self._handler = GameDataHandler(FilePaths.GAME_INFO_SOURCE.value)
         else:
             self._handler = GameDataHandler(file_path)
         parsed_data = parse_raw_game_data(self._handler.raw_data)

@@ -18,9 +18,7 @@ def find_project_root(marker: str = "pyproject.toml") -> Path:
 ROOT_DIR = find_project_root()
 
 class FilePaths(Enum):
-    GAME_INFO_SOURCE = ROOT_DIR / 'darkest_dungeon_data-v3.yml'
-    GAME_INFO_SOURCE_V2 = ROOT_DIR / 'darkest_dungeon_data-v2.yml'
-    GAME_INFO_SOURCE_V3 = ROOT_DIR / 'darkest_dungeon_data-v3.yml'
+    GAME_INFO_SOURCE = ROOT_DIR / 'darkest_dungeon_data-v4.yml'
 
 
 def _load_simple_yml_no_fallback(file_path: Path | str) -> dict[str, Any] :
