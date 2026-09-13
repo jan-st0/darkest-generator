@@ -23,6 +23,10 @@ STAT_DESIRABILITY: dict[str, int] = {
     "STRESS_RECEIVED": -1,
     "DMG_TAKEN": -1,
     "HEALING_SKILLS": +1,
+    "TORCH": +1,
+    "BLIGHT_CHANCE": +1,
+    "DEBUFF_RESIST": +1,
+    "MOVE_RESIST": +1,
 }
 
 @dataclass(frozen=True, slots=True)
@@ -162,8 +166,15 @@ class CombatSkill:
         return self.target_type == 'enemy' and len(self.debuffs) > 0
 
     @property
-    def debuffs_formated(self) -> tuple[tuple[str, float]]:
-        return (
+    def buffs_formated(self) -> tuple[tuple[str, float], ...]:
+        return tuple(
+            (buff.stat, buff.max_val)
+            for buff in self.buffs
+        )
+
+    @property
+    def debuffs_formated(self) -> tuple[tuple[str, float], ...]:
+        return tuple(
             (debuff.stat, debuff.max_val)
             for debuff in self.debuffs
         )
@@ -202,12 +213,12 @@ class Hero:
     special_mechanics: str
     combat_skills: tuple[CombatSkill, ...]
     camping_skills: tuple[CampingSkill, ...]
-
     def parse_base_dmg(self) -> tuple[int, int]:
         numbers = self.base_stats_lvl6.Base_DMG.split('-')
         if len(numbers) != 2:
             raise ValueError(f'Hero base damage has invalid format with {self.class_name=} {self.base_stats_lvl6.Base_DMG}')
-        return tuple(map(numbers, int))
+        return tuple(map(int, numbers))
+
 @dataclass(frozen=True, slots=True)
 class TrinketEffect:
     stat: str
@@ -414,7 +425,7 @@ class GameDataManager:
         }
         return tuple(sorted(types))
 
-    @property
+    @cached_property
     def all_debuff_types(self) -> tuple[str, ...]:
         types = {
             debuff.stat
@@ -429,97 +440,81 @@ class GameDataManager:
     @cached_property
     def max_values_for_buffs(self) -> dict[str, float]:
         max_vals: dict[str, float] = {}
-        for hero in self._heroes:
-            for skill in hero.combat_skills:
-                if not skill.is_buff():
+        for skill in self.all_combat_skills():
+            if not skill.is_buff():
+                continue
+            for stat, val in skill.buffs_formated:
+                if stat in self.EXCLUDED_BUFF_TYPES:
                     continue
-                for buff in skill.buffs:
-                    stat = buff.stat
-                    if stat in self.EXCLUDED_BUFF_TYPES or buff.val_lvl5 is None:
-                        continue
-                    val = abs(buff.val_lvl5) if stat == 'STRESS_RECEIVED' else float(buff.val_lvl5)
-                    if val > max_vals.get(stat, 0.0):
-                        max_vals[stat] = val
+                if (
+                    stat in max_vals
+                    and val * STAT_DESIRABILITY.get(stat, 1) > max_vals[stat] * STAT_DESIRABILITY.get(stat, 1)
+                ) or stat not in max_vals:
+                    max_vals[stat] = val
         return max_vals
 
     @cached_property
     def max_values_for_debuffs(self) -> dict[str, float]:
-        max_vals = {}
+        max_vals: dict[str, float] = {}
         for skill in self.all_combat_skills():
             for stat, val in skill.debuffs_formated:
-
                 if stat in self.EXCLUDED_DEBUFF_TYPES:
                     continue
-
-                if (stat in max_vals and -val * STAT_DESIRABILITY[stat] > STAT_DESIRABILITY[stat] * -max_vals[stat]) or stat not in max_vals:
+                if (
+                    stat in max_vals
+                    and -val * STAT_DESIRABILITY[stat] > STAT_DESIRABILITY[stat] * -max_vals[stat]
+                ) or stat not in max_vals:
                     max_vals[stat] = val
         return max_vals
-                
 
-    @cached_property
-    def skills_buff_values(self) -> dict[CombatSkill, np.ndarray]:
-        buff_types = self.all_buff_types
-        if not buff_types:
+    def _vectorize_effects(
+        self,
+        is_applicable: str,
+        effects_attr: str,
+        stat_types: tuple[str, ...],
+        max_map: dict[str, float],
+    ) -> dict[CombatSkill, np.ndarray]:
+        if not stat_types:
             return {}
 
-        max_map = self.max_values_for_buffs
-        # Pre-compute normalizers to replace N divisions with N multiplications: x * inv
         inv_max = np.array(
-            [1.0 / max_map[stat] if max_map.get(stat, 0.0) != 0 else 0.0 for stat in buff_types],
+            [1.0 / max_map[stat] if max_map.get(stat, 0.0) != 0 else 0.0 for stat in stat_types],
             dtype=np.float64,
         )
-        stat_indices = {stat: i for i, stat in enumerate(buff_types)}
-        num_stats = len(buff_types)
-
-        result: dict[CombatSkill, np.ndarray] = {}
-        for hero in self._heroes:
-            for skill in hero.combat_skills:
-                if not skill.is_buff():
-                    continue
-
-                vec = np.zeros(num_stats, dtype=np.float64)
-                for buff in skill.buffs:
-                    if buff.stat in stat_indices and buff.val_lvl5 is not None:
-                        vec[stat_indices[buff.stat]] = abs(buff.val_lvl5)
-
-                # Vectorized scaling
-                result[skill] = vec * inv_max
-
-        return result
-
-    @cached_property
-    def skills_debuff_values(self) -> dict[CombatSkill, np.ndarray]:
- 
-        debuff_types = self.all_debuff_types
-        if not debuff_types:
-            return {}
-
-        max_map = self.max_values_for_debuffs
-        # Precompute reciprocal of maximum absolute debuff magnitude to avoid division in loops
-        inv_max = np.array(
-            [
-                1.0 / max_map[stat] if max_map.get(stat, 0.0) != 0 else 0.0
-                for stat in debuff_types
-            ],
-            dtype=np.float64,
-        )
-        stat_indices = {stat: i for i, stat in enumerate(debuff_types)}
-        num_stats = len(debuff_types)
+        stat_indices = {stat: i for i, stat in enumerate(stat_types)}
+        num_stats = len(stat_types)
 
         result: dict[CombatSkill, np.ndarray] = {}
         for skill in self.all_combat_skills():
-            if not skill.is_debuff():
+            if not getattr(skill, is_applicable)():
                 continue
 
             vec = np.zeros(num_stats, dtype=np.float64)
-            for debuff in skill.debuffs:
-                if debuff.stat in stat_indices and debuff.val_lvl5 is not None:
-                    vec[stat_indices[debuff.stat]] = debuff.max_val
+            for eff in getattr(skill, effects_attr):
+                if eff.stat in stat_indices and eff.val_lvl5 is not None:
+                    vec[stat_indices[eff.stat]] = eff.max_val
 
-            # Vectorized scaling
             result[skill] = vec * inv_max
 
         return result
+
+    @cached_property
+    def skills_buff_values(self) -> dict[CombatSkill, np.ndarray]:
+        return self._vectorize_effects(
+            is_applicable="is_buff",
+            effects_attr="buffs",
+            stat_types=self.all_buff_types,
+            max_map=self.max_values_for_buffs,
+        )
+
+    @cached_property
+    def skills_debuff_values(self) -> dict[CombatSkill, np.ndarray]:
+        return self._vectorize_effects(
+            is_applicable="is_debuff",
+            effects_attr="debuffs",
+            stat_types=self.all_debuff_types,
+            max_map=self.max_values_for_debuffs,
+        )
 
 
 if __name__ == "__main__":
@@ -528,5 +523,9 @@ if __name__ == "__main__":
     for debuff_type in man.all_debuff_types:
         print(debuff_type, end=' ')
     print('\n')
-    for skill, vector in man.skills_debuff_values.items():
+    print('Buff order in vector')
+    for buff_type in man.all_buff_types:
+        print(buff_type, end=' ')
+    print('\n')
+    for skill, vector in man.skills_buff_values.items():
         print(f'{skill.name=}  {vector}')

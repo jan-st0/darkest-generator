@@ -6858,14 +6858,38 @@ heroes:
         duration: null
         chance_lvl5: null
         raw: 'Self-buff: +20% to +30% PROT'
-      - stat: BLIGHT_BLEED_DEBUFF_MOVE_RESIST
+      - stat: BLIGHT_RESIST
         target: self
         value_type: percent
         val_lvl1: 30.0
         val_lvl5: 30.0
         duration: null
         chance_lvl5: null
-        raw: '+30% Blight/Bleed/Debuff/Move Resist (1 Battle) (Limit: 1 Use per Battle)'
+        raw: '+30% Blight Resist (1 Battle) (Limit: 1 Use per Battle)'
+      - stat: BLEED_RESIST
+        target: self
+        value_type: percent
+        val_lvl1: 30.0
+        val_lvl5: 30.0
+        duration: null
+        chance_lvl5: null
+        raw: '+30% Bleed Resist (1 Battle) (Limit: 1 Use per Battle)'
+      - stat: DEBUFF_RESIST
+        target: self
+        value_type: percent
+        val_lvl1: 30.0
+        val_lvl5: 30.0
+        duration: null
+        chance_lvl5: null
+        raw: '+30% Debuff Resist (1 Battle) (Limit: 1 Use per Battle)'
+      - stat: MOVE_RESIST
+        target: self
+        value_type: percent
+        val_lvl1: 30.0
+        val_lvl5: 30.0
+        duration: null
+        chance_lvl5: null
+        raw: '+30% Move Resist (1 Battle) (Limit: 1 Use per Battle)'
       debuffs: []
       effects_raw: 'Marks Self, Self-buff: +20% to +30% PROT, +30% Blight/Bleed/Debuff/Move
         Resist (1 Battle) (Limit: 1 Use per Battle)'
