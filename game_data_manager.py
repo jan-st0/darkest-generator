@@ -389,6 +389,7 @@ class GameDataManager:
 
 if __name__ == "__main__":
     man = GameDataManager()
+    """
     print('Buff order in vector:')
     for buff_type in man.all_buff_types:
         print(buff_type, end=' ')
@@ -398,3 +399,12 @@ if __name__ == "__main__":
     print('\nSelf-heal skills (ordered by output):')
     for skill, hero in man.self_heal_skills:
         print(f'{hero.class_name} -> {skill.name}: {calculate_max_self_heal(skill, hero)} HP')
+    """
+    cats: set[str] = {
+        debuff.stat
+        for hero in man.heroes
+        for skill in hero.combat_skills
+        for debuff in skill.debuffs
+    }
+    print(cats)
+
