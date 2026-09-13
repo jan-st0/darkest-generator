@@ -179,7 +179,12 @@ class CombatSkill:
         dmg_exp = (dmg_interval[0] + dmg_interval[1]) / 2
         dmg_exp *= modifier
         dmg_exp = crit_chance * 2 * dmg_exp + (1 - crit_chance) * dmg_exp
-        return dmg_exp
+
+        targets = 1
+        if self.is_aoe:
+            targets = len(self.target_ranks)
+
+        return dmg_exp * targets
 
 
 
