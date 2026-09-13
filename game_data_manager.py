@@ -4,6 +4,26 @@ from pathlib import Path
 from dataclasses import dataclass
 from file_manager import GameDataHandler, FilePaths
 from functools import cached_property
+from itertools import chain, product
+from collections.abc import Iterator
+
+# Shows how buffs/debuffs should be sorted
+# Eg: for a buff if dmg1 > dmg2 then dmg1 is better, but for debuff the other way
+STAT_DESIRABILITY: dict[str, int] = {
+    "DMG": +1,
+    "SPD": +1,
+    "ACC": +1,
+    "CRIT": +1,
+    "PROT": +1,
+    "DODGE": +1,
+    "BLIGHT_RESIST": +1,
+    "BLEED_RESIST": +1,
+    "HEAL_RECEIVED": +1,
+    "STRESS": -1,
+    "STRESS_RECEIVED": -1,
+    "DMG_TAKEN": -1,
+    "HEALING_SKILLS": +1,
+}
 
 @dataclass(frozen=True, slots=True)
 class Metadata:
@@ -99,6 +119,15 @@ class BuffDebuffEffect:
     chance_lvl5: Optional[float]
     raw: str
 
+    @property
+    def max_val(self) -> float:
+        if self.val_lvl5 is not None:
+            return self.val_lvl5
+        return 0.0
+
+    def is_target_enemy(self) -> bool:
+        return self.target == 'target'
+
 @dataclass(frozen=True, slots=True)
 class CombatSkill:
     name: str
@@ -127,6 +156,18 @@ class CombatSkill:
 
     def is_buff(self) -> bool:
         return self.type == 'Buff'
+
+
+    def is_debuff(self) -> bool:
+        return self.target_type == 'enemy' and len(self.debuffs) > 0
+
+    @property
+    def debuffs_formated(self) -> tuple[tuple[str, float]]:
+        return (
+            (debuff.stat, debuff.max_val)
+            for debuff in self.debuffs
+        )
+
 
 @dataclass(frozen=True, slots=True)
 class CampingSkill:
@@ -288,6 +329,8 @@ class GameDataManager:
 
     EXCLUDED_BUFF_TYPES = {'OTHER', 'STRESS_HEAL', 'CURE_BLIGHT_BLEED'}
 
+    EXCLUDED_DEBUFF_TYPES = {'OTHER'}
+
     def __init__(self, file_path: Optional[Union[Path, str]] = None) -> None:
         if file_path is None:
             self._handler = GameDataHandler(FilePaths.GAME_INFO_SOURCE.value)
@@ -312,6 +355,16 @@ class GameDataManager:
     def trinket_sets(self) -> tuple[TrinketSet, ...]:
         return self._trinket_sets
 
+    def all_combat_skills(self) -> Iterator[CombatSkill]:
+        """Returns an Iterator for all skills"""
+        return chain.from_iterable(hero.combat_skills for hero in self._heroes)
+
+    def all_combat_skill_pairs(self) -> Iterator[tuple[Hero, CombatSkill]]:
+        """Returns an Iterator for all skills with pairs of hero and their skill"""
+        return chain.from_iterable(
+                product((hero,), hero.combat_skills) for hero in self._heroes
+            )
+
     @cached_property
     def heroes_by_name(self) -> dict[str, Hero]:
         return {h.class_name: h for h in self._heroes}
@@ -321,8 +374,7 @@ class GameDataManager:
         """Sorted by maximum self-healing output at lvl 5"""
         unsorted_skills = tuple(
             (skill, hero)
-            for hero in self._heroes
-            for skill in hero.combat_skills
+            for hero, skill in self.all_combat_skill_pairs()
             if skill.is_self_heal()
         )
         return tuple(sorted(unsorted_skills, key=lambda pair: calculate_max_self_heal(pair[0], pair[1]), reverse=True))
@@ -331,12 +383,23 @@ class GameDataManager:
     def all_buff_types(self) -> tuple[str, ...]:
         types = {
             buff.stat
-            for hero in self._heroes
-            for skill in hero.combat_skills
+            for skill in self.all_combat_skills()
             if skill.is_buff()
             for buff in skill.buffs
             if buff.stat not in self.EXCLUDED_BUFF_TYPES and buff.val_lvl5 is not None
         }
+        return tuple(sorted(types))
+
+    @property
+    def all_debuff_types(self) -> tuple[str, ...]:
+        types = {
+            debuff.stat
+            for skill in self.all_combat_skills()
+            if skill.is_debuff()
+            for debuff in skill.debuffs
+            if debuff.is_target_enemy()
+        }
+        types -= self.EXCLUDED_DEBUFF_TYPES
         return tuple(sorted(types))
 
     @cached_property
@@ -354,6 +417,20 @@ class GameDataManager:
                     if val > max_vals.get(stat, 0.0):
                         max_vals[stat] = val
         return max_vals
+
+    @cached_property
+    def max_values_for_debuffs(self) -> dict[str, float]:
+        max_vals = {}
+        for skill in self.all_combat_skills():
+            for stat, val in skill.debuffs_formated:
+
+                if stat in self.EXCLUDED_DEBUFF_TYPES:
+                    continue
+
+                if (stat in max_vals and -val * STAT_DESIRABILITY[stat] > STAT_DESIRABILITY[stat] * -max_vals[stat]) or stat not in max_vals:
+                    max_vals[stat] = val
+        return max_vals
+                
 
     @cached_property
     def skills_buff_values(self) -> dict[CombatSkill, np.ndarray]:
@@ -386,25 +463,46 @@ class GameDataManager:
 
         return result
 
+    @cached_property
+    def skills_debuff_values(self) -> dict[CombatSkill, np.ndarray]:
+ 
+        debuff_types = self.all_debuff_types
+        if not debuff_types:
+            return {}
+
+        max_map = self.max_values_for_debuffs
+        # Precompute reciprocal of maximum absolute debuff magnitude to avoid division in loops
+        inv_max = np.array(
+            [
+                1.0 / max_map[stat] if max_map.get(stat, 0.0) != 0 else 0.0
+                for stat in debuff_types
+            ],
+            dtype=np.float64,
+        )
+        stat_indices = {stat: i for i, stat in enumerate(debuff_types)}
+        num_stats = len(debuff_types)
+
+        result: dict[CombatSkill, np.ndarray] = {}
+        for skill in self.all_combat_skills():
+            if not skill.is_debuff():
+                continue
+
+            vec = np.zeros(num_stats, dtype=np.float64)
+            for debuff in skill.debuffs:
+                if debuff.stat in stat_indices and debuff.val_lvl5 is not None:
+                    vec[stat_indices[debuff.stat]] = debuff.max_val
+
+            # Vectorized scaling
+            result[skill] = vec * inv_max
+
+        return result
+
 
 if __name__ == "__main__":
     man = GameDataManager()
-    """
-    print('Buff order in vector:')
-    for buff_type in man.all_buff_types:
-        print(buff_type, end=' ')
+    print('Debuff order in vector:')
+    for debuff_type in man.all_debuff_types:
+        print(debuff_type, end=' ')
     print('\n')
-    for skill, vector in man.skills_buff_values.items():
+    for skill, vector in man.skills_debuff_values.items():
         print(f'{skill.name=}  {vector}')
-    print('\nSelf-heal skills (ordered by output):')
-    for skill, hero in man.self_heal_skills:
-        print(f'{hero.class_name} -> {skill.name}: {calculate_max_self_heal(skill, hero)} HP')
-    """
-    cats: set[str] = {
-        debuff.stat
-        for hero in man.heroes
-        for skill in hero.combat_skills
-        for debuff in skill.debuffs
-    }
-    print(cats)
-

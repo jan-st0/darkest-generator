@@ -3170,7 +3170,7 @@ heroes:
         chance_lvl5: null
         raw: 'Self: Heal 35% to 50% max HP'
       debuffs:
-      - stat: DEBUFF_CHANCE
+      - stat: HEALING_SKILLS
         target: self
         value_type: percent
         val_lvl1: -25.0
@@ -3344,7 +3344,7 @@ heroes:
         chance_lvl5: null
         raw: 'Self: Heal 35% to 50% max HP'
       debuffs:
-      - stat: DEBUFF_CHANCE
+      - stat: HEALING_SKILLS
         target: self
         value_type: percent
         val_lvl1: -25.0
