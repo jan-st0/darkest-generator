@@ -168,6 +168,20 @@ class CombatSkill:
             for debuff in self.debuffs
         )
 
+    def raw_expected_damage(self, hero: Hero) -> float:
+        if self.type not in {'Ranged', 'Melee'}:
+            return 0.0
+
+        modifier = (100 + self.stats_lvl5.dmg_mod) / 100
+
+        crit_chance = (self.stats_lvl5.crit + hero.base_stats_lvl6.Crit) / 100
+        dmg_interval = hero.parse_base_dmg()
+        dmg_exp = (dmg_interval[0] + dmg_interval[1]) / 2
+        dmg_exp *= modifier
+        dmg_exp = crit_chance * 2 * dmg_exp + (1 - crit_chance) * dmg_exp
+        return dmg_exp
+
+
 
 @dataclass(frozen=True, slots=True)
 class CampingSkill:
@@ -184,6 +198,11 @@ class Hero:
     combat_skills: tuple[CombatSkill, ...]
     camping_skills: tuple[CampingSkill, ...]
 
+    def parse_base_dmg(self) -> tuple[int, int]:
+        numbers = self.base_stats_lvl6.Base_DMG.split('-')
+        if len(numbers) != 2:
+            raise ValueError(f'Hero base damage has invalid format with {self.class_name=} {self.base_stats_lvl6.Base_DMG}')
+        return tuple(map(numbers, int))
 @dataclass(frozen=True, slots=True)
 class TrinketEffect:
     stat: str
