@@ -3242,8 +3242,8 @@ heroes:
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
       heal:
-        has_heal: true
-        target: ally
+        has_heal: false
+        target: null
         can_target_self: false
         is_percent: false
         min_lvl1: 4.0
@@ -3266,7 +3266,7 @@ heroes:
         value_type: pts/rd
         val_lvl1: 2.0
         val_lvl5: 4.0
-        duration: 2
+        duration: 3
         chance_lvl5: null
         raw: Restoration (Heal 2 pts/rd for 2 rds to Heal 4 pts/rd for 3 rds)
       debuffs: []
@@ -3317,13 +3317,13 @@ heroes:
         bonus_crit_vs_marked: null
       heal:
         has_heal: true
-        target: ally_and_self
+        target: ally
         can_target_self: true
         is_percent: true
         min_lvl1: 33.0
-        max_lvl1: 35.0
+        max_lvl1: 33.0
         min_lvl5: 43.0
-        max_lvl5: 50.0
+        max_lvl5: 43.0
       stress_heal:
         has_stress_heal: false
         target: null
