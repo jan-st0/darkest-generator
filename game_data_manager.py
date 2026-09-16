@@ -37,16 +37,20 @@ STAT_DESIRABILITY: dict[str, int] = {
 }
 
 def calculate_max_self_heal(skill: CombatSkill, hero: Hero) -> float:
-    heal = skill.heal
-    if not heal.has_heal:
-        return 0.0
-
     max_hp = float(hero.base_stats_lvl6.HP)
-    val = heal.calc_max_expected_heal_effect()
-    if heal.is_percent:
-        val = heal.max_lvl5 or heal.max_lvl1 or 0.0
-        return (val / 100.0) * max_hp
-    return float(val)
+    self_heals = [
+        h.calc_expected_heal(max_hp)
+        for h in skill.heal
+        if h.can_target_self or h.target == 'self'
+    ]
+    # Also check if any buff provides self-healing
+    buff_self_heals = [
+        ((b.val_lvl5 / 100.0) * max_hp if b.value_type == 'percent' else b.val_lvl5) * (b.duration or 1)
+        for b in skill.buffs
+        if b.stat == 'HEAL' and b.target == 'self' and b.val_lvl5 is not None
+    ]
+    all_self_heals = self_heals + buff_self_heals
+    return max(all_self_heals, default=0.0)
 
 
 class GameDataManager:
@@ -54,7 +58,7 @@ class GameDataManager:
     # torch is not hero specific buff, like stress heal
     EXCLUDED_BUFF_TYPES = {'OTHER', 'STRESS_HEAL', 'CURE_BLIGHT_BLEED', 'TORCH', 'HEAL'}
 
-    EXCLUDED_DEBUFF_TYPES = {'OTHER'}
+    EXCLUDED_DEBUFF_TYPES = {'OTHER', 'TORCH'}
 
     def __init__(self, file_path: Optional[Union[Path, str]] = None) -> None:
         if file_path is None:

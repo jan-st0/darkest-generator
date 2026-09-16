@@ -67,14 +67,14 @@ heroes:
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
       heal:
-        has_heal: true
-        target: self
+      - target: self
         can_target_self: true
         is_percent: false
         min_lvl1: 5.0
         max_lvl1: 5.0
         min_lvl5: 10.0
         max_lvl5: 10.0
+        raw: 'Self-heal 5-10 HP'
       stress_heal:
         has_stress_heal: false
         target: null
@@ -161,15 +161,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -222,15 +214,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -293,14 +277,14 @@ heroes:
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
       heal:
-        has_heal: true
-        target: self
+      - target: self
         can_target_self: true
         is_percent: false
         min_lvl1: 3.0
         max_lvl1: 3.0
         min_lvl5: 5.0
         max_lvl5: 5.0
+        raw: 'Heal 3-5 HP'
       stress_heal:
         has_stress_heal: true
         target: self
@@ -361,15 +345,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -446,15 +422,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -525,15 +493,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -587,15 +547,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -717,15 +669,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -782,15 +726,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -852,15 +788,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -950,15 +878,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -1031,14 +951,14 @@ heroes:
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
       heal:
-        has_heal: true
-        target: ally
+      - target: ally
         can_target_self: true
         is_percent: false
         min_lvl1: 1.0
         max_lvl1: 1.0
         min_lvl5: 3.0
         max_lvl5: 3.0
+        raw: 'Heal 1-1 to 3-3 HP'
       stress_heal:
         has_stress_heal: false
         target: null
@@ -1101,15 +1021,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -1174,15 +1086,7 @@ heroes:
         duration: 2
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -1300,15 +1204,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: 100.0
         bonus_crit_vs_marked: 13.0
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -1379,15 +1275,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -1468,15 +1356,7 @@ heroes:
         duration: 3
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -1546,15 +1426,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -1619,15 +1491,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -1700,14 +1564,14 @@ heroes:
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
       heal:
-        has_heal: true
-        target: ally
+      - target: ally
         can_target_self: true
         is_percent: false
         min_lvl1: 2.0
         max_lvl1: 3.0
         min_lvl5: 4.0
         max_lvl5: 5.0
+        raw: 'Heal 2-3 to 4-5 HP'
       stress_heal:
         has_stress_heal: false
         target: null
@@ -1772,15 +1636,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: true
         target: enemy
@@ -1893,15 +1749,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: 90.0
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -1975,15 +1823,7 @@ heroes:
         duration: 3
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -2063,15 +1903,7 @@ heroes:
         duration: 2
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -2141,15 +1973,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -2213,15 +2037,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -2285,15 +2101,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -2354,15 +2162,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -2465,15 +2265,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -2534,15 +2326,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -2603,15 +2387,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -2662,15 +2438,7 @@ heroes:
         duration: 3
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -2751,14 +2519,14 @@ heroes:
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
       heal:
-        has_heal: true
-        target: ally
+      - target: ally
         can_target_self: true
         is_percent: false
         min_lvl1: 2.0
         max_lvl1: 3.0
         min_lvl5: 5.0
         max_lvl5: 6.0
+        raw: 'Heal 2-3 to 5-6 HP'
       stress_heal:
         has_stress_heal: false
         target: null
@@ -2812,15 +2580,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -2895,14 +2655,14 @@ heroes:
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
       heal:
-        has_heal: true
-        target: ally
+      - target: ally
         can_target_self: true
         is_percent: false
         min_lvl1: 1.0
         max_lvl1: 1.0
         min_lvl5: 2.0
         max_lvl5: 2.0
+        raw: 'Heal 1-1 to 2-2 HP'
       stress_heal:
         has_stress_heal: true
         target: ally
@@ -2999,15 +2759,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -3070,15 +2822,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -3142,14 +2886,14 @@ heroes:
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
       heal:
-        has_heal: true
-        target: self
+      - target: self
         can_target_self: true
         is_percent: true
         min_lvl1: 35.0
         max_lvl1: 35.0
         min_lvl5: 50.0
         max_lvl5: 50.0
+        raw: 'Self: Heal 35% to 50% max HP'
       stress_heal:
         has_stress_heal: false
         target: null
@@ -3160,15 +2904,7 @@ heroes:
         back: 0
         knockback: 0
         pull: 0
-      buffs:
-      - stat: HEAL
-        target: self
-        value_type: percent
-        val_lvl1: 35.0
-        val_lvl5: 50.0
-        duration: null
-        chance_lvl5: null
-        raw: 'Self: Heal 35% to 50% max HP'
+      buffs: []
       debuffs:
       - stat: HEALING_SKILLS
         target: self
@@ -3241,15 +2977,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: 4.0
-        max_lvl1: 4.0
-        min_lvl5: 12.0
-        max_lvl5: 12.0
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -3316,14 +3044,22 @@ heroes:
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
       heal:
-        has_heal: true
-        target: ally
-        can_target_self: true
+      - target: ally
+        can_target_self: false
         is_percent: true
         min_lvl1: 33.0
         max_lvl1: 33.0
         min_lvl5: 43.0
         max_lvl5: 43.0
+        raw: Heal Target (33% to 43% max HP)
+      - target: self
+        can_target_self: true
+        is_percent: true
+        min_lvl1: 35.0
+        max_lvl1: 35.0
+        min_lvl5: 50.0
+        max_lvl5: 50.0
+        raw: 'Self: Heal 35% to 50% max HP'
       stress_heal:
         has_stress_heal: false
         target: null
@@ -3334,15 +3070,7 @@ heroes:
         back: 0
         knockback: 0
         pull: 0
-      buffs:
-      - stat: HEAL
-        target: self
-        value_type: percent
-        val_lvl1: 35.0
-        val_lvl5: 50.0
-        duration: null
-        chance_lvl5: null
-        raw: 'Self: Heal 35% to 50% max HP'
+      buffs: []
       debuffs:
       - stat: HEALING_SKILLS
         target: self
@@ -3414,15 +3142,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: true
-        target: ally
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: true
         target: ally
@@ -3504,15 +3224,7 @@ heroes:
         duration: 2
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -3640,15 +3352,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -3710,15 +3414,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -3789,15 +3485,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -3865,15 +3553,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -3969,15 +3649,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: 40.0
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -4058,15 +3730,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -4129,15 +3793,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -4249,15 +3905,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -4308,15 +3956,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -4369,15 +4009,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -4448,15 +4080,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -4512,15 +4136,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -4607,14 +4223,14 @@ heroes:
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
       heal:
-        has_heal: true
-        target: self
+      - target: self
         can_target_self: true
         is_percent: false
         min_lvl1: 1.0
         max_lvl1: 1.0
         min_lvl5: 4.0
         max_lvl5: 4.0
+        raw: 'Heal 1 to 4 HP'
       stress_heal:
         has_stress_heal: false
         target: null
@@ -4690,15 +4306,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -4802,15 +4410,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -4865,15 +4465,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: 50.0
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -4932,15 +4524,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -5011,15 +4595,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -5092,15 +4668,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -5189,15 +4757,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -5268,15 +4828,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -5385,15 +4937,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: 100.0
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -5467,15 +5011,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -5541,15 +5077,7 @@ heroes:
         duration: 3
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -5621,15 +5149,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: true
-        target: party
-        can_target_self: true
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: true
         target: party
@@ -5694,15 +5214,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -5771,14 +5283,14 @@ heroes:
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
       heal:
-        has_heal: true
-        target: self
+      - target: self
         can_target_self: true
         is_percent: false
         min_lvl1: 4.0
         max_lvl1: 4.0
         min_lvl5: 8.0
         max_lvl5: 8.0
+        raw: 'Heal 4 to 8 HP'
       stress_heal:
         has_stress_heal: false
         target: null
@@ -5832,15 +5344,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -5930,15 +5434,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -6016,15 +5512,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -6088,15 +5576,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -6184,15 +5664,7 @@ heroes:
         duration: 3
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -6287,15 +5759,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -6359,15 +5823,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -6463,15 +5919,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: true
-        target: ally
-        can_target_self: true
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: true
         target: ally
@@ -6590,15 +6038,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -6651,15 +6091,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -6718,15 +6150,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -6804,15 +6228,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -6905,15 +6321,7 @@ heroes:
         duration: 3
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -7014,14 +6422,14 @@ heroes:
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
       heal:
-        has_heal: true
-        target: self
+      - target: self
         can_target_self: true
         is_percent: false
         min_lvl1: 6.0
         max_lvl1: 6.0
         min_lvl5: 10.0
         max_lvl5: 10.0
+        raw: 'Heal 6 to 10 HP'
       stress_heal:
         has_stress_heal: true
         target: self
@@ -7075,15 +6483,7 @@ heroes:
         duration: 3
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -7228,15 +6628,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -7290,15 +6682,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -7372,15 +6756,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -7462,15 +6838,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -7541,15 +6909,7 @@ heroes:
         duration: 2
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -7623,15 +6983,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -7713,15 +7065,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -7826,15 +7170,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: 100.0
         bonus_crit_vs_marked: 13.0
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -7904,15 +7240,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -7991,15 +7319,7 @@ heroes:
         duration: 3
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -8069,15 +7389,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -8142,15 +7454,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -8223,14 +7527,14 @@ heroes:
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
       heal:
-        has_heal: true
-        target: ally
+      - target: ally
         can_target_self: true
         is_percent: false
         min_lvl1: 2.0
         max_lvl1: 3.0
         min_lvl5: 4.0
         max_lvl5: 5.0
+        raw: 'Heal 2-3 to 4-5 HP'
       stress_heal:
         has_stress_heal: false
         target: null
@@ -8295,15 +7599,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: true
         target: enemy
@@ -8426,15 +7722,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -8495,15 +7783,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -8568,15 +7848,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -8651,14 +7923,14 @@ heroes:
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
       heal:
-        has_heal: true
-        target: ally
+      - target: ally
         can_target_self: true
         is_percent: false
         min_lvl1: 0.0
         max_lvl1: 13.0
         min_lvl5: 0.0
         max_lvl5: 22.0
+        raw: 'Heal 0–13 to 0–22 HP'
       stress_heal:
         has_stress_heal: false
         target: null
@@ -8716,15 +7988,7 @@ heroes:
         duration: 3
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -8795,15 +8059,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -8866,15 +8122,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -8981,15 +8229,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -9051,15 +8291,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -9113,15 +8345,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -9176,15 +8400,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -9241,14 +8457,14 @@ heroes:
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
       heal:
-        has_heal: true
-        target: ally
+      - target: ally
         can_target_self: true
         is_percent: false
         min_lvl1: 1.0
         max_lvl1: 1.0
         min_lvl5: 3.0
         max_lvl5: 3.0
+        raw: 'Heal 1-1 to 3-3 HP'
       stress_heal:
         has_stress_heal: false
         target: null
@@ -9313,15 +8529,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -9392,15 +8600,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -9509,15 +8709,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -9590,15 +8782,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -9700,15 +8884,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -9771,15 +8947,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -9851,15 +9019,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -9946,15 +9106,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: 60.0
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -10015,15 +9167,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -10133,15 +9277,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -10205,14 +9341,14 @@ heroes:
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
       heal:
-        has_heal: true
-        target: self
+      - target: self
         can_target_self: true
         is_percent: false
         min_lvl1: 3.0
         max_lvl1: 3.0
         min_lvl5: 5.0
         max_lvl5: 5.0
+        raw: 'Self: Heal 3 to 5 HP'
       stress_heal:
         has_stress_heal: false
         target: null
@@ -10223,15 +9359,7 @@ heroes:
         back: 0
         knockback: 0
         pull: 0
-      buffs:
-      - stat: HEAL
-        target: self
-        value_type: flat
-        val_lvl1: 3.0
-        val_lvl5: 5.0
-        duration: null
-        chance_lvl5: null
-        raw: 'Self: Heal 3 to 5 HP'
+      buffs: []
       debuffs: []
       effects_raw: 'ACC 85–105, DMG -25%, CRIT 5%–9%, Self: Heal 3 to 5 HP'
     - name: Dazzling Light
@@ -10275,15 +9403,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -10348,14 +9468,14 @@ heroes:
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
       heal:
-        has_heal: true
-        target: ally
+      - target: ally
         can_target_self: true
         is_percent: false
         min_lvl1: 4.0
         max_lvl1: 5.0
         min_lvl5: 8.0
         max_lvl5: 9.0
+        raw: 'Heal 4-5 to 8-9 HP'
       stress_heal:
         has_stress_heal: false
         target: null
@@ -10412,14 +9532,14 @@ heroes:
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
       heal:
-        has_heal: true
-        target: party
+      - target: party
         can_target_self: true
         is_percent: false
         min_lvl1: 1.0
         max_lvl1: 3.0
         min_lvl5: 4.0
         max_lvl5: 5.0
+        raw: 'Heal 1-3 to 4-5 HP to entire party'
       stress_heal:
         has_stress_heal: false
         target: null
@@ -10475,15 +9595,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null
@@ -10570,15 +9682,7 @@ heroes:
         duration: null
         bonus_dmg_vs_marked: null
         bonus_crit_vs_marked: null
-      heal:
-        has_heal: false
-        target: null
-        can_target_self: false
-        is_percent: false
-        min_lvl1: null
-        max_lvl1: null
-        min_lvl5: null
-        max_lvl5: null
+      heal: []
       stress_heal:
         has_stress_heal: false
         target: null

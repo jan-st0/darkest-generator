@@ -87,15 +87,17 @@ Each skill is decomposed into explicit numeric properties rather than unstructur
     bonus_dmg_vs_marked: float | null   # Percentage bonus DMG against marked
     bonus_crit_vs_marked: float | null  # Percentage bonus CRIT against marked
 
-  heal:
-    has_heal: boolean
-    target: string | null          # 'self' | 'ally' | 'party' | 'ally_and_self'
-    can_target_self: boolean       # Explicit flag indicating if skill can target the caster (e.g. false for Flagellant's Reclaim)
-    is_percent: boolean            # True if heal is % max HP instead of flat points
-    min_lvl1: float | null
-    max_lvl1: float | null
-    min_lvl5: float | null
-    max_lvl5: float | null
+  heal: list[HealEffect]           # Array of direct heal effects (empty [] if no direct heal)
+
+  # Heal Effect Object:
+  # - target: string               # 'self' | 'ally' | 'party'
+  #   can_target_self: boolean     # True if the heal can affect the caster
+  #   is_percent: boolean          # True if heal is % max HP instead of flat points
+  #   min_lvl1: float | null
+  #   max_lvl1: float | null
+  #   min_lvl5: float | null
+  #   max_lvl5: float | null
+  #   raw: string                  # Detailed description of heal effect
 
   stress_heal:
     has_stress_heal: boolean

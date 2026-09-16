@@ -56,20 +56,27 @@ class MarkEffect:
 
 @dataclass(frozen=True, slots=True)
 class HealEffect:
-    has_heal: bool
-    target: Optional[str]
+    target: str
+    can_target_self: bool
     is_percent: bool
     min_lvl1: Optional[float]
     max_lvl1: Optional[float]
     min_lvl5: Optional[float]
     max_lvl5: Optional[float]
-    can_target_self: bool = False
+    raw: str = ""
 
     def calc_max_expected_heal_effect(self) -> float:
         if self.min_lvl5 is not None and self.max_lvl5 is not None:
             return (self.min_lvl5 + self.max_lvl5) / 2
-
         return 0.0
+
+    def calc_expected_heal(self, max_hp: float) -> float:
+        """Calculates expected heal for a single recipient using level 5 values."""
+        base_val = self.calc_max_expected_heal_effect()
+        if self.is_percent:
+            return (base_val / 100.0) * max_hp
+        return base_val
+
 
 @dataclass(frozen=True, slots=True)
 class StressHealEffect:
@@ -120,7 +127,7 @@ class CombatSkill:
     blight: DotEffect
     bleed: DotEffect
     mark: MarkEffect
-    heal: HealEffect
+    heal: tuple[HealEffect, ...]
     stress_heal: StressHealEffect
     movement: MovementEffect
     buffs: tuple[BuffDebuffEffect, ...]
@@ -128,8 +135,18 @@ class CombatSkill:
     effects_raw: str
     form: Optional[str] = None
 
+    @property
+    def has_healing(self) -> bool:
+        """Checks if the skill provides any HP healing via direct heal effects or buff effects."""
+        return bool(self.heal) or any(b.stat == 'HEAL' for b in self.buffs)
+
     def is_self_heal(self) -> bool:
-        return self.heal.has_heal and self.heal.can_target_self and self.heal.max_lvl5 is not None
+        """Checks if the skill contains a self-healing effect."""
+        return any(
+            h.can_target_self or h.target == 'self'
+            for h in self.heal
+            if h.min_lvl5 is not None
+        )
 
     def is_buff(self) -> bool:
         return self.type == 'Buff'
@@ -152,8 +169,37 @@ class CombatSkill:
             for debuff in self.debuffs
         )
 
+    def _healing_from_buffs(self, max_hp: float) -> float:
+        """Calculates expected HP healing contribution from skill buffs (e.g. Regeneration/Restoration)."""
+        total = 0.0
+        for buff in self.buffs:
+            if buff.stat != 'HEAL' or buff.val_lvl5 is None:
+                continue
+
+            num_targets = len(self.target_ranks) if self.is_aoe and self.target_ranks else 1
+            duration = buff.duration if buff.duration is not None else 1
+            rate = (buff.val_lvl5 / 100.0) * max_hp if buff.value_type == 'percent' else buff.val_lvl5
+            total += rate * duration * num_targets
+        return total
+
     def healing_value(self, hero: Hero) -> float:
-        pass
+        """Calculates total expected HP healing output across all targets (direct heals + buff heals)."""
+        max_hp = float(hero.base_stats_lvl6.HP)
+        total_heal = 0.0
+
+        for h in self.heal:
+            per_target = h.calc_expected_heal(max_hp)
+            match h.target:
+                case 'party':
+                    num_targets = len(self.target_ranks) if self.is_aoe and self.target_ranks else 4
+                case 'ally':
+                    num_targets = len(self.target_ranks) if self.is_aoe and self.target_ranks else 1
+                case 'self' | _:
+                    num_targets = 1
+            total_heal += per_target * num_targets
+
+        total_heal += self._healing_from_buffs(max_hp)
+        return total_heal
 
 
     def raw_expected_damage(self, hero: Hero) -> float:

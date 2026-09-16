@@ -25,6 +25,16 @@ from data_model import (
 def parse_buff_debuff(data: dict[str, Any]) -> BuffDebuffEffect:
     return BuffDebuffEffect(**data)
 
+def parse_heal(data: Union[dict[str, Any], list[dict[str, Any]]]) -> tuple[HealEffect, ...]:
+    if isinstance(data, list):
+        return tuple(HealEffect(**h) for h in data)
+    if isinstance(data, dict):
+        if not data.get("has_heal", True):
+            return ()
+        clean_data = {k: v for k, v in data.items() if k != "has_heal"}
+        return (HealEffect(**clean_data),)
+    return ()
+
 def parse_combat_skill(data: dict[str, Any]) -> CombatSkill:
     return CombatSkill(
         name=data["name"],
@@ -40,7 +50,7 @@ def parse_combat_skill(data: dict[str, Any]) -> CombatSkill:
         blight=DotEffect(**data["blight"]),
         bleed=DotEffect(**data["bleed"]),
         mark=MarkEffect(**data["mark"]),
-        heal=HealEffect(**data["heal"]),
+        heal=parse_heal(data.get("heal", [])),
         stress_heal=StressHealEffect(**data["stress_heal"]),
         movement=MovementEffect(**data["movement"]),
         buffs=tuple(parse_buff_debuff(b) for b in data.get("buffs", [])),
