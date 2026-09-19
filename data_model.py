@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 
 
@@ -220,6 +220,18 @@ class CombatSkill:
 
         return dmg_exp * targets
 
+    @property
+    def forward_stat(self) -> int:
+        return self.movement.forward
+    
+    @property
+    def back_stat(self) -> int:
+        return self.movement.back
+    
+    def move_val(self) -> int:
+        """ returns signed int value for self hero movement, where negative means they move backwards """
+        return self.movement.forward - self.back_stat or 0
+
 
 
 @dataclass(frozen=True, slots=True)
@@ -278,6 +290,7 @@ class HeroBuild:
     rank: int
     skills: tuple[CombatSkill, ...]
     trinkets: tuple[Trinket, ...]
+    active_skills: tuple[CombatSkill, ...] = field(init=False, default_factory=tuple)
 
 @dataclass(frozen=True, slots=True)
 class Party:
