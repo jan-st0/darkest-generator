@@ -117,4 +117,4 @@ def parse_raw_game_data(
         tuple(parse_hero(h) for h in raw_data["heroes"].values()),
         tuple(parse_trinket(t) for t in raw_data["trinkets"]),
         tuple(parse_trinket_set(s) for s in raw_data["trinket_sets"])
-    )
+    ) # type: ignore

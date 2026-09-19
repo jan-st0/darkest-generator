@@ -141,7 +141,7 @@ class GameDataManager:
         for skill in self.all_combat_skills():
             if not skill.is_buff():
                 continue
-            for stat, val in skill.buffs_formated:
+            for stat, val in skill.buffs_formated():
                 if stat in self.EXCLUDED_BUFF_TYPES:
                     continue
                 if (
@@ -155,7 +155,7 @@ class GameDataManager:
     def max_values_for_debuffs(self) -> dict[str, float]:
         max_vals: dict[str, float] = {}
         for skill in self.all_combat_skills():
-            for stat, val in skill.debuffs_formated:
+            for stat, val in skill.debuffs_formated():
                 if stat in self.EXCLUDED_DEBUFF_TYPES:
                     continue
                 if (

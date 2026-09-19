@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from multiprocessing import Value
 from typing import Optional
 
 
@@ -38,6 +39,9 @@ class SkillCombatStats:
 class StunEffect:
     chance_lvl1: Optional[float]
     chance_lvl5: Optional[float]
+
+    def has_stun(self) -> bool:
+        return self.chance_lvl1 is not None and self.chance_lvl5 is not None
 
 @dataclass(frozen=True, slots=True)
 class DotEffect:
@@ -134,11 +138,17 @@ class CombatSkill:
     debuffs: tuple[BuffDebuffEffect, ...]
     effects_raw: str
     form: Optional[str] = None
+    coupled_skills: tuple[CombatSkill, ...] = field(init=False, default_factory=tuple)
 
-    @property
     def has_healing(self) -> bool:
         """Checks if the skill provides any HP healing via direct heal effects or buff effects."""
         return bool(self.heal) or any(b.stat == 'HEAL' for b in self.buffs)
+    
+    def has_stun(self) -> bool:
+        return self.stun.has_stun()
+    
+    def amount_of_targets(self) -> int:
+        return 1 if not self.is_aoe else len(self.target_ranks)
 
     def is_self_heal(self) -> bool:
         """Checks if the skill contains a self-healing effect."""
@@ -155,14 +165,12 @@ class CombatSkill:
     def is_debuff(self) -> bool:
         return self.target_type == 'enemy' and len(self.debuffs) > 0
 
-    @property
     def buffs_formated(self) -> tuple[tuple[str, float], ...]:
         return tuple(
             (buff.stat, buff.max_val)
             for buff in self.buffs
         )
 
-    @property
     def debuffs_formated(self) -> tuple[tuple[str, float], ...]:
         return tuple(
             (debuff.stat, debuff.max_val)
@@ -192,8 +200,10 @@ class CombatSkill:
             match h.target:
                 case 'party':
                     num_targets = len(self.target_ranks) if self.is_aoe and self.target_ranks else 4
+                    break
                 case 'ally':
                     num_targets = len(self.target_ranks) if self.is_aoe and self.target_ranks else 1
+                    break
                 case 'self' | _:
                     num_targets = 1
             total_heal += per_target * num_targets
@@ -206,17 +216,21 @@ class CombatSkill:
         if self.type not in {'Ranged', 'Melee'}:
             return 0.0
 
-        modifier = (100 + self.stats_lvl5.dmg_mod) / 100
+        dmg_mod = self.stats_lvl5.dmg_mod or 0.0
+        modifier = (100.0 + dmg_mod) / 100
 
-        crit_chance = (self.stats_lvl5.crit + hero.base_stats_lvl6.Crit) / 100
+        skill_crit = self.stats_lvl5.crit or 0.0
+        hero_crit = hero.get_max_crit()
+
+        crit_chance = (skill_crit + hero_crit) / 100
         dmg_interval = hero.parse_base_dmg()
         dmg_exp = (dmg_interval[0] + dmg_interval[1]) / 2
         dmg_exp *= modifier
-        dmg_exp = crit_chance * 2 * dmg_exp + (1 - crit_chance) * dmg_exp
+        
+        crit_multiplier = 2.0
+        dmg_exp = (crit_chance * crit_multiplier + (1 - crit_chance)) * dmg_exp
 
-        targets = 1
-        if self.is_aoe:
-            targets = len(self.target_ranks)
+        targets = self.amount_of_targets()
 
         return dmg_exp * targets
 
@@ -228,12 +242,26 @@ class CombatSkill:
     def back_stat(self) -> int:
         return self.movement.back
     
+    @property
     def move_val(self) -> int:
         """ returns signed int value for self hero movement, where negative means they move backwards """
         return self.movement.forward - self.back_stat or 0
+    
+    def has_backline_reach(self) -> bool:
+        return self.target_type == 'enemy' and (3 in self.target_ranks or 4 in self.target_ranks)
 
-
-
+    def stun_targets_and_chance(self) -> tuple[int, float]:
+        return (self.amount_of_targets(), self.stun.chance_lvl5 or 0.0)
+    
+    def _dot_data(self, effect: DotEffect) -> tuple[int, int, float]:
+        return (int(effect.pts_lvl5 or 0), effect.duration or 0, effect.chance_lvl5 or 0.0)
+    
+    def bleed_values(self) -> tuple[int, int, float]:
+        return self._dot_data(self.bleed)
+    
+    def blight_values(self) -> tuple[int, int, float]:
+        return self._dot_data(self.blight)
+    
 @dataclass(frozen=True, slots=True)
 class CampingSkill:
     name: str
@@ -248,11 +276,18 @@ class Hero:
     special_mechanics: str
     combat_skills: tuple[CombatSkill, ...]
     camping_skills: tuple[CampingSkill, ...]
-    def parse_base_dmg(self) -> tuple[int, int]:
+    def parse_base_dmg(self) -> tuple[int, ...]:
         numbers = self.base_stats_lvl6.Base_DMG.split('-')
         if len(numbers) != 2:
             raise ValueError(f'Hero base damage has invalid format with {self.class_name=} {self.base_stats_lvl6.Base_DMG}')
         return tuple(map(int, numbers))
+    
+    def get_max_crit(self, default = 0.0) -> float:
+        # TODO: extract cirt value in a more robust way
+        try:
+            return  float(self.base_stats_lvl6.Crit.replace('%', ''))
+        except (ValueError, TypeError):
+            return default
 
 @dataclass(frozen=True, slots=True)
 class TrinketEffect:
@@ -291,6 +326,13 @@ class HeroBuild:
     skills: tuple[CombatSkill, ...]
     trinkets: tuple[Trinket, ...]
     active_skills: tuple[CombatSkill, ...] = field(init=False, default_factory=tuple)
+
+    def backline_damage(self) -> float:
+        total = 0.0
+        for skill in self.active_skills:
+            if skill.has_backline_reach():
+                total += skill.raw_expected_damage(self.hero)
+        return total
 
 @dataclass(frozen=True, slots=True)
 class Party:
