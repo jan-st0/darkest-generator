@@ -112,7 +112,7 @@ heroes:
         raw: +20% to +30% Blight Resist
       debuffs:
       - stat: STRESS
-        target: ally
+        target: party
         value_type: flat
         val_lvl1: 8.0
         val_lvl5: 8.0
@@ -347,10 +347,10 @@ heroes:
         bonus_crit_vs_marked: null
       heal: []
       stress_heal:
-        has_stress_heal: false
-        target: null
-        min_lvl5: null
-        max_lvl5: null
+        has_stress_heal: true
+        target: party
+        min_lvl5: 2.0
+        max_lvl5: 2.0
       movement:
         forward: 0
         back: 0
@@ -555,7 +555,7 @@ heroes:
         max_lvl5: null
       movement:
         forward: 1
-        back: 2
+        back: 0
         knockback: 2
         pull: 0
       buffs:
@@ -1055,7 +1055,7 @@ heroes:
       - 2
       - 3
       - 4
-      target_type: enemy
+      target_type: ally
       is_aoe: false
       type: Buff
       is_pure_buff: true
@@ -1434,7 +1434,7 @@ heroes:
         max_lvl5: null
       movement:
         forward: 0
-        back: 1
+        back: 0
         knockback: 1
         pull: 0
       buffs:
@@ -1639,7 +1639,7 @@ heroes:
       heal: []
       stress_heal:
         has_stress_heal: true
-        target: enemy
+        target: party
         min_lvl5: 1.0
         max_lvl5: 3.0
       movement:
@@ -1955,8 +1955,8 @@ heroes:
         dmg_mod: -67.0
         crit: 4.0
       stun:
-        chance_lvl1: null
-        chance_lvl5: null
+        chance_lvl1: 100.0
+        chance_lvl5: 140.0
       blight:
         pts_lvl1: null
         pts_lvl5: null
@@ -1981,7 +1981,7 @@ heroes:
         max_lvl5: null
       movement:
         forward: 0
-        back: 2
+        back: 0
         knockback: 2
         pull: 0
       buffs:
@@ -2019,8 +2019,8 @@ heroes:
         dmg_mod: -100.0
         crit: null
       stun:
-        chance_lvl1: null
-        chance_lvl5: null
+        chance_lvl1: 110.0
+        chance_lvl5: 150.0
       blight:
         pts_lvl1: null
         pts_lvl5: null
@@ -2152,10 +2152,10 @@ heroes:
         duration: null
         chance_lvl5: null
       bleed:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 2.0
+        pts_lvl5: 4.0
+        duration: 3
+        chance_lvl5: 140.0
       mark:
         applies: false
         target: null
@@ -2369,8 +2369,8 @@ heroes:
         dmg_mod: -50.0
         crit: 4.0
       stun:
-        chance_lvl1: null
-        chance_lvl5: null
+        chance_lvl1: 100.0
+        chance_lvl5: 140.0
       blight:
         pts_lvl1: null
         pts_lvl5: null
@@ -2749,10 +2749,10 @@ heroes:
         duration: null
         chance_lvl5: null
       bleed:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 4.0
+        pts_lvl5: 6.0
+        duration: 3
+        chance_lvl5: 140.0
       mark:
         applies: false
         target: null
@@ -2812,10 +2812,10 @@ heroes:
         duration: null
         chance_lvl5: null
       bleed:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 3.0
+        pts_lvl5: 5.0
+        duration: 3
+        chance_lvl5: 140.0
       mark:
         applies: false
         target: null
@@ -2875,10 +2875,10 @@ heroes:
         duration: null
         chance_lvl5: null
       bleed:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 5.0
+        pts_lvl5: 9.0
+        duration: 3
+        chance_lvl5: 140.0
       mark:
         applies: false
         target: null
@@ -2967,10 +2967,10 @@ heroes:
         duration: null
         chance_lvl5: null
       bleed:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 3.0
+        pts_lvl5: 5.0
+        duration: 3
+        chance_lvl5: 160.0
       mark:
         applies: false
         target: null
@@ -3081,7 +3081,7 @@ heroes:
         chance_lvl5: null
         raw: 'Self-debuff: -25% Healing Skills'
       - stat: HEAL_RECEIVED
-        target: ally
+        target: self
         value_type: percent
         val_lvl1: -25.0
         val_lvl5: -25.0
@@ -3089,7 +3089,7 @@ heroes:
         chance_lvl5: null
         raw: -25% Healing Received
       - stat: SPD
-        target: ally
+        target: self
         value_type: percent
         val_lvl1: -3.0
         val_lvl5: -3.0
@@ -3715,10 +3715,10 @@ heroes:
         chance_lvl1: null
         chance_lvl5: null
       blight:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 2.0
+        pts_lvl5: 4.0
+        duration: 4
+        chance_lvl5: 140.0
       bleed:
         pts_lvl1: null
         pts_lvl5: null
@@ -3991,8 +3991,8 @@ heroes:
         dmg_mod: -100.0
         crit: null
       stun:
-        chance_lvl1: null
-        chance_lvl5: null
+        chance_lvl1: 110.0
+        chance_lvl5: 150.0
       blight:
         pts_lvl1: null
         pts_lvl5: null
@@ -4070,10 +4070,10 @@ heroes:
         duration: null
         chance_lvl5: null
       bleed:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 2.0
+        pts_lvl5: 4.0
+        duration: 3
+        chance_lvl5: 140.0
       mark:
         applies: false
         target: null
@@ -4296,10 +4296,10 @@ heroes:
         duration: null
         chance_lvl5: null
       bleed:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 3.0
+        pts_lvl5: 5.0
+        duration: 3
+        chance_lvl5: 140.0
       mark:
         applies: false
         target: null
@@ -4787,7 +4787,7 @@ heroes:
         raw: +5% CRIT
       debuffs:
       - stat: RIPOSTE_DMG
-        target: target
+        target: self
         value_type: percent
         val_lvl1: -40.0
         val_lvl5: -15.0
@@ -4826,10 +4826,10 @@ heroes:
         duration: null
         chance_lvl5: null
       bleed:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 2.0
+        pts_lvl5: 4.0
+        duration: 3
+        chance_lvl5: 140.0
       mark:
         applies: false
         target: null
@@ -4935,10 +4935,10 @@ heroes:
         duration: null
         chance_lvl5: null
       bleed:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 1.0
+        pts_lvl5: 2.0
+        duration: 3
+        chance_lvl5: 140.0
       mark:
         applies: false
         target: null
@@ -5009,10 +5009,10 @@ heroes:
         duration: null
         chance_lvl5: null
       bleed:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 1.0
+        pts_lvl5: 3.0
+        duration: 3
+        chance_lvl5: 150.0
       mark:
         applies: false
         target: null
@@ -5334,8 +5334,8 @@ heroes:
         dmg_mod: -65.0
         crit: 9.0
       stun:
-        chance_lvl1: null
-        chance_lvl5: null
+        chance_lvl1: 110.0
+        chance_lvl5: 150.0
       blight:
         pts_lvl1: null
         pts_lvl5: null
@@ -5510,10 +5510,10 @@ heroes:
         duration: null
         chance_lvl5: null
       bleed:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 2.0
+        pts_lvl5: 4.0
+        duration: 3
+        chance_lvl5: 140.0
       mark:
         applies: false
         target: null
@@ -5757,10 +5757,10 @@ heroes:
         duration: null
         chance_lvl5: null
       bleed:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 3.0
+        pts_lvl5: 5.0
+        duration: 3
+        chance_lvl5: 140.0
       mark:
         applies: false
         target: null
@@ -6166,7 +6166,7 @@ heroes:
         max_lvl5: null
       movement:
         forward: 0
-        back: 3
+        back: 0
         knockback: 3
         pull: 0
       buffs:
@@ -6698,7 +6698,7 @@ heroes:
         max_lvl5: null
       movement:
         forward: 1
-        back: 1
+        back: 0
         knockback: 1
         pull: 0
       buffs:
@@ -7405,7 +7405,7 @@ heroes:
         max_lvl5: null
       movement:
         forward: 0
-        back: 1
+        back: 0
         knockback: 1
         pull: 0
       buffs:
@@ -7610,7 +7610,7 @@ heroes:
       heal: []
       stress_heal:
         has_stress_heal: true
-        target: enemy
+        target: party
         min_lvl5: null
         max_lvl5: null
       movement:
@@ -7920,10 +7920,10 @@ heroes:
         duration: null
         chance_lvl5: null
       bleed:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 1.0
+        pts_lvl5: 3.0
+        duration: 3
+        chance_lvl5: 85.0
       mark:
         applies: false
         target: null
@@ -8049,8 +8049,8 @@ heroes:
         dmg_mod: -50.0
         crit: 13.0
       stun:
-        chance_lvl1: null
-        chance_lvl5: null
+        chance_lvl1: 110.0
+        chance_lvl5: 150.0
       blight:
         pts_lvl1: null
         pts_lvl5: null
@@ -8222,10 +8222,10 @@ heroes:
         chance_lvl1: null
         chance_lvl5: null
       blight:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 5.0
+        pts_lvl5: 7.0
+        duration: 3
+        chance_lvl5: 140.0
       bleed:
         pts_lvl1: null
         pts_lvl5: null
@@ -8284,10 +8284,10 @@ heroes:
         chance_lvl1: null
         chance_lvl5: null
       blight:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 4.0
+        pts_lvl5: 6.0
+        duration: 3
+        chance_lvl5: 140.0
       bleed:
         pts_lvl1: null
         pts_lvl5: null
@@ -8335,8 +8335,8 @@ heroes:
         dmg_mod: -100.0
         crit: null
       stun:
-        chance_lvl1: null
-        chance_lvl5: null
+        chance_lvl1: 100.0
+        chance_lvl5: 140.0
       blight:
         pts_lvl1: null
         pts_lvl5: null
@@ -8398,10 +8398,10 @@ heroes:
         duration: null
         chance_lvl5: null
       bleed:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 2.0
+        pts_lvl5: 4.0
+        duration: 3
+        chance_lvl5: 140.0
       mark:
         applies: false
         target: null
@@ -8590,8 +8590,8 @@ heroes:
         dmg_mod: -100.0
         crit: null
       stun:
-        chance_lvl1: null
-        chance_lvl5: null
+        chance_lvl1: 100.0
+        chance_lvl5: 140.0
       blight:
         pts_lvl1: null
         pts_lvl5: null
@@ -8877,10 +8877,10 @@ heroes:
         chance_lvl1: null
         chance_lvl5: null
       blight:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 3.0
+        pts_lvl5: 5.0
+        duration: 3
+        chance_lvl5: 140.0
       bleed:
         pts_lvl1: null
         pts_lvl5: null
@@ -8940,10 +8940,10 @@ heroes:
         chance_lvl1: null
         chance_lvl5: null
       blight:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 0.0
+        pts_lvl5: 2.0
+        duration: 3
+        chance_lvl5: 140.0
       bleed:
         pts_lvl1: null
         pts_lvl5: null
@@ -9099,10 +9099,10 @@ heroes:
         chance_lvl1: null
         chance_lvl5: null
       blight:
-        pts_lvl1: null
-        pts_lvl5: null
-        duration: null
-        chance_lvl5: null
+        pts_lvl1: 3.0
+        pts_lvl5: 5.0
+        duration: 3
+        chance_lvl5: 140.0
       bleed:
         pts_lvl1: null
         pts_lvl5: null
@@ -9393,8 +9393,8 @@ heroes:
         dmg_mod: -75.0
         crit: 9.0
       stun:
-        chance_lvl1: null
-        chance_lvl5: null
+        chance_lvl1: 100.0
+        chance_lvl5: 140.0
       blight:
         pts_lvl1: null
         pts_lvl5: null

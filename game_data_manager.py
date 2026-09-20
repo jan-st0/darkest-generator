@@ -63,7 +63,7 @@ class GameDataManager:
     # torch is not hero specific buff, like stress heal
     EXCLUDED_BUFF_TYPES = {'OTHER', 'STRESS_HEAL', 'CURE_BLIGHT_BLEED', 'TORCH', 'HEAL', 'RIPOSTE', 'RIPOSTE_CRIT', 'RIPOSTE_DMG'}
 
-    EXCLUDED_DEBUFF_TYPES = {'OTHER', 'TORCH'}
+    EXCLUDED_DEBUFF_TYPES = {'OTHER', 'TORCH', 'RIPOSTE_DMG'}
 
     def __init__(self, file_path: Optional[Union[Path, str]] = None) -> None:
         target_path: Path = (

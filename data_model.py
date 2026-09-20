@@ -154,11 +154,13 @@ class CombatSkill:
         return 1 if not self.is_aoe else len(self.target_ranks)
 
     def is_self_heal(self) -> bool:
-        """Checks if the skill contains a self-healing effect."""
         return any(
             h.can_target_self or h.target == 'self'
             for h in self.heal
             if h.min_lvl5 is not None
+        ) or any(
+            b.stat == 'HEAL' and b.target == 'self' and b.val_lvl5 is not None
+            for b in self.buffs
         )
 
     def is_buff(self) -> bool:
