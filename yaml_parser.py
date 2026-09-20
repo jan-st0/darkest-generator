@@ -111,10 +111,10 @@ def parse_trinket_set(data: dict[str, Any]) -> TrinketSet:
 
 def parse_raw_game_data(
     raw_data: dict[str, Any],
-) -> dict[str, Union[Metadata, tuple[Hero, ...], tuple[Trinket, ...], tuple[TrinketSet, ...]]]:
+) -> tuple[Metadata, tuple[Hero, ...], tuple[Trinket, ...], tuple[TrinketSet, ...]]:
     return (
         Metadata(**raw_data["metadata"]),
         tuple(parse_hero(h) for h in raw_data["heroes"].values()),
         tuple(parse_trinket(t) for t in raw_data["trinkets"]),
         tuple(parse_trinket_set(s) for s in raw_data["trinket_sets"])
-    ) # type: ignore
+    )

@@ -4769,20 +4769,28 @@ heroes:
         knockback: 0
         pull: 0
       buffs:
-      - stat: OTHER
-        target: target
-        value_type: flat
+      - stat: RIPOSTE
+        target: self
+        value_type: percent
         val_lvl1: 1.0
         val_lvl5: 1.0
-        duration: null
+        duration: 3
         chance_lvl5: null
-        raw: Forward 1
+        raw: Activates Riposte (3 rds)
+      - stat: RIPOSTE_CRIT
+        target: self
+        value_type: percent
+        val_lvl1: 0.0
+        val_lvl5: 5.0
+        duration: 3
+        chance_lvl5: null
+        raw: +5% CRIT
       debuffs:
-      - stat: DMG
+      - stat: RIPOSTE_DMG
         target: target
         value_type: percent
         val_lvl1: -40.0
-        val_lvl5: 5.0
+        val_lvl5: -15.0
         duration: 3
         chance_lvl5: null
         raw: 'Activates Riposte (3 rds, Riposte: -40% to -15% DMG, +0% to +5% CRIT)'
@@ -7277,7 +7285,7 @@ heroes:
         duration: 2
         chance_lvl5: 140.0
         raw: -15% to -19% CRIT (100% to 140% base, 2 rds)
-      effects_raw: 'ACC 95–115, DMG -80%, CRIT -10% to -6%, Debuff target: -15 to
+      effects_raw: 'ACC 95-115, DMG -80%, CRIT -10% to -6%, Debuff target: -15 to
         -20 ACC, -15% to -19% CRIT (100% to 140% base, 2 rds)'
     - name: Call the Shot
       form: null
@@ -7348,7 +7356,7 @@ heroes:
         duration: 2
         chance_lvl5: 140.0
         raw: 'Debuff target: -20 to -30 DODGE (100% to 140% base, 2 rds)'
-      effects_raw: 'ACC 100–120, DMG -100%, Mark Target (3 rds), Debuff target: -20
+      effects_raw: 'ACC 100-120, DMG -100%, Mark Target (3 rds), Debuff target: -20
         to -30 DODGE (100% to 140% base, 2 rds)'
     - name: Buckshot
       form: null
@@ -7410,7 +7418,7 @@ heroes:
         chance_lvl5: 105.0
         raw: Knockback 1 (75% to 105% base)
       debuffs: []
-      effects_raw: ACC 95–115, DMG -50%, CRIT 2%–6%, Knockback 1 (75% to 105% base)
+      effects_raw: ACC 95-115, DMG -50%, CRIT 2%-6%, Knockback 1 (75% to 105% base)
     - name: Sidearm
       form: null
       launch_ranks:
@@ -7483,7 +7491,7 @@ heroes:
         chance_lvl5: null
         raw: 'Self-buff: +3 to +5 SPD (3 rds)'
       debuffs: []
-      effects_raw: 'ACC 75–95, DMG -10%, CRIT 0%–4%, hits random enemy, Self-buff:
+      effects_raw: 'ACC 75-95, DMG -10%, CRIT 0%-4%, hits random enemy, Self-buff:
         +3 to +5 SPD (3 rds)'
     - name: Patch Up
       form: null
@@ -7644,7 +7652,7 @@ heroes:
         chance_lvl5: null
         raw: 'Stress Heal other allies: -1 to -3 (60% to 67% chance)'
       debuffs: []
-      effects_raw: 'ACC 95–115, DMG -100%, Bypass/Remove Stealth, Torch +3 to +7,
+      effects_raw: 'ACC 95-115, DMG -100%, Bypass/Remove Stealth, Torch +3 to +7,
         Other Heroes: Clear Stun/Mark, Stress Heal other allies: -1 to -3 (60% to
         67% chance)'
     camping_skills:
@@ -7668,14 +7676,14 @@ heroes:
       Dodge: 10.0
       SPD: 6
       Crit: 6.0%
-      Base_DMG: 4–7
+      Base_DMG: 4-7
       Religious: 'No'
     base_stats_lvl6:
       HP: 35
       Dodge: 30.0
       SPD: 8
       Crit: 10.0%
-      Base_DMG: 7–13
+      Base_DMG: 7-13
     special_mechanics: Disruptor and high-variance healer operating across all ranks.
       High critical hit rate, bonus damage against Eldritch, frontline stuns, backline
       pulls, damage-reducing debuffs, and Wyrd Reconstruction (0 to max HP heal with
@@ -7743,7 +7751,7 @@ heroes:
         chance_lvl5: null
         raw: +15% to +35% DMG vs Eldritch
       debuffs: []
-      effects_raw: ACC 80–100, DMG +0%, CRIT 9%–13%, +15% to +35% DMG vs Eldritch
+      effects_raw: ACC 80-100, DMG +0%, CRIT 9%-13%, +15% to +35% DMG vs Eldritch
     - name: Abyssal Artillery
       form: null
       launch_ranks:
@@ -7804,7 +7812,7 @@ heroes:
         chance_lvl5: null
         raw: +15% to +25% DMG vs Eldritch
       debuffs: []
-      effects_raw: ACC 85–105, DMG -33%, CRIT 0%–4%, +15% to +25% DMG vs Eldritch
+      effects_raw: ACC 85-105, DMG -33%, CRIT 0%-4%, +15% to +25% DMG vs Eldritch
     - name: Weakening Curse
       form: null
       launch_ranks:
@@ -7877,7 +7885,7 @@ heroes:
         duration: 3
         chance_lvl5: 140.0
         raw: -10% to -20% PROT (100% to 140% base, 3 rds)
-      effects_raw: 'ACC 95–115, DMG -75%, CRIT 5%–9%, Debuffs: -10% to -20% DMG, -10%
+      effects_raw: 'ACC 95-115, DMG -75%, CRIT 5%-9%, Debuffs: -10% to -20% DMG, -10%
         to -20% PROT (100% to 140% base, 3 rds)'
     - name: Wyrd Reconstruction
       form: null
@@ -7930,7 +7938,7 @@ heroes:
         max_lvl1: 13.0
         min_lvl5: 0.0
         max_lvl5: 22.0
-        raw: 'Heal 0–13 to 0–22 HP'
+        raw: 'Heal 0-13 to 0-22 HP'
       stress_heal:
         has_stress_heal: false
         target: null
@@ -7943,7 +7951,7 @@ heroes:
         pull: 0
       buffs: []
       debuffs: []
-      effects_raw: Heal 0–13 to 0–22 HP, Bleed (60% to 85% base) 1 to 3 pts/rd for
+      effects_raw: Heal 0-13 to 0-22 HP, Bleed (60% to 85% base) 1 to 3 pts/rd for
         3 rds
     - name: Vulnerability Hex
       form: null
@@ -8017,7 +8025,7 @@ heroes:
         duration: 3
         chance_lvl5: 140.0
         raw: Debuffs -15 to -20 DODGE (100% to 140% base, 3 rds)
-      effects_raw: ACC 95–115, DMG -90%, CRIT 5%–9%, Mark Target (3 rds), Debuffs
+      effects_raw: ACC 95-115, DMG -90%, CRIT 5%-9%, Mark Target (3 rds), Debuffs
         -15 to -20 DODGE (100% to 140% base, 3 rds)
     - name: Hands from the Abyss
       form: null
@@ -8080,7 +8088,7 @@ heroes:
         duration: null
         chance_lvl5: null
         raw: Torch -5
-      effects_raw: ACC 90–110, DMG -50%, CRIT 9%–13%, Torch -5, Stun (110% to 150%
+      effects_raw: ACC 90-110, DMG -50%, CRIT 9%-13%, Torch -5, Stun (110% to 150%
         base)
     - name: Daemon's Pull
       form: null
@@ -8151,7 +8159,7 @@ heroes:
         chance_lvl5: null
         raw: Clear all Corpses
       debuffs: []
-      effects_raw: ACC 90–110, DMG -50%, CRIT 5%–9%, Pull 2 (100% to 140% base), Clear
+      effects_raw: ACC 90-110, DMG -50%, CRIT 5%-9%, Pull 2 (100% to 140% base), Clear
         all Corpses
     camping_skills:
     - name: Abandon Hope
@@ -8177,14 +8185,14 @@ heroes:
       Dodge: 0.0
       SPD: 7
       Crit: 2.0%
-      Base_DMG: 4–7
+      Base_DMG: 4-7
       Religious: 'No'
     base_stats_lvl6:
       HP: 38
       Dodge: 20.0
       SPD: 9
       Crit: 6.0%
-      Base_DMG: 7–13
+      Base_DMG: 7-13
     special_mechanics: Backline damage-over-time specialist and controller. Excels
       in blinding multiple targets, applying heavy blights, curing bleeds and blights
       on allies, and boosting teammate speed and damage.
@@ -8250,7 +8258,7 @@ heroes:
         duration: 3
         chance_lvl5: 140.0
         raw: -5 to -7 ACC debuff (100% to 140% base, 3 rds)
-      effects_raw: ACC 95–115, DMG -80%, CRIT 5%–9%, Blight (5 to 7 pts/rd for 3 rds,
+      effects_raw: ACC 95-115, DMG -80%, CRIT 5%-9%, Blight (5 to 7 pts/rd for 3 rds,
         100% to 140% base), -5 to -7 ACC debuff (100% to 140% base, 3 rds)
     - name: Plague Grenade
       form: null
@@ -8304,7 +8312,7 @@ heroes:
         pull: 0
       buffs: []
       debuffs: []
-      effects_raw: ACC 95–115, DMG -90%, CRIT 0%–4%, Blight (4 to 6 pts/rd for 3 rds,
+      effects_raw: ACC 95-115, DMG -90%, CRIT 0%-4%, Blight (4 to 6 pts/rd for 3 rds,
         100% to 140% base)
     - name: Blinding Gas
       form: null
@@ -8358,7 +8366,7 @@ heroes:
         pull: 0
       buffs: []
       debuffs: []
-      effects_raw: 'ACC 95–115, DMG -100%, Stun (100% to 140% base) (Limit: 3 Uses
+      effects_raw: 'ACC 95-115, DMG -100%, Stun (100% to 140% base) (Limit: 3 Uses
         per Battle)'
     - name: Incision
       form: null
@@ -8413,7 +8421,7 @@ heroes:
         pull: 0
       buffs: []
       debuffs: []
-      effects_raw: ACC 85–105, DMG +0%, CRIT 5%–9%, Bleed (2 to 4 pts/rd for 3 rds,
+      effects_raw: ACC 85-105, DMG +0%, CRIT 5%-9%, Bleed (2 to 4 pts/rd for 3 rds,
         100% to 140% base)
     - name: Battlefield Medicine
       form: null
@@ -8629,7 +8637,7 @@ heroes:
         chance_lvl5: null
         raw: Clear all Corpses
       debuffs: []
-      effects_raw: ACC 95–115, DMG -100%, Shuffle Single (100% to 140% base), Stun
+      effects_raw: ACC 95-115, DMG -100%, Shuffle Single (100% to 140% base), Stun
         (100% to 140% base), Clear all Corpses
     camping_skills:
     - name: Experimental Vapours
@@ -8652,14 +8660,14 @@ heroes:
       Dodge: 8.0
       SPD: 5
       Crit: 6.0%
-      Base_DMG: 5–10
+      Base_DMG: 5-10
       Religious: 'No'
     base_stats_lvl6:
       HP: 36
       Dodge: 28.0
       SPD: 9
       Crit: 10.0%
-      Base_DMG: 9–18
+      Base_DMG: 9-18
     special_mechanics: High-speed, mobile frontline dancer who moves forward or backward
       with almost every attack. Outstanding tool against high-protection enemies (armor-piercing
       Pierce) and guard compositions (Puncture breaks guard). High survivability despite
@@ -8738,7 +8746,7 @@ heroes:
         chance_lvl5: null
         raw: Forward 1
       debuffs: []
-      effects_raw: ACC 90–150, DMG -10%, CRIT 5%–9%, Armor Piercing, Forward 1
+      effects_raw: ACC 90-150, DMG -10%, CRIT 5%-9%, Armor Piercing, Forward 1
     - name: Puncture
       form: null
       launch_ranks:
@@ -8843,7 +8851,7 @@ heroes:
         duration: 4
         chance_lvl5: 140.0
         raw: 'Debuff target: -1 to -3 SPD (100% to 140% base, 4 rds)'
-      effects_raw: 'ACC 90–110, DMG -50%, CRIT 0%, Bypass Guard / Break Guard, Can''t
+      effects_raw: 'ACC 90-110, DMG -50%, CRIT 0%, Bypass Guard / Break Guard, Can''t
         be Guarded (500% base, 2 rds), Pull 2 (100% to 140% base), Debuff target:
         -1 to -3 SPD (100% to 140% base, 4 rds), Forward 1'
     - name: Adder's Kiss
@@ -8905,7 +8913,7 @@ heroes:
         chance_lvl5: null
         raw: Back 1
       debuffs: []
-      effects_raw: ACC 90–110, DMG +0%, CRIT 5%–9%, Blight (3 to 5 pts/rd for 3 rds,
+      effects_raw: ACC 90-110, DMG +0%, CRIT 5%-9%, Blight (3 to 5 pts/rd for 3 rds,
         100% to 140% base), Back 1
     - name: Impale
       form: null
@@ -8976,7 +8984,7 @@ heroes:
         duration: null
         chance_lvl5: null
         raw: CRIT -6% to -2%
-      effects_raw: 'ACC 90–110, DMG -60%, CRIT -6% to -2%, Blight (Lvl 3-4: 1 pt/rd
+      effects_raw: 'ACC 90-110, DMG -60%, CRIT -6% to -2%, Blight (Lvl 3-4: 1 pt/rd
         for 3 rds, Lvl 5: 2 pts/rd for 3 rds, 120% to 140% base), Back 1'
     - name: Expose
       form: null
@@ -9064,7 +9072,7 @@ heroes:
         duration: 4
         chance_lvl5: 140.0
         raw: 'Debuff target: -4 to -8 SPD (100% to 140% base, 4 rds)'
-      effects_raw: 'ACC 85–110, DMG -40%, CRIT 2.5%–6.5%, Bypass/Remove Stealth, Debuff
+      effects_raw: 'ACC 85-110, DMG -40%, CRIT 2.5%-6.5%, Bypass/Remove Stealth, Debuff
         target: +8% to +10% Crits Received (100% to 140% base, 3 rds), Debuff target:
         -4 to -8 SPD (100% to 140% base, 4 rds), Back 1'
     - name: Captivate
@@ -9127,7 +9135,7 @@ heroes:
         chance_lvl5: null
         raw: +40% to +60% DMG vs Marked
       debuffs: []
-      effects_raw: ACC 85–105, DMG -25%, CRIT 4%–8%, +40% to +60% DMG vs Marked, Blight
+      effects_raw: ACC 85-105, DMG -25%, CRIT 4%-8%, +40% to +60% DMG vs Marked, Blight
         (3 to 5 pts/rd for 3 rds, 100% to 140% base)
     - name: Serpent Sway
       form: null
@@ -9226,14 +9234,14 @@ heroes:
       Dodge: 0.0
       SPD: 4
       Crit: 1.0%
-      Base_DMG: 4–8
+      Base_DMG: 4-8
       Religious: 'Yes'
     base_stats_lvl6:
       HP: 44
       Dodge: 20.0
       SPD: 6
       Crit: 5.0%
-      Base_DMG: 7–14
+      Base_DMG: 7-14
     special_mechanics: Dedicated primary healer and support. Possesses exceptionally
       reliable single-target and party-wide healing skills, a solid ranged stun, stealth
       reveal utility, and melee-focused frontline capability when specialized.
@@ -9298,7 +9306,7 @@ heroes:
         chance_lvl5: null
         raw: +15% to +35% DMG vs Unholy
       debuffs: []
-      effects_raw: ACC 85–105, DMG +0%, CRIT 0%–4%, +15% to +35% DMG vs Unholy
+      effects_raw: ACC 85-105, DMG +0%, CRIT 0%-4%, +15% to +35% DMG vs Unholy
     - name: Judgement
       form: null
       launch_ranks:
@@ -9361,7 +9369,7 @@ heroes:
         pull: 0
       buffs: []
       debuffs: []
-      effects_raw: 'ACC 85–105, DMG -25%, CRIT 5%–9%, Self: Heal 3 to 5 HP'
+      effects_raw: 'ACC 85-105, DMG -25%, CRIT 5%-9%, Self: Heal 3 to 5 HP'
     - name: Dazzling Light
       form: null
       launch_ranks:
@@ -9424,7 +9432,7 @@ heroes:
         chance_lvl5: null
         raw: Torch +6
       debuffs: []
-      effects_raw: ACC 90–110, DMG -75%, CRIT 5%–9%, Torch +6, Stun (100% to 140%
+      effects_raw: ACC 90-110, DMG -75%, CRIT 5%-9%, Torch +6, Stun (100% to 140%
         base)
     - name: Divine Grace
       form: null
@@ -9640,7 +9648,7 @@ heroes:
         duration: 4
         chance_lvl5: 140.0
         raw: 'Debuff: -20 to -30 DODGE (100% to 140% base, 4 rds)'
-      effects_raw: 'ACC 90–110, DMG -75%, CRIT 0%, Bypass/Remove Stealth, Torch +5
+      effects_raw: 'ACC 90-110, DMG -75%, CRIT 0%, Bypass/Remove Stealth, Torch +5
         to +10, Debuff: -20 to -30 DODGE (100% to 140% base, 4 rds)'
     - name: Hand of Light
       form: null
@@ -9719,7 +9727,7 @@ heroes:
         chance_lvl5: null
         raw: +25% to +35% DMG (4 rds)
       debuffs: []
-      effects_raw: 'ACC 85–105, DMG -50%, CRIT 1%–5%, +15% to +35% DMG vs Unholy,
+      effects_raw: 'ACC 85-105, DMG -50%, CRIT 1%-5%, +15% to +35% DMG vs Unholy,
         Self-buff: +6 to +10 ACC, +25% to +35% DMG (4 rds)'
     camping_skills:
     - name: Bless

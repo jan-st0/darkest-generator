@@ -9,6 +9,7 @@ from data_model import (
     CombatSkill,
     Hero,
     Metadata,
+    Party,
     Trinket,
     TrinketSet,
 )
@@ -53,18 +54,24 @@ def calculate_max_self_heal(skill: CombatSkill, hero: Hero) -> float:
     return max(all_self_heals, default=0.0)
 
 
+def calculate_max_dps(skill: CombatSkill, hero: Hero) -> float:
+    return skill.raw_expected_damage(hero)
+
+
 class GameDataManager:
 
     # torch is not hero specific buff, like stress heal
-    EXCLUDED_BUFF_TYPES = {'OTHER', 'STRESS_HEAL', 'CURE_BLIGHT_BLEED', 'TORCH', 'HEAL'}
+    EXCLUDED_BUFF_TYPES = {'OTHER', 'STRESS_HEAL', 'CURE_BLIGHT_BLEED', 'TORCH', 'HEAL', 'RIPOSTE', 'RIPOSTE_CRIT', 'RIPOSTE_DMG'}
 
     EXCLUDED_DEBUFF_TYPES = {'OTHER', 'TORCH'}
 
     def __init__(self, file_path: Optional[Union[Path, str]] = None) -> None:
-        if file_path is None:
-            self._handler = GameDataHandler(FilePaths.GAME_INFO_SOURCE.value)
-        else:
-            self._handler = GameDataHandler(file_path)
+        target_path: Path = (
+            FilePaths.GAME_INFO_SOURCE.value
+            if file_path is None
+            else Path(file_path)
+        )
+        self._handler = GameDataHandler(target_path)
         parsed_data = parse_raw_game_data(self._handler.raw_data)
         self._metadata, self._heroes, self._trinkets, self._trinket_sets = parsed_data
 
@@ -97,6 +104,28 @@ class GameDataManager:
     @cached_property
     def heroes_by_name(self) -> dict[str, Hero]:
         return {h.class_name: h for h in self._heroes}
+
+    def calculate_max_self_heal(self, skill: CombatSkill, hero: Hero) -> float:
+        return calculate_max_self_heal(skill, hero)
+
+    def calculate_max_dps(self, skill: CombatSkill, hero: Hero) -> float:
+        return calculate_max_dps(skill, hero)
+
+    @cached_property
+    def max_skill_dps(self) -> float:
+        """Maximum single-skill raw expected damage across all heroes."""
+        return max(
+            (self.calculate_max_dps(skill, hero) for hero, skill in self.all_combat_skill_pairs()),
+            default=0.0,
+        )
+
+    @cached_property
+    def max_skill_self_heal(self) -> float:
+        """Maximum single-skill self healing output across all heroes."""
+        return max(
+            (self.calculate_max_self_heal(skill, hero) for hero, skill in self.all_combat_skill_pairs()),
+            default=0.0,
+        )
 
     @cached_property
     def self_heal_skills(self) -> tuple[tuple[CombatSkill, Hero], ...]:
@@ -198,12 +227,36 @@ class GameDataManager:
 
     @cached_property
     def skills_buff_values(self) -> dict[CombatSkill, np.ndarray]:
-        return self._vectorize_effects(
-            is_applicable="is_buff",
-            effects_attr="buffs",
-            stat_types=self.all_buff_types,
-            max_map=self.max_values_for_buffs,
+        stat_types = self.all_buff_types
+        if not stat_types:
+            return {}
+
+        max_map = self.max_values_for_buffs
+        inv_max = np.array(
+            [1.0 / max_map[stat] if max_map.get(stat, 0.0) != 0 else 0.0 for stat in stat_types],
+            dtype=np.float64,
         )
+        stat_indices = {stat: i for i, stat in enumerate(stat_types)}
+        num_stats = len(stat_types)
+
+        result: dict[CombatSkill, np.ndarray] = {}
+        for skill in self.all_combat_skills():
+            if not skill.is_buff():
+                continue
+
+            vec = np.zeros(num_stats, dtype=np.float64)
+            for b in skill.buffs:
+                if b.stat in stat_indices and b.val_lvl5 is not None:
+                    vec[stat_indices[b.stat]] += b.max_val
+
+            # Negative values for self/friendly debuffs (e.g. Revenge -10 DODGE)
+            for d in skill.debuffs:
+                if d.is_target_team() and d.stat in stat_indices and d.val_lvl5 is not None:
+                    vec[stat_indices[d.stat]] += d.max_val
+
+            result[skill] = vec * inv_max
+
+        return result
 
     @cached_property
     def skills_debuff_values(self) -> dict[CombatSkill, np.ndarray]:

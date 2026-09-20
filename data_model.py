@@ -116,6 +116,9 @@ class BuffDebuffEffect:
     def is_target_enemy(self) -> bool:
         return self.target == 'target'
 
+    def is_target_team(self) -> bool:
+        return self.target in {'self', 'ally', 'party'}
+
 @dataclass(frozen=True, slots=True)
 class CombatSkill:
     name: str
@@ -163,7 +166,7 @@ class CombatSkill:
 
 
     def is_debuff(self) -> bool:
-        return self.target_type == 'enemy' and len(self.debuffs) > 0
+        return self.target_type == 'enemy' and any(d.is_target_enemy() for d in self.debuffs)
 
     def buffs_formated(self) -> tuple[tuple[str, float], ...]:
         return tuple(
@@ -175,6 +178,7 @@ class CombatSkill:
         return tuple(
             (debuff.stat, debuff.max_val)
             for debuff in self.debuffs
+            if debuff.is_target_enemy()
         )
 
     def _healing_from_buffs(self, max_hp: float) -> float:
@@ -200,10 +204,8 @@ class CombatSkill:
             match h.target:
                 case 'party':
                     num_targets = len(self.target_ranks) if self.is_aoe and self.target_ranks else 4
-                    break
                 case 'ally':
                     num_targets = len(self.target_ranks) if self.is_aoe and self.target_ranks else 1
-                    break
                 case 'self' | _:
                     num_targets = 1
             total_heal += per_target * num_targets
@@ -277,7 +279,8 @@ class Hero:
     combat_skills: tuple[CombatSkill, ...]
     camping_skills: tuple[CampingSkill, ...]
     def parse_base_dmg(self) -> tuple[int, ...]:
-        numbers = self.base_stats_lvl6.Base_DMG.split('-')
+        raw_dmg = self.base_stats_lvl6.Base_DMG
+        numbers = raw_dmg.split('-')
         if len(numbers) != 2:
             raise ValueError(f'Hero base damage has invalid format with {self.class_name=} {self.base_stats_lvl6.Base_DMG}')
         return tuple(map(int, numbers))
