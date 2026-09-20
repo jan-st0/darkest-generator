@@ -64,9 +64,14 @@ flowchart TB
         n7 --> n16["Blight / Bleed"]
         n7 --> n10["Team theme"]
         n10 ==> n9["Skill complements"]
-        n9 --> n89@{ shape: "lean-r", label: "Each skill can have coupled skills" }
-        n90@{ label: "For now these skills are all that have bonuses against stunned enemies or marked<br><br>And they require stuns or mark from other heroes<br><br>This category results in a bonus depending on % of coupled skills" }
-        n89 --> n90
+        n9 --> n89@{ shape: "lean-r", label: "Applier skills store coupled complement skills" }
+        n89 --> n96["Scope: Process vs Marked & vs Stunned effects<br>Coupled pairs between enablers and consumers"]
+        n96 --> n97["1. Applier Skills (Enablers):<br>• Applies Mark to enemy: Sniper's Mark, Mark for Death, Come Hither, Target Whistle, Call the Shot, Vulnerability Hex<br>• Applies Stun to enemy: Manacles, Uppercut, Flashbang, Stunning Blow, Barbaric YAWP!, Blackjack, Rampart, Hands from the Abyss, Blinding Gas, Disorienting Blast, Dazzling Light"]
+        n96 --> n98["2. Complement Skills (Consumers):<br>• vs Marked (+DMG/+CRIT): Sniper Shot, Collect Bounty, Thrown Dagger, Pistol Shot, Hound's Rush, Aimed Shot, Captivate<br>• vs Stunned (+DMG): Finish Him"]
+        n97 -. "skill.coupled_skills links appliers to matching complements" .-> n98
+        n97 --> n99["3. Party Evaluation Heuristic:<br>• Scan active skills for valid Mark/Stun appliers<br>• For each active applier, check if teammates equip active coupled complements<br>• Verify target rank overlap & SPD order: SPD(Applier) > SPD(Consumer)"]
+        n98 -.-> n99
+        n99 --> n100["4. Complement Synergy Bonus:<br>• Ratio = (active coupled complements present) / (required complements)<br>• Score = Base Weight * Ratio * Sum(Consumer Expected DMG)"]
         n8 --> n91["Evaluate rank reach and targeting bottlenecks across enemy lineup"]
         n14 --> n92
         n10 --> n93
@@ -185,6 +190,10 @@ flowchart TB
     style n87 stroke-width:0.5px,stroke-dasharray:5 5
     style n88 stroke-width:0.5px,stroke-dasharray:5 5
     style n89 stroke-width:0.5px
-    style n90 stroke-width:0px
+    style n96 stroke-width:0.5px
+    style n97 stroke-width:0.5px
+    style n98 stroke-width:0.5px
+    style n99 stroke-width:0.5px
+    style n100 fill:#1a2e1a,stroke:#00aa88,stroke-width:1.5px
     n13 --- n94
     n16 --- n95

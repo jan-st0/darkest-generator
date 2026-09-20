@@ -154,11 +154,27 @@ class CombatSkill:
     coupled_skills: tuple[CombatSkill, ...] = field(init=False, default_factory=tuple)
 
     def has_healing(self) -> bool:
-        """Checks if the skill provides any HP healing via direct heal effects or buff effects."""
         return bool(self.heal) or any(b.stat == 'HEAL' for b in self.buffs)
     
     def has_stun(self) -> bool:
         return self.stun.has_stun()
+    
+    def applies_mark(self) -> bool:
+        return self.mark.applies and self.mark.target == 'enemy'
+
+    def applies_stun(self) -> bool:
+        return self.has_stun()
+
+    def applies_mark_or_stun(self) -> bool:
+        return self.applies_mark() or self.applies_stun()
+
+    def has_vs_marked_bonus(self) -> bool:
+        return bool(self.mark.bonus_dmg_vs_marked or self.mark.bonus_crit_vs_marked)
+
+    def has_vs_stunned_bonus(self) -> bool:
+        return 'vs stunned' in self.effects_raw.lower() or any(
+            'vs stunned' in b.raw.lower() for b in self.buffs
+        )
     
     def amount_of_targets(self) -> int:
         return 1 if not self.is_aoe else len(self.target_ranks)

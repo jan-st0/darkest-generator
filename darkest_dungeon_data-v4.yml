@@ -6758,8 +6758,8 @@ heroes:
         dmg_mod: -60.0
         crit: 9.0
       stun:
-        chance_lvl1: null
-        chance_lvl5: null
+        chance_lvl1: 100.0
+        chance_lvl5: 140.0
       blight:
         pts_lvl1: null
         pts_lvl5: null

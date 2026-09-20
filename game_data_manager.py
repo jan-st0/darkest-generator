@@ -74,6 +74,7 @@ class GameDataManager:
         self._handler = GameDataHandler(target_path)
         parsed_data = parse_raw_game_data(self._handler.raw_data)
         self._metadata, self._heroes, self._trinkets, self._trinket_sets = parsed_data
+        self._init_skill_complements()
 
     @property
     def metadata(self) -> Metadata:
@@ -140,6 +141,58 @@ class GameDataManager:
 
 
         return tuple(sorted(unsorted_skills, key=lambda pair: calculate_max_self_heal(pair[0], pair[1]), reverse=True))
+
+    def _init_skill_complements(self) -> None:
+        """Populates coupled_skills on all skills that apply mark or stun with their respective complement skills."""
+        vs_marked = self.vs_marked_skills
+        vs_stunned = self.vs_stunned_skills
+
+        for skill in self.all_combat_skills():
+            complements: list[CombatSkill] = []
+            if skill.applies_mark():
+                complements.extend(vs_marked)
+            if skill.applies_stun():
+                complements.extend(vs_stunned)
+
+            if complements:
+                # Deduplicate while preserving order
+                seen: set[int] = set()
+                deduped: list[CombatSkill] = []
+                for comp in complements:
+                    if id(comp) not in seen:
+                        seen.add(id(comp))
+                        deduped.append(comp)
+                object.__setattr__(skill, 'coupled_skills', tuple(deduped))
+            else:
+                object.__setattr__(skill, 'coupled_skills', ())
+
+    @cached_property
+    def vs_marked_skills(self) -> tuple[CombatSkill, ...]:
+        """Returns all combat skills with bonus damage or crit against marked enemies."""
+        return tuple(s for s in self.all_combat_skills() if s.has_vs_marked_bonus())
+
+    @cached_property
+    def vs_stunned_skills(self) -> tuple[CombatSkill, ...]:
+        """Returns all combat skills with bonus damage against stunned enemies."""
+        return tuple(s for s in self.all_combat_skills() if s.has_vs_stunned_bonus())
+
+    def get_mark_or_stun_skills(self) -> tuple[CombatSkill, ...]:
+        """
+        Returns only combat skills that apply mark or stun to enemies.
+        Each returned skill has its `coupled_skills` populated with its complement skills
+        (skills with vs marked and vs stunned bonuses).
+        """
+        self._init_skill_complements()
+        return tuple(
+            skill for skill in self.all_combat_skills()
+            if skill.applies_mark_or_stun()
+        )
+
+    @cached_property
+    def mark_or_stun_skills(self) -> tuple[CombatSkill, ...]:
+        """Cached property giving only skills that apply mark or stun with coupled complements."""
+        return self.get_mark_or_stun_skills()
+
 
     @cached_property
     def all_buff_types(self) -> tuple[str, ...]:
@@ -266,3 +319,14 @@ class GameDataManager:
             stat_types=self.all_debuff_types,
             max_map=self.max_values_for_debuffs,
         )
+
+
+def get_mark_or_stun_skills(data_manager: Optional[GameDataManager] = None) -> tuple[CombatSkill, ...]:
+    """
+    Returns only combat skills that apply mark or stun to enemies,
+    with their coupled complement skills populated.
+    """
+    if data_manager is None:
+        data_manager = GameDataManager()
+    return data_manager.get_mark_or_stun_skills()
+
