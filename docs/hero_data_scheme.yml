@@ -104,6 +104,7 @@ Each skill is decomposed into explicit numeric properties rather than unstructur
     target: string | null
     min_lvl5: float | null
     max_lvl5: float | null
+    chance_lvl5: float | null
 
   movement:
     forward: int                   # Self-advance ranks

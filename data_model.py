@@ -88,6 +88,16 @@ class StressHealEffect:
     target: Optional[str]
     min_lvl5: Optional[float]
     max_lvl5: Optional[float]
+    chance_lvl5: Optional[float] = None
+
+    def calc_expected_stress_heal(self) -> float:
+        """Calculates expected stress heal per target recipient at skill level 5."""
+        if not self.has_stress_heal or self.min_lvl5 is None:
+            return 0.0
+        max_val = self.max_lvl5 if self.max_lvl5 is not None else self.min_lvl5
+        avg_heal = (self.min_lvl5 + max_val) / 2.0
+        chance = (self.chance_lvl5 / 100.0) if self.chance_lvl5 is not None else 1.0
+        return avg_heal * chance
 
 @dataclass(frozen=True, slots=True)
 class MovementEffect:
@@ -260,6 +270,23 @@ class CombatSkill:
     def _dot_data(self, effect: DotEffect) -> tuple[int, int, float]:
         return (int(effect.pts_lvl5 or 0), effect.duration or 0, effect.chance_lvl5 or 0.0)
     
+    def has_stress_heal(self) -> bool:
+        return self.stress_heal.has_stress_heal
+
+    def expected_stress_heal(self) -> float:
+        """Calculates total expected stress heal output across all targets at level 5"""
+        if not self.stress_heal.has_stress_heal:
+            return 0.0
+        per_target = self.stress_heal.calc_expected_stress_heal()
+        match self.stress_heal.target:
+            case 'party':
+                num_targets = len(self.target_ranks) if self.is_aoe and self.target_ranks else 4
+            case 'ally':
+                num_targets = len(self.target_ranks) if self.is_aoe and self.target_ranks else 1
+            case 'self' | _:
+                num_targets = 1
+        return per_target * num_targets
+
     def bleed_values(self) -> tuple[int, int, float]:
         return self._dot_data(self.bleed)
     

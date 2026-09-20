@@ -80,6 +80,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -167,6 +168,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -220,6 +222,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -288,8 +291,9 @@ heroes:
       stress_heal:
         has_stress_heal: true
         target: self
-        min_lvl5: null
-        max_lvl5: null
+        min_lvl5: 10.0
+        max_lvl5: 10.0
+        chance_lvl5: 100.0
       movement:
         forward: 0
         back: 0
@@ -351,6 +355,7 @@ heroes:
         target: party
         min_lvl5: 2.0
         max_lvl5: 2.0
+        chance_lvl5: 100.0
       movement:
         forward: 0
         back: 0
@@ -428,6 +433,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -499,6 +505,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -553,6 +560,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 1
         back: 0
@@ -675,6 +683,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -732,6 +741,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -794,6 +804,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 2
@@ -884,6 +895,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -964,6 +976,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -1027,6 +1040,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -1092,6 +1106,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -1210,6 +1225,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -1281,6 +1297,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -1362,6 +1379,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -1432,6 +1450,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -1497,6 +1516,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -1577,6 +1597,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -1640,8 +1661,9 @@ heroes:
       stress_heal:
         has_stress_heal: true
         target: party
-        min_lvl5: 1.0
+        min_lvl5: 3.0
         max_lvl5: 3.0
+        chance_lvl5: 67.0
       movement:
         forward: 0
         back: 0
@@ -1755,6 +1777,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -1829,6 +1852,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -1909,6 +1933,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -1979,6 +2004,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -2043,6 +2069,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -2107,6 +2134,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -2168,6 +2196,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -2271,6 +2300,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -2332,6 +2362,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -2393,6 +2424,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -2444,6 +2476,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -2532,6 +2565,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -2586,6 +2620,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 1
         back: 0
@@ -2666,8 +2701,9 @@ heroes:
       stress_heal:
         has_stress_heal: true
         target: ally
-        min_lvl5: 5.0
+        min_lvl5: 8.0
         max_lvl5: 8.0
+        chance_lvl5: 100.0
       movement:
         forward: 0
         back: 0
@@ -2765,6 +2801,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -2828,6 +2865,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -2899,6 +2937,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -2983,6 +3022,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -3065,6 +3105,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -3146,8 +3187,9 @@ heroes:
       stress_heal:
         has_stress_heal: true
         target: ally
-        min_lvl5: null
-        max_lvl5: null
+        min_lvl5: 14.0
+        max_lvl5: 14.0
+        chance_lvl5: 100.0
       movement:
         forward: 0
         back: 0
@@ -3230,6 +3272,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -3358,6 +3401,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -3420,6 +3464,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 2
         back: 0
@@ -3491,6 +3536,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -3559,6 +3605,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 2
@@ -3655,6 +3702,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -3736,6 +3784,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -3799,6 +3848,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -3911,6 +3961,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -3962,6 +4013,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -4015,6 +4067,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -4086,6 +4139,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -4142,6 +4196,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 1
         back: 0
@@ -4236,6 +4291,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -4312,6 +4368,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -4416,6 +4473,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -4471,6 +4529,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -4530,6 +4589,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 1
@@ -4601,6 +4661,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -4674,6 +4735,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -4763,6 +4825,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 1
         back: 0
@@ -4842,6 +4905,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -4951,6 +5015,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -5025,6 +5090,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -5091,6 +5157,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -5161,8 +5228,9 @@ heroes:
       stress_heal:
         has_stress_heal: true
         target: party
-        min_lvl5: 2.0
+        min_lvl5: 6.0
         max_lvl5: 6.0
+        chance_lvl5: 74.0
       movement:
         forward: 0
         back: 0
@@ -5228,6 +5296,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -5304,6 +5373,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -5358,6 +5428,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -5448,6 +5519,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 1
         back: 0
@@ -5526,6 +5598,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -5590,6 +5663,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 3
@@ -5678,6 +5752,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 3
         back: 0
@@ -5773,6 +5848,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -5837,6 +5913,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -5931,8 +6008,9 @@ heroes:
       stress_heal:
         has_stress_heal: true
         target: ally
-        min_lvl5: 8.0
+        min_lvl5: 12.0
         max_lvl5: 12.0
+        chance_lvl5: 100.0
       movement:
         forward: 0
         back: 0
@@ -6052,6 +6130,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -6105,6 +6184,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -6164,6 +6244,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -6242,6 +6323,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -6335,6 +6417,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -6441,8 +6524,9 @@ heroes:
       stress_heal:
         has_stress_heal: true
         target: self
-        min_lvl5: 5.0
+        min_lvl5: 7.0
         max_lvl5: 7.0
+        chance_lvl5: 100.0
       movement:
         forward: 0
         back: 0
@@ -6497,6 +6581,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -6642,6 +6727,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -6696,6 +6782,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 1
         back: 0
@@ -6770,6 +6857,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -6852,6 +6940,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -6923,6 +7012,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -6997,6 +7087,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -7079,6 +7170,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -7184,6 +7276,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -7254,6 +7347,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -7333,6 +7427,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -7403,6 +7498,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -7468,6 +7564,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -7548,6 +7645,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -7611,8 +7709,9 @@ heroes:
       stress_heal:
         has_stress_heal: true
         target: party
-        min_lvl5: null
-        max_lvl5: null
+        min_lvl5: 3.0
+        max_lvl5: 3.0
+        chance_lvl5: 67.0
       movement:
         forward: 0
         back: 0
@@ -7736,6 +7835,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -7797,6 +7897,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -7862,6 +7963,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -7944,6 +8046,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -8002,6 +8105,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -8073,6 +8177,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -8136,6 +8241,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -8243,6 +8349,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -8305,6 +8412,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -8359,6 +8467,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -8414,6 +8523,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -8478,6 +8588,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -8543,6 +8654,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -8614,6 +8726,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -8723,6 +8836,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 1
         back: 0
@@ -8796,6 +8910,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 1
         back: 0
@@ -8898,6 +9013,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 1
@@ -8961,6 +9077,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 1
@@ -9033,6 +9150,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 1
@@ -9120,6 +9238,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -9181,6 +9300,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 1
         back: 0
@@ -9291,6 +9411,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -9362,6 +9483,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -9417,6 +9539,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -9489,6 +9612,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -9553,6 +9677,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -9609,6 +9734,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
@@ -9696,6 +9822,7 @@ heroes:
         target: null
         min_lvl5: null
         max_lvl5: null
+        chance_lvl5: null
       movement:
         forward: 0
         back: 0
