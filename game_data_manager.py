@@ -5,14 +5,15 @@ from file_manager import GameDataHandler, FilePaths
 from functools import cached_property
 from itertools import chain, product
 from collections.abc import Iterator
-from data_model import (
+from hero_data_model import (
     CombatSkill,
     Hero,
     Metadata,
-    Party,
+)
+from trinket_data_model import (
     Trinket,
     TrinketEvaluationContext,
-    TrinketSet,
+    TrinketSet
 )
 from trinket_evaluator import (
     ALL_IGNORED_TRINKETS,

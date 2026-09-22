@@ -1,6 +1,6 @@
 from typing import Any, Union
 
-from data_model import (
+from hero_data_model import (
     BaseStatsLvl0,
     BaseStatsLvl6,
     BuffDebuffEffect,
@@ -15,12 +15,14 @@ from data_model import (
     SkillCombatStats,
     StressHealEffect,
     StunEffect,
+)    
+
+from trinket_data_model import (
     Trinket,
     TrinketEffect,
     TrinketRef,
     TrinketSet,
-)    
-
+)
 
 def parse_buff_debuff(data: dict[str, Any]) -> BuffDebuffEffect:
     return BuffDebuffEffect(**data)

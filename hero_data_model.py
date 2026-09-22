@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Optional, TYPE_CHECKING
-
+from typing import NamedTuple
 if TYPE_CHECKING:
     from trinket_data_model import Trinket
 
@@ -111,10 +111,10 @@ class StressHealEffect:
 
 @dataclass(frozen=True, slots=True)
 class MovementEffect:
-    forward: int
-    back: int
-    knockback: int
-    pull: int
+    forward: int = 0
+    back: int = 0
+    knockback: int = 0
+    pull: int = 0
 
 
 @dataclass(frozen=True, slots=True)
@@ -278,7 +278,7 @@ class CombatSkill:
 
     @property
     def move_val(self) -> int:
-        return self.movement.forward - self.back_stat or 0
+        return self.forward_stat - self.back_stat or 0
 
     def has_backline_reach(self) -> bool:
         return self.target_type == "enemy" and (3 in self.target_ranks or 4 in self.target_ranks)
@@ -310,6 +310,12 @@ class CombatSkill:
 
     def blight_values(self) -> tuple[int, int, float]:
         return self._dot_data(self.blight)
+
+    def is_available_for_pos(self, pos:set[int]) -> bool:
+        return True if len(pos.intersection(self.launch_ranks)) > 0 else False
+
+    def __hash__(self):
+        return hash(self.name)
 
 
 @dataclass(frozen=True, slots=True)
@@ -344,13 +350,14 @@ class Hero:
             return default
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(slots=True, eq=False)
 class HeroBuild:
     hero: Hero
     rank: int
     skills: tuple[CombatSkill, ...]
-    trinkets: tuple["Trinket", ...] = field(default_factory=tuple)
+    trinkets: tuple[Trinket, ...] = field(default_factory=tuple)
     active_skills: tuple[CombatSkill, ...] = field(init=False, default_factory=tuple)
+    move_skills: tuple[CombatSkill] | None = None
 
     def backline_damage(self) -> float:
         total = 0.0
@@ -359,7 +366,63 @@ class HeroBuild:
                 total += skill.raw_expected_damage(self.hero)
         return total
 
+    def init_active_skills(self, positions: set[int]) -> None:
+        self.active_skills = tuple(
+            skill for skill in self.skills if skill.is_available_for_pos(positions)
+        )
+
+    def init_move_skills(self) -> tuple[CombatSkill]:
+        return tuple(
+            skill for skill in self.skills if skill.move_val != 0
+        )
+
+    def __post_init__(self) -> None:
+        self.move_skills = self.init_move_skills()
+
+
+type Permutation = tuple[HeroBuild, ...]
 
 @dataclass(frozen=True, slots=True)
 class Party:
+    # ranks: 4 3 2 1
+    # tuple indices: 0 1 2 3
     members: tuple[HeroBuild, ...]
+
+    def _traverse_permutations(self, positions: dict[HeroBuild, set[int]], perm: Permutation, depth: int) -> None:
+        if (depth == 3):
+            return None
+
+        def norm_move(begin: int, val: int) -> int:
+            """Returns position(4,..,1) after move"""
+            return max(1, min(4, begin - val)) 
+
+        def swap(source: tuple, i: int, j: int) -> tuple:
+            if i > j:
+                i, j = j, i
+            return source[:i] + (source[j],) + source[i+1: j] + (source[i],) + source[j+1:]
+
+        for i, hero in enumerate(perm):
+            h_pos = 4 - i
+            if hero.move_skills is None:
+                continue
+
+            for skill in hero.move_skills:
+                after_mov = norm_move(h_pos, skill.move_val)
+                if after_mov == h_pos :
+                    continue
+                tuple_after_mov = 4 - after_mov
+                hero_swap = perm[tuple_after_mov]
+                next_perm = swap(perm, tuple_after_mov, i)
+                positions[hero].add(after_mov)
+                positions[hero_swap].add(h_pos)
+                self._traverse_permutations(positions, next_perm, depth + 1)
+                
+    def set_active_skills(self) -> None:
+        hero_positions: dict[HeroBuild, set[int]] = {
+            hero: {4 - i}
+            for i, hero in enumerate(self.members)
+        }
+        perm_start = self.members
+        self._traverse_permutations(hero_positions, perm_start, 1)
+        for hero, pos in hero_positions.items():
+            hero.init_active_skills(pos)
