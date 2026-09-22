@@ -11,7 +11,14 @@ from data_model import (
     Metadata,
     Party,
     Trinket,
+    TrinketEvaluationContext,
     TrinketSet,
+)
+from trinket_evaluator import (
+    ALL_IGNORED_TRINKETS,
+    UTILITY_STATS,
+    evaluate_trinket_stats,
+    is_trinket_ignored,
 )
 from yaml_parser import parse_raw_game_data
 
@@ -162,10 +169,9 @@ class GameDataManager:
                     if id(comp) not in seen:
                         seen.add(id(comp))
                         deduped.append(comp)
-                object.__setattr__(skill, 'coupled_skills', tuple(deduped))
+                skill.coupled_skills = tuple(deduped)
             else:
-                object.__setattr__(skill, 'coupled_skills', ())
-
+                skill.coupled_skills = ()
     @cached_property
     def vs_marked_skills(self) -> tuple[CombatSkill, ...]:
         """Returns all combat skills with bonus damage or crit against marked enemies."""
@@ -319,6 +325,34 @@ class GameDataManager:
             stat_types=self.all_debuff_types,
             max_map=self.max_values_for_debuffs,
         )
+
+    @cached_property
+    def trinkets_by_name(self) -> dict[str, Trinket]:
+        return {t.name: t for t in self._trinkets}
+
+    @cached_property
+    def usable_trinkets(self) -> tuple[Trinket, ...]:
+        """Returns only trinkets that are not excluded per diagram.md."""
+        return tuple(t for t in self._trinkets if not is_trinket_ignored(t.name))
+
+    @cached_property
+    def max_values_for_utility_stats(self) -> dict[str, float]:
+        """Maximum observed absolute values for utility stats (scouting, trap disarm, surprise)."""
+        max_vals: dict[str, float] = {}
+        for t in self.usable_trinkets:
+            stats = evaluate_trinket_stats(t)
+            for k, v in stats.items():
+                if k in UTILITY_STATS:
+                    max_vals[k] = max(max_vals.get(k, 0.0), abs(v))
+        return max_vals
+
+    def evaluate_trinket(
+        self,
+        trinket: Trinket,
+        context: Optional[TrinketEvaluationContext] = None,
+    ) -> dict[str, float]:
+        """Evaluates effective stat modifiers for a given trinket and hero context."""
+        return evaluate_trinket_stats(trinket, context)
 
 
 def get_mark_or_stun_skills(data_manager: Optional[GameDataManager] = None) -> tuple[CombatSkill, ...]:
