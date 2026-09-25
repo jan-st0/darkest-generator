@@ -1,5 +1,6 @@
 from typing import Any
 import yaml
+import pickle
 try:
     from yaml import CSafeLoader as SafeLoader
 except ImportError:
@@ -19,6 +20,7 @@ ROOT_DIR = find_project_root()
 
 class FilePaths(Enum):
     GAME_INFO_SOURCE = ROOT_DIR / 'darkest_dungeon_data-v4.yml'
+    HERO_D_VECTORS = ROOT_DIR / 'hero_d_vector.pkl'
 
 
 def _load_simple_yml_no_fallback(file_path: Path | str) -> dict[str, Any] :
@@ -26,6 +28,11 @@ def _load_simple_yml_no_fallback(file_path: Path | str) -> dict[str, Any] :
         yml: Any = yaml.load(file, Loader=SafeLoader)
     
     return yml if isinstance(yml, dict) else {}
+
+def load_pickle_dict(file_path: Path | str) -> dict[Any, Any]:
+    with open(file_path, 'rb') as f:
+        table = pickle.load(f)
+    return table
 
 type raw_data_type = dict[str, Any]
 
