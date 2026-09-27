@@ -8,7 +8,9 @@ from collections.abc import Iterator
 from hero_data_model import (
     CombatSkill,
     Hero,
+    HeroBuild,
     Metadata,
+    Party,
 )
 from trinket_data_model import (
     Trinket,
@@ -354,6 +356,39 @@ class GameDataManager:
     ) -> dict[str, float]:
         """Evaluates effective stat modifiers for a given trinket and hero context."""
         return evaluate_trinket_stats(trinket, context)
+
+    def evaluate_trinket_score(
+        self,
+        trinket: Trinket,
+        hero: Hero,
+        context: Optional[TrinketEvaluationContext] = None,
+        d_manager: Optional[Any] = None,
+    ) -> float:
+        """Evaluates overall trinket score for a hero using desire vector and stats."""
+        from desire_vector import calculate_trinket_score
+        return calculate_trinket_score(trinket, hero, context, d_manager, self)
+
+    def evaluate_buff_score(
+        self,
+        skill: CombatSkill,
+        caster: Hero,
+        party: Optional[Sequence[Hero]] = None,
+        d_manager: Optional[Any] = None,
+    ) -> float:
+        """Evaluates buff score of a combat skill for a caster or party."""
+        from desire_vector import calculate_buff_score
+        return calculate_buff_score(skill, caster, party, d_manager, self)
+
+    def evaluate_debuff_score(
+        self,
+        skill: CombatSkill,
+        d_manager: Optional[Any] = None,
+        num_targets: Optional[int] = None,
+    ) -> float:
+        """Evaluates debuff score of an enemy-targeting debuff combat skill."""
+        from desire_vector import calculate_debuff_score
+        return calculate_debuff_score(skill, d_manager, self, num_targets)
+
 
 
 def get_mark_or_stun_skills(data_manager: Optional[GameDataManager] = None) -> tuple[CombatSkill, ...]:
