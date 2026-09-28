@@ -1,3 +1,4 @@
+import re
 from typing import Optional
 from trinket_data_model import Trinket, TrinketEffect, TrinketEvaluationContext
 
@@ -163,11 +164,13 @@ def calculate_effect_scaling(
         if not context.has_ranged_skills:
             return 0.0
 
-    # If no condition, effect is fully active
+    # If no condition, effect is fully active unless position is specified in stat name
     if not cond:
-        # Check position in stat name, e.g. "DODGE in pos 1", "SPD in pos 1"
-        if "pos 1" in stat.lower():
-            if context.hero_rank != 1:
+        # Check position in stat name, e.g. "DODGE in pos 1", "SPD in pos 2", etc.
+        pos_match = re.search(r"\b(?:pos|position)\s*([1-4])\b", stat, re.IGNORECASE)
+        if pos_match:
+            target_pos = int(pos_match.group(1))
+            if context.hero_rank != target_pos:
                 return 0.0
             return 1.0 if context.is_movement_stable else 0.6
         return 1.0
@@ -183,16 +186,12 @@ def calculate_effect_scaling(
         return 0.0
 
     # 2. Position conditions (e.g. "if in position 1", "if in position 2", "if in position 4")
-    if "position" in cond_clean.lower() or "pos " in cond_clean.lower():
-        target_pos = None
-        for p in (1, 2, 3, 4):
-            if str(p) in cond_clean:
-                target_pos = p
-                break
-        if target_pos is not None:
-            if context.hero_rank != target_pos:
-                return 0.0
-            return 1.0 if context.is_movement_stable else 0.6
+    pos_cond_match = re.search(r"\b(?:pos|position)\s*([1-4])\b", cond_clean, re.IGNORECASE)
+    if pos_cond_match:
+        target_pos = int(pos_cond_match.group(1))
+        if context.hero_rank != target_pos:
+            return 0.0
+        return 1.0 if context.is_movement_stable else 0.6
 
     # 3. Round-based conditions
     if cond_clean == "on First Round":
@@ -268,9 +267,7 @@ def evaluate_trinket_stats(
 
         effective_val = eff.modifier * scale
         # Normalize stat names where position or skill-type was part of stat
-        stat_name = eff.stat
-        if " in pos 1" in stat_name:
-            stat_name = stat_name.replace(" in pos 1", "").strip()
+        stat_name = re.sub(r"\s+in\s+pos(?:ition)?\s+[1-4]\b", "", eff.stat, flags=re.IGNORECASE).strip()
 
         stat_totals[stat_name] = stat_totals.get(stat_name, 0.0) + effective_val
 

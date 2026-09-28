@@ -249,18 +249,18 @@ class DVectorManager:
 
     def score_buff(
         self,
-        skill: "CombatSkill",
-        caster: "Hero",
-        party: Optional[Sequence["Hero"]] = None,
-        game_manager: Optional["GameDataManager"] = None,
+        skill: CombatSkill,
+        caster: Hero,
+        party: Optional[Sequence[Hero]] = None,
+        game_manager: Optional[GameDataManager] = None,
     ) -> float:
         """Calculates buff score for a skill on the caster or party."""
         return calculate_buff_score(skill, caster, party, self, game_manager)
 
     def score_debuff(
         self,
-        skill: "CombatSkill",
-        game_manager: Optional["GameDataManager"] = None,
+        skill: CombatSkill,
+        game_manager: Optional[GameDataManager] = None,
         num_targets: Optional[int] = None,
     ) -> float:
         """Calculates debuff score for an enemy debuff skill."""

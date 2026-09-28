@@ -1,5 +1,8 @@
+import re
 from dataclasses import dataclass, field
 from typing import Optional
+
+from hero_data_model import Hero, HeroBuild, Party
 
 
 @dataclass(frozen=True, slots=True)
@@ -17,12 +20,8 @@ class TrinketEffect:
         return "torch" in c
 
     def is_position_dependent(self) -> bool:
-        if "pos 1" in self.stat.lower():
-            return True
-        if not self.condition:
-            return False
-        c = self.condition.lower()
-        return "position" in c or "pos " in c
+        combined = f"{self.stat} {self.condition or ''}".lower()
+        return bool(re.search(r"\b(?:pos|position)\s*[1-4]\b", combined))
 
     def is_utility(self) -> bool:
         s = self.stat.lower()
@@ -79,3 +78,12 @@ class TrinketEvaluationContext:
     has_bleed_skills: bool = False
     team_has_mark: bool = False
     is_movement_stable: bool = True
+
+    @classmethod
+    def from_hero(cls, hero: HeroBuild, party: Party) -> TrinketEvaluationContext:
+        return TrinketEvaluationContext(
+            hero.rank, hero.has_melee_skills(),
+            hero.has_ranged_skills(), hero.has_blight_skills(),
+            hero.has_bleed_skills(), party.mark, len(party.hero_pos[hero]) == 1
+            )
+

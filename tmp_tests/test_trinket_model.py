@@ -133,10 +133,60 @@ def test_torch_conditions():
     assert moon_stats["Stress"] == 10.0  # unconditional penalty applies
 
 
+def test_position_conditions():
+    mgr = GameDataManager()
+
+    # Tyrant's Fingerbone has 'SPD in pos 1' and 'DODGE in pos 1' (no condition, stat has pos)
+    fingerbone = mgr.trinkets_by_name["Tyrant's Fingerbone"]
+    assert all(eff.is_position_dependent() for eff in fingerbone.effects)
+
+    stats_pos1 = evaluate_trinket_stats(fingerbone, TrinketEvaluationContext(hero_rank=1, is_movement_stable=True))
+    assert stats_pos1.get("SPD") == 3.0
+    assert stats_pos1.get("DODGE") == 20.0
+    assert "SPD in pos 1" not in stats_pos1
+    assert "DODGE in pos 1" not in stats_pos1
+
+    # In rank 2, pos 1 stats should scale to 0
+    stats_pos2 = evaluate_trinket_stats(fingerbone, TrinketEvaluationContext(hero_rank=2))
+    assert "SPD" not in stats_pos2
+    assert "DODGE" not in stats_pos2
+
+    # Movement unstable scales down to 0.6
+    stats_unstable = evaluate_trinket_stats(fingerbone, TrinketEvaluationContext(hero_rank=1, is_movement_stable=False))
+    assert round(stats_unstable.get("SPD", 0.0), 2) == round(3.0 * 0.6, 2)
+    assert round(stats_unstable.get("DODGE", 0.0), 2) == round(20.0 * 0.6, 2)
+
+    # Condition-based positions:
+    # Profane Scroll: 'if in position 2'
+    scroll = mgr.trinkets_by_name["Profane Scroll"]
+    assert any(eff.is_position_dependent() for eff in scroll.effects)
+    assert evaluate_trinket_stats(scroll, TrinketEvaluationContext(hero_rank=2)).get("Healing Skills") == 33.0
+    assert "Healing Skills" not in evaluate_trinket_stats(scroll, TrinketEvaluationContext(hero_rank=1))
+
+    # Prophet's Eye: 'if in position 4'
+    eye = mgr.trinkets_by_name["Prophet's Eye"]
+    assert any(eff.is_position_dependent() for eff in eye.effects)
+    assert evaluate_trinket_stats(eye, TrinketEvaluationContext(hero_rank=4)).get("ACC") == 15.0
+    assert "ACC" not in evaluate_trinket_stats(eye, TrinketEvaluationContext(hero_rank=3))
+
+    # Test synthetic effects for positions 3 and 4 in stat name
+    syn_pos3 = Trinket(
+        name="Custom Pos 3 Charm",
+        rarity="Common",
+        category="Generic",
+        effects=(TrinketEffect(stat="CRIT in pos 3", modifier=8, unit="%", raw="+8% CRIT in pos 3"),),
+    )
+    assert syn_pos3.effects[0].is_position_dependent()
+    assert evaluate_trinket_stats(syn_pos3, TrinketEvaluationContext(hero_rank=3)).get("CRIT") == 8.0
+    assert "CRIT" not in evaluate_trinket_stats(syn_pos3, TrinketEvaluationContext(hero_rank=1))
+    assert "CRIT in pos 3" not in evaluate_trinket_stats(syn_pos3, TrinketEvaluationContext(hero_rank=3))
+
+
 if __name__ == "__main__":
     test_trinket_data_models()
     test_ignored_trinkets_count()
     test_manager_trinket_filtering()
     test_item_exceptions()
     test_torch_conditions()
+    test_position_conditions()
     print("ALL TRINKET MODEL & EVALUATION TESTS PASSED!")
