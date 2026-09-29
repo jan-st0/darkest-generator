@@ -1,3 +1,4 @@
+from typing import Any
 from dataclasses import dataclass, field
 from typing import Optional, TYPE_CHECKING
 from typing import NamedTuple
@@ -400,7 +401,7 @@ class HeroBuild:
 
     def init_move_skills(self) -> tuple[CombatSkill, ...]:
         return tuple(
-            skill for skill in self.skills if skill.move_val != 0
+            skill for skill in self.active_skills if skill.move_val != 0
         )
 
     def __post_init__(self) -> None:
@@ -416,7 +417,14 @@ class Party:
     members: tuple[HeroBuild, ...]
     mark: bool = field(init=False)
     hero_pos: dict[HeroBuild, set[int]]
-    
+    skill_tuple: tuple[tuple[CombatSkill, HeroBuild], ...] = field(init=False)
+
+    def _flatten_skills(self) -> tuple[tuple[CombatSkill, HeroBuild], ...] :
+        return tuple(
+            (skill, hero)
+            for hero in self.members
+            for skill in hero.active_skills
+        )
     
     def applies_mark(self) -> bool:
         return any(hero.has_mark() for hero in self.members)
@@ -462,4 +470,5 @@ class Party:
     
     def __post_init__(self) -> None:
         self.set_active_skills()
-        mark = self.applies_mark()
+        self.mark = self.applies_mark()
+        self.skill_tuple = self._flatten_skills()

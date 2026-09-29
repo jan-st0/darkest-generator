@@ -1,3 +1,6 @@
+from typing import Any
+from collections.abc import Sequence
+from desire_vector import DVectorManager
 import numpy as np
 from typing import Union, Optional
 from pathlib import Path
@@ -362,7 +365,7 @@ class GameDataManager:
         trinket: Trinket,
         hero: Hero,
         context: Optional[TrinketEvaluationContext] = None,
-        d_manager: Optional[Any] = None,
+        d_manager: Optional[DVectorManager] = None,
     ) -> float:
         """Evaluates overall trinket score for a hero using desire vector and stats."""
         from desire_vector import calculate_trinket_score
