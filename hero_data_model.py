@@ -1,7 +1,6 @@
-from typing import Any
 from dataclasses import dataclass, field
 from typing import Optional, TYPE_CHECKING
-from typing import NamedTuple
+
 
 if TYPE_CHECKING:
     from trinket_data_model import Trinket
@@ -52,17 +51,22 @@ class StunEffect:
         return self.chance_lvl1 is not None and self.chance_lvl5 is not None
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(slots=True)
 class DotEffect:
     pts_lvl1: Optional[float]
     pts_lvl5: Optional[float]
     duration: Optional[int]
     chance_lvl5: Optional[float]
 
+    def __post_init__(self) -> None:
+        # Norm chance
+        if self.chance_lvl5 and self.chance_lvl5 > 1.0:
+            self.chance_lvl5 /= 100.0
+
     def is_active(self) -> bool:
         # quick check if skill is dot
         # if dot value at level 1 is null(or 0) then it probably does not apply dot
-        return self.pts_lvl1 in {0.0, None}
+        return self.pts_lvl1 not in {0.0, None}
 
 
 @dataclass(frozen=True, slots=True)
@@ -220,6 +224,9 @@ class CombatSkill:
     def is_debuff(self) -> bool:
         return self.target_type == "enemy" and any(d.is_target_enemy() for d in self.debuffs)
 
+    def number_of_stuns(self) -> int:
+        return 0 if not self.applies_stun() else self.amount_of_targets()
+
     def buffs_formated(self) -> tuple[tuple[str, float], ...]:
         return tuple((buff.stat, buff.max_val) for buff in self.buffs)
 
@@ -318,8 +325,17 @@ class CombatSkill:
                 num_targets = 1
         return per_target * num_targets
 
+    def _dot_dmg(self, effect:DotEffect) -> float:
+        return self._dot_data(effect)[0] * self._dot_data(effect)[1] * self._dot_data(effect)[2]
+
     def bleed_values(self) -> tuple[int, int, float]:
         return self._dot_data(self.bleed)
+    
+    def bleed_dmg(self) -> float:
+        return self._dot_dmg(self.bleed)
+
+    def blight_dmg(self) -> float:
+        return self._dot_dmg(self.blight)
 
     def blight_values(self) -> tuple[int, int, float]:
         return self._dot_data(self.blight)
@@ -370,7 +386,15 @@ class HeroBuild:
     skills: tuple[CombatSkill, ...]
     trinkets: tuple[Trinket, ...] = field(default_factory=tuple)
     active_skills: tuple[CombatSkill, ...] = field(init=False, default_factory=tuple)
+    # atributes after setting up active skills
     move_skills: tuple[CombatSkill, ...] | None = None
+    max_self_heal_skill: float = field(init=False, default=0.0)
+    max_heal: float = field(init=False, default=0.0)
+    backiline_dmg: float = field(init=False, default=0.0)
+    max_raw_dmg: float = field(init=False, default=0.0)
+    max_bleed: float = field(init=False, default=0.0)
+    max_blight: float = field(init=False, default=0.0)
+    stuns_num: int = field(init=False, default=0)
 
     def backline_damage(self) -> float:
         total = 0.0
@@ -379,6 +403,10 @@ class HeroBuild:
                 total += skill.raw_expected_damage(self.hero)
         return total
     
+    @property
+    def name(self) -> str:
+        return self.hero.class_name
+    
     def has_melee_skills(self) -> bool:
         return any(skill.type == 'Melee' for skill in self.active_skills)
     
@@ -386,13 +414,16 @@ class HeroBuild:
         return any(skill.type == 'Ranged' for skill in self.active_skills)
     
     def has_blight_skills(self) -> bool:
-        return any(skill.applies_blight for skill in self.active_skills)
+        return any(skill.applies_blight() for skill in self.active_skills)
     
     def has_bleed_skills(self) -> bool:
         return any(skill.applies_bleed() for skill in self.active_skills)
     
     def has_mark(self) -> bool:
-        return any(skill.applies_mark for skill in self.active_skills)
+        return any(skill.applies_mark() for skill in self.active_skills)
+    
+    def has_stun(self) -> bool:
+        return any(skill.has_stun() for skill in self.active_skills)
 
     def init_active_skills(self, positions: set[int]) -> None:
         self.active_skills = tuple(
@@ -403,72 +434,69 @@ class HeroBuild:
         return tuple(
             skill for skill in self.active_skills if skill.move_val != 0
         )
-
-    def __post_init__(self) -> None:
-        self.move_skills = self.init_move_skills()
-
-
-type Permutation = tuple[HeroBuild, ...]
-
-@dataclass(slots=True)
-class Party:
-    # ranks: 4 3 2 1
-    # tuple indices: 0 1 2 3
-    members: tuple[HeroBuild, ...]
-    mark: bool = field(init=False)
-    hero_pos: dict[HeroBuild, set[int]]
-    skill_tuple: tuple[tuple[CombatSkill, HeroBuild], ...] = field(init=False)
-
-    def _flatten_skills(self) -> tuple[tuple[CombatSkill, HeroBuild], ...] :
+    
+    def all_move_skills(self) -> tuple[CombatSkill, ...]:
         return tuple(
-            (skill, hero)
-            for hero in self.members
-            for skill in hero.active_skills
+            skill for skill in self.skills if skill.move_val !=0
         )
     
-    def applies_mark(self) -> bool:
-        return any(hero.has_mark() for hero in self.members)
-
-    def _traverse_permutations(self, positions: dict[HeroBuild, set[int]], perm: Permutation, depth: int) -> None:
-        if (depth == 3):
-            return None
-
-        def norm_move(begin: int, val: int) -> int:
-            """Returns position(4,..,1) after move"""
-            return max(1, min(4, begin - val)) 
-
-        def swap(source: tuple, i: int, j: int) -> tuple:
-            if i > j:
-                i, j = j, i
-            return source[:i] + (source[j],) + source[i+1: j] + (source[i],) + source[j+1:]
-
-        for i, hero in enumerate(perm):
-            h_pos = 4 - i
-            if hero.move_skills is None:
-                continue
-
-            for skill in hero.move_skills:
-                after_mov = norm_move(h_pos, skill.move_val)
-                if after_mov == h_pos :
-                    continue
-                tuple_after_mov = 4 - after_mov
-                hero_swap = perm[tuple_after_mov]
-                next_perm = swap(perm, tuple_after_mov, i)
-                positions[hero].add(after_mov)
-                positions[hero_swap].add(h_pos)
-                self._traverse_permutations(positions, next_perm, depth + 1)
-                
-    def set_active_skills(self) -> None:
-        self.hero_pos: dict[HeroBuild, set[int]] = {
-            hero: {4 - i}
-            for i, hero in enumerate(self.members)
-        }
-        perm_start = self.members
-        self._traverse_permutations(self.hero_pos, perm_start, 1)
-        for hero, pos in self.hero_pos.items():
-            hero.init_active_skills(pos)
+    def best_healing(self) -> float:
+        return max(
+            (skill.healing_value(self.hero) for skill in self.active_skills),
+            default=0.0
+        )
     
+    def best_self_heal(self) -> float:
+        return max(
+            (skill.healing_value(self.hero) for skill in self.active_skills if skill.is_self_heal()),
+            default=0.0
+        )
+
+    def best_raw_dmg(self) -> float:
+        return max(
+            (skill.raw_expected_damage(self.hero) for skill in self.active_skills),
+            default=0.0
+        )
+
+    def best_backlne(self) -> float:
+        return max(
+            (skill.raw_expected_damage(self.hero) for skill in self.active_skills if skill.has_backline_reach()),
+            default=0.0
+        )
+    
+    def best_bleed(self) -> float:
+        return max(
+            (skill.bleed_dmg() for skill in self.active_skills if skill.applies_bleed()),
+            default=0.0
+        )
+
+    def best_blight(self) -> float:
+        return max(
+            (skill.blight_dmg() for skill in self.active_skills if skill.applies_blight()),
+            default=0.0
+        )
+    
+    def best_stuns(self) -> int:
+        return max(
+            (skill.number_of_stuns() for skill in self.active_skills if skill.applies_stun()),
+            default=0
+        )
+
+    def setup_post_active_skills(self) -> None:
+        # Apply correction for move_skills with acitve skills calculated
+        self.move_skills = self.init_move_skills()
+
+        self.max_self_heal_skill = self.best_self_heal()
+        self.max_raw_dmg = self.best_raw_dmg()
+        self.backiline_dmg = self.best_backlne()
+        self.max_bleed = self.best_bleed()
+        self.max_blight = self.best_blight()
+        self.stuns_num = self.best_stuns()
+        self.max_heal = self.best_healing()
+
     def __post_init__(self) -> None:
-        self.set_active_skills()
-        self.mark = self.applies_mark()
-        self.skill_tuple = self._flatten_skills()
+        # Initialize move_skills for permutation traversing algorithm
+        # Traversal checks if skill is reachable from current position, 
+        # so not reachable move skills won't make it to the active skills
+        self.move_skills = self.all_move_skills()
+

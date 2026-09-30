@@ -2,7 +2,8 @@ import re
 from dataclasses import dataclass, field
 from typing import Optional
 
-from hero_data_model import Hero, HeroBuild, Party
+from hero_data_model import Hero, HeroBuild
+from party_data_model import Party
 
 
 @dataclass(frozen=True, slots=True)
@@ -69,7 +70,7 @@ class TrinketSet:
     set_bonus_raw: str
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(slots=True)
 class TrinketEvaluationContext:
     hero_rank: int = 1
     has_melee_skills: bool = True
@@ -78,12 +79,14 @@ class TrinketEvaluationContext:
     has_bleed_skills: bool = False
     team_has_mark: bool = False
     is_movement_stable: bool = True
+    hero_name: str = ''
 
     @classmethod
     def from_hero(cls, hero: HeroBuild, party: Party) -> TrinketEvaluationContext:
         return TrinketEvaluationContext(
             hero.rank, hero.has_melee_skills(),
             hero.has_ranged_skills(), hero.has_blight_skills(),
-            hero.has_bleed_skills(), party.mark, len(party.hero_pos[hero]) == 1
+            hero.has_bleed_skills(), party.has_mark, len(party.hero_pos[hero]) == 1,
+            hero.name
             )
 

@@ -4,11 +4,11 @@ import pickle
 import numpy as np
 import numpy.typing as npt
 from file_manager import FilePaths, load_pickle_dict
-
+from party_data_model import Party
+from trinket_data_model import Trinket, TrinketEvaluationContext
 if TYPE_CHECKING:
     from game_data_manager import GameDataManager
     from hero_data_model import CombatSkill, Hero
-    from trinket_data_model import Trinket, TrinketEvaluationContext
 
 type d_vec_type = dict[str, npt.NDArray[np.float64]]
 
@@ -245,120 +245,18 @@ class DVectorManager:
 
     @property
     def extended_desires(self) -> dict[str, dict[str, float]]:
+        """For trinket vectors"""
         return self._raw_data.get("extended_desires", HERO_EXTENDED_DESIRES)
-
-    def score_buff(
-        self,
-        skill: CombatSkill,
-        caster: Hero,
-        party: Optional[Sequence[Hero]] = None,
-        game_manager: Optional[GameDataManager] = None,
-    ) -> float:
-        """Calculates buff score for a skill on the caster or party."""
-        return calculate_buff_score(skill, caster, party, self, game_manager)
-
-    def score_debuff(
-        self,
-        skill: CombatSkill,
-        game_manager: Optional[GameDataManager] = None,
-        num_targets: Optional[int] = None,
-    ) -> float:
-        """Calculates debuff score for an enemy debuff skill."""
-        return calculate_debuff_score(skill, self, game_manager, num_targets)
-
-    def score_trinket(
-        self,
-        trinket: "Trinket",
-        hero: "Hero",
-        context: Optional["TrinketEvaluationContext"] = None,
-        game_manager: Optional["GameDataManager"] = None,
-    ) -> float:
-        """Calculates trinket score for a hero based on desire vector and hero profile."""
-        return calculate_trinket_score(trinket, hero, context, self, game_manager)
-
-
-def calculate_buff_score(
-    skill: "CombatSkill",
-    caster: "Hero",
-    party: Optional[Sequence["Hero"]] = None,
-    d_manager: Optional[DVectorManager] = None,
-    game_manager: Optional["GameDataManager"] = None,
-) -> float:
-    """Calculates buff score using the hero desire vector and skill buff vector.
-
-    Heuristic rules (diagram.md):
-    - Negative values in buff vector for self/friendly debuffs (e.g. Revenge -10 DODGE).
-    - If skill targets 'self': dot product with caster's desire vector.
-    - If skill targets 'party': sum dot products across party members.
-    - If skill targets 'ally': max dot product across party members (best recipient).
-    """
-    if not skill.is_buff():
-        return 0.0
-
-    if game_manager is None:
-        from game_data_manager import GameDataManager
-        game_manager = GameDataManager()
-
-    if d_manager is None:
-        d_manager = DVectorManager()
-
-    skill_vec = game_manager.skills_buff_values.get(skill)
-    if skill_vec is None or not np.any(skill_vec):
-        return 0.0
-
-    target_type = getattr(skill, "target_type", "self")
-
-    if target_type == "self" or not party:
-        desire = d_manager.vec.get(caster.class_name)
-        if desire is None:
-            return 0.0
-        return float(np.dot(skill_vec, desire))
-
-    if target_type == "party":
-        total_score = 0.0
-        for h in party:
-            desire = d_manager.vec.get(h.class_name)
-            if desire is not None:
-                total_score += float(np.dot(skill_vec, desire))
-        return total_score
-
-    if target_type == "ally":
-        scores = []
-        for h in party:
-            desire = d_manager.vec.get(h.class_name)
-            if desire is not None:
-                scores.append(float(np.dot(skill_vec, desire)))
-        return max(scores, default=0.0)
-
-    # Fallback to caster
-    desire = d_manager.vec.get(caster.class_name)
-    return float(np.dot(skill_vec, desire)) if desire is not None else 0.0
-
-
-def calculate_debuff_score(
-    skill: "CombatSkill",
-    d_manager: Optional[DVectorManager] = None,
-    game_manager: Optional["GameDataManager"] = None,
-    num_targets: Optional[int] = None,
-) -> float:
-    """Calculates enemy debuff strength using weighted sum / dot product (diagram.md n88)."""
-    if not skill.is_debuff():
-        return 0.0
-
-    if game_manager is None:
-        from game_data_manager import GameDataManager
-        game_manager = GameDataManager()
-
-    if d_manager is None:
-        d_manager = DVectorManager()
-
-    skill_vec = game_manager.skills_debuff_values.get(skill)
-    if skill_vec is None or not np.any(skill_vec):
-        return 0.0
-
-    base_score = float(np.dot(skill_vec, d_manager.debuff))
-    targets = num_targets if num_targets is not None else skill.amount_of_targets()
-    return base_score * targets
+    
+    # TODO: rework trinket scoring asapppp!
+    def process_trinket_scores(self, party: Party, man: GameDataManager) -> float:
+        out_sum = 0.0        
+        for hero in party.members:
+            ctx = TrinketEvaluationContext.from_hero(hero, party)
+            for trinket in hero.trinkets:
+                out_sum += calculate_trinket_score(trinket, ctx, self, man)
+        return out_sum
+                
 
 
 def trinket_to_buff_vector(
@@ -439,8 +337,7 @@ def trinket_to_buff_vector(
 
 def calculate_trinket_score(
     trinket: "Trinket",
-    hero: "Hero",
-    context: Optional["TrinketEvaluationContext"] = None,
+    context: TrinketEvaluationContext,
     d_manager: Optional[DVectorManager] = None,
     game_manager: Optional["GameDataManager"] = None,
 ) -> float:
@@ -458,7 +355,7 @@ def calculate_trinket_score(
     if is_trinket_ignored(trinket.name):
         return 0.0
 
-    if trinket.class_restriction and trinket.class_restriction != hero.class_name:
+    if trinket.class_restriction and trinket.class_restriction != context.hero_name:
         return 0.0
 
     if game_manager is None:
@@ -468,26 +365,13 @@ def calculate_trinket_score(
     if d_manager is None:
         d_manager = DVectorManager()
 
-    if context is None:
-        from trinket_data_model import TrinketEvaluationContext
-        has_melee = any(s.type == "Melee" for s in hero.combat_skills)
-        has_ranged = any(s.type == "Ranged" for s in hero.combat_skills)
-        has_blight = any(s.blight.chance_lvl5 is not None for s in hero.combat_skills)
-        has_bleed = any(s.bleed.chance_lvl5 is not None for s in hero.combat_skills)
-        context = TrinketEvaluationContext(
-            has_melee_skills=has_melee,
-            has_ranged_skills=has_ranged,
-            has_blight_skills=has_blight,
-            has_bleed_skills=has_bleed,
-        )
-
     eff_stats = evaluate_trinket_stats(trinket, context)
     if not eff_stats:
         return 0.0
 
     # 1. Core combat stats via desire vector dot product
     trinket_vec = trinket_to_buff_vector(trinket, context, game_manager)
-    hero_desire = d_manager.vec.get(hero.class_name)
+    hero_desire = d_manager.vec.get(context.hero_name)
     core_score = float(np.dot(trinket_vec, hero_desire)) if hero_desire is not None else 0.0
 
     # 2. Utility stats via min-max scaling (diagram.md n22 -> n23)
@@ -509,7 +393,7 @@ def calculate_trinket_score(
         utility_score -= (surprise_party / 20.0) * 0.8
 
     # 3. Extended stats
-    ext_desires = d_manager.extended_desires.get(hero.class_name, {})
+    ext_desires = d_manager.extended_desires.get(context.hero_name, {})
     ext_score = 0.0
 
     max_hp = eff_stats.get("MAX HP", 0.0)

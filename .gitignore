@@ -2,3 +2,4 @@
 **/__pycache__/
 /.venv
 repomix-output.xml
+*.prof

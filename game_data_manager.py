@@ -5,15 +5,13 @@ import numpy as np
 from typing import Union, Optional
 from pathlib import Path
 from file_manager import GameDataHandler, FilePaths
-from functools import cached_property
+from functools import cache, cached_property
 from itertools import chain, product
 from collections.abc import Iterator
 from hero_data_model import (
     CombatSkill,
     Hero,
-    HeroBuild,
     Metadata,
-    Party,
 )
 from trinket_data_model import (
     Trinket,
@@ -132,6 +130,20 @@ class GameDataManager:
             (self.calculate_max_dps(skill, hero) for hero, skill in self.all_combat_skill_pairs()),
             default=0.0,
         )
+    
+    @cached_property
+    def max_skill_bleed(self) -> float:
+        return max(
+            (skill.bleed_dmg() for skill in self.all_combat_skills()),
+            default=0.0
+        )
+
+    @cached_property
+    def max_skill_blight(self) -> float:
+        return max(
+            (skill.blight_dmg() for skill in self.all_combat_skills()),
+            default=0.0
+        )
 
     @cached_property
     def max_skill_self_heal(self) -> float:
@@ -139,6 +151,28 @@ class GameDataManager:
         return max(
             (self.calculate_max_self_heal(skill, hero) for hero, skill in self.all_combat_skill_pairs()),
             default=0.0,
+        )
+    
+    @cached_property
+    def max_skill_heal(self) -> float:
+        return max(
+            (skill.healing_value(h) for h, skill in self.all_combat_skill_pairs()),
+            default=0.0
+        )
+    
+    @cached_property
+    def max_skill_stun(self) -> int:
+        """The biggest number of stun of a skill"""
+        return max(
+            (skill.number_of_stuns() for skill in self.all_combat_skills()),
+            default=0
+        )
+    
+    @cached_property
+    def max_skill_backline_dmg(self) -> float:
+        return max(
+            (skill.raw_expected_damage(hero) for hero, skill in self.all_combat_skill_pairs() if skill.has_backline_reach()),
+            default=0.0
         )
 
     @cached_property
@@ -149,11 +183,39 @@ class GameDataManager:
             for hero, skill in self.all_combat_skill_pairs()
             if skill.is_self_heal()
         )
-
-
-
-
         return tuple(sorted(unsorted_skills, key=lambda pair: calculate_max_self_heal(pair[0], pair[1]), reverse=True))
+    
+    @cached_property
+    def vs_marked_skills(self) -> set[CombatSkill]:
+        return {
+            skill
+            for skill in self.all_combat_skills()
+            if skill.has_vs_marked_bonus()
+        }
+    
+    @cached_property
+    def mark_skills(self) -> set[CombatSkill]:
+        return {
+            skill
+            for skill in self.all_combat_skills()
+            if skill.applies_mark()
+        }
+
+    @cached_property
+    def vs_stunned_skills(self) -> set[CombatSkill]:
+        return {
+            skill
+            for skill in self.all_combat_skills()
+            if skill.has_vs_stunned_bonus()
+        }
+
+    @cached_property
+    def stun_skills(self) -> set[CombatSkill]:
+        return {
+            skill
+            for skill in self.all_combat_skills()
+            if skill.applies_stun()
+        }
 
     def _init_skill_complements(self) -> None:
         """Populates coupled_skills on all skills that apply mark or stun with their respective complement skills."""
@@ -178,15 +240,6 @@ class GameDataManager:
                 skill.coupled_skills = tuple(deduped)
             else:
                 skill.coupled_skills = ()
-    @cached_property
-    def vs_marked_skills(self) -> tuple[CombatSkill, ...]:
-        """Returns all combat skills with bonus damage or crit against marked enemies."""
-        return tuple(s for s in self.all_combat_skills() if s.has_vs_marked_bonus())
-
-    @cached_property
-    def vs_stunned_skills(self) -> tuple[CombatSkill, ...]:
-        """Returns all combat skills with bonus damage against stunned enemies."""
-        return tuple(s for s in self.all_combat_skills() if s.has_vs_stunned_bonus())
 
     def get_mark_or_stun_skills(self) -> tuple[CombatSkill, ...]:
         """
@@ -351,47 +404,6 @@ class GameDataManager:
                 if k in UTILITY_STATS:
                     max_vals[k] = max(max_vals.get(k, 0.0), abs(v))
         return max_vals
-
-    def evaluate_trinket(
-        self,
-        trinket: Trinket,
-        context: Optional[TrinketEvaluationContext] = None,
-    ) -> dict[str, float]:
-        """Evaluates effective stat modifiers for a given trinket and hero context."""
-        return evaluate_trinket_stats(trinket, context)
-
-    def evaluate_trinket_score(
-        self,
-        trinket: Trinket,
-        hero: Hero,
-        context: Optional[TrinketEvaluationContext] = None,
-        d_manager: Optional[DVectorManager] = None,
-    ) -> float:
-        """Evaluates overall trinket score for a hero using desire vector and stats."""
-        from desire_vector import calculate_trinket_score
-        return calculate_trinket_score(trinket, hero, context, d_manager, self)
-
-    def evaluate_buff_score(
-        self,
-        skill: CombatSkill,
-        caster: Hero,
-        party: Optional[Sequence[Hero]] = None,
-        d_manager: Optional[Any] = None,
-    ) -> float:
-        """Evaluates buff score of a combat skill for a caster or party."""
-        from desire_vector import calculate_buff_score
-        return calculate_buff_score(skill, caster, party, d_manager, self)
-
-    def evaluate_debuff_score(
-        self,
-        skill: CombatSkill,
-        d_manager: Optional[Any] = None,
-        num_targets: Optional[int] = None,
-    ) -> float:
-        """Evaluates debuff score of an enemy-targeting debuff combat skill."""
-        from desire_vector import calculate_debuff_score
-        return calculate_debuff_score(skill, d_manager, self, num_targets)
-
 
 
 def get_mark_or_stun_skills(data_manager: Optional[GameDataManager] = None) -> tuple[CombatSkill, ...]:
