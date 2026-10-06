@@ -1,8 +1,8 @@
-from desire_vector import DVectorManager
+from party_vectorizer.desire_vector import DVectorManager
 from game_data_manager import GameDataManager
 import numpy as np
 
-from party_data_model import Party
+from data_model.party_data_model import Party
 
 # enemy debuffs, Healing, Buffs/self-debuffs, 
 # Self-healing, Raw Damage, Backline, vs stunned present, 

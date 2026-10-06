@@ -1,10 +1,10 @@
 from game_data_manager import GameDataManager
-from trinket_data_model import (
+from data_model.trinket_data_model import (
     Trinket,
     TrinketEffect,
     TrinketEvaluationContext,
 )
-from trinket_evaluator import (
+from party_vectorizer.trinket_evaluator import (
     ALL_IGNORED_TRINKETS,
     IGNORED_COLOR_OF_MADNESS_TRINKETS,
     IGNORED_CRIMSON_COURT_TRINKETS,

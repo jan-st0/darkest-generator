@@ -2,8 +2,8 @@ import re
 from dataclasses import dataclass, field
 from typing import Optional
 
-from hero_data_model import Hero, HeroBuild
-from party_data_model import Party
+from data_model.hero_data_model import Hero, HeroBuild
+from data_model.party_data_model import Party
 
 
 @dataclass(frozen=True, slots=True)

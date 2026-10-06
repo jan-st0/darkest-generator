@@ -1,6 +1,6 @@
 import re
 from typing import Optional
-from trinket_data_model import Trinket, TrinketEffect, TrinketEvaluationContext
+from data_model.trinket_data_model import Trinket, TrinketEffect, TrinketEvaluationContext
 
 
 IGNORED_CRIMSON_COURT_TRINKETS: frozenset[str] = frozenset({

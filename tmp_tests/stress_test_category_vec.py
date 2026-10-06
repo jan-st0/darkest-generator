@@ -6,15 +6,12 @@ import time
 from pathlib import Path
 from typing import Sequence
 
-# Ensure repo root is on module search path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-from desire_vector import DVectorManager
-from fitness import party_to_category_vector
+from party_vectorizer.desire_vector import DVectorManager
+from party_vectorizer.fitness import party_to_category_vector
 from game_data_manager import GameDataManager
-from hero_data_model import CombatSkill, Hero, HeroBuild
-from party_data_model import Party
-from trinket_data_model import Trinket
+from data_model.hero_data_model import CombatSkill, Hero, HeroBuild
+from data_model.party_data_model import Party
+from data_model.trinket_data_model import Trinket
 
 
 def generate_random_build(

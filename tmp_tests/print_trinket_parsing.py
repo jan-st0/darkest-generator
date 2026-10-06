@@ -5,8 +5,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from game_data_manager import GameDataManager
-from trinket_data_model import TrinketEvaluationContext
-from trinket_evaluator import (
+from data_model.trinket_data_model import TrinketEvaluationContext
+from party_vectorizer.trinket_evaluator import (
     ALL_IGNORED_TRINKETS,
     IGNORED_COLOR_OF_MADNESS_TRINKETS,
     IGNORED_CRIMSON_COURT_TRINKETS,

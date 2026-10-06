@@ -1,6 +1,6 @@
 from typing import Any, Union
 
-from hero_data_model import (
+from data_model.hero_data_model import (
     BaseStatsLvl0,
     BaseStatsLvl6,
     BuffDebuffEffect,
@@ -17,7 +17,7 @@ from hero_data_model import (
     StunEffect,
 )    
 
-from trinket_data_model import (
+from data_model.trinket_data_model import (
     Trinket,
     TrinketEffect,
     TrinketRef,

@@ -2,13 +2,12 @@ import sys
 from pathlib import Path
 
 # Ensure repo root is in module search path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from desire_vector import DVectorManager
-from fitness import party_to_category_vector
+from party_vectorizer.desire_vector import DVectorManager
+from party_vectorizer.fitness import party_to_category_vector
 from game_data_manager import GameDataManager
-from hero_data_model import HeroBuild
-from party_data_model import Party
+from data_model.hero_data_model import HeroBuild
+from data_model.party_data_model import Party
 
 
 def build_untrinketed_party(mgr: GameDataManager) -> Party:

@@ -1,12 +1,14 @@
 from dataclasses import InitVar, dataclass, field
 from typing import TYPE_CHECKING
-from hero_data_model import CombatSkill, HeroBuild
+from data_model.hero_data_model import CombatSkill, HeroBuild
 
 if TYPE_CHECKING:
     from game_data_manager import GameDataManager
 
 type Permutation = tuple[HeroBuild, ...]
 
+# TODO: Change it so that it inherits from collections.abc.Sequence, so permutaion -> slices
+# or add getitem
 @dataclass(slots=True)
 class Party:
     # ranks: 4 3 2 1

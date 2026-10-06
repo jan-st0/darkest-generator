@@ -3,7 +3,7 @@ from typing import Optional, TYPE_CHECKING
 
 
 if TYPE_CHECKING:
-    from trinket_data_model import Trinket
+    from data_model.trinket_data_model import Trinket
 
 
 @dataclass(frozen=True, slots=True)

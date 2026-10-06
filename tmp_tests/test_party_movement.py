@@ -1,7 +1,7 @@
 import pytest
 
 from game_data_manager import GameDataManager
-from hero_data_model import HeroBuild, Party
+from data_model.hero_data_model import HeroBuild, Party
 
 
 @pytest.fixture(scope="module")

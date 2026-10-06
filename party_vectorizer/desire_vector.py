@@ -4,11 +4,11 @@ import pickle
 import numpy as np
 import numpy.typing as npt
 from file_manager import FilePaths, load_pickle_dict
-from party_data_model import Party
-from trinket_data_model import Trinket, TrinketEvaluationContext
+from data_model.party_data_model import Party
+from data_model.trinket_data_model import Trinket, TrinketEvaluationContext
 if TYPE_CHECKING:
     from game_data_manager import GameDataManager
-    from hero_data_model import CombatSkill, Hero
+    from data_model.hero_data_model import CombatSkill, Hero
 
 type d_vec_type = dict[str, npt.NDArray[np.float64]]
 
@@ -269,7 +269,7 @@ def trinket_to_buff_vector(
         from game_data_manager import GameDataManager
         game_manager = GameDataManager()
 
-    from trinket_evaluator import evaluate_trinket_stats
+    from party_vectorizer.trinket_evaluator import evaluate_trinket_stats
     eff_stats = evaluate_trinket_stats(trinket, context)
     stat_types = game_manager.all_buff_types
     max_map = game_manager.max_values_for_buffs
@@ -350,7 +350,7 @@ def calculate_trinket_score(
     4. Utility stats (scouting, trap disarm, surprise) via min-max scaling.
     5. Extended stats (Healing Skills, Stun Chance, Bleed Chance, MAX HP) scaled by hero capabilities.
     """
-    from trinket_evaluator import is_trinket_ignored, evaluate_trinket_stats, UTILITY_STATS
+    from party_vectorizer.trinket_evaluator import is_trinket_ignored, evaluate_trinket_stats, UTILITY_STATS
 
     if is_trinket_ignored(trinket.name):
         return 0.0
