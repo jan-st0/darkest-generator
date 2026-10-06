@@ -3,3 +3,4 @@
 /.venv
 repomix-output.xml
 *.prof
+uv.lock
