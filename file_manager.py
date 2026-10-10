@@ -1,4 +1,5 @@
-from typing import Any
+from contextlib import contextmanager
+from typing import Any, Generator, Iterator, TextIO
 import yaml
 import pickle
 try:
@@ -21,7 +22,16 @@ ROOT_DIR = find_project_root()
 class FilePaths(Enum):
     GAME_INFO_SOURCE = ROOT_DIR / 'data' / 'darkest_dungeon_data-v4.yml'
     HERO_D_VECTORS = ROOT_DIR / 'data' / 'hero_d_vector.pkl'
+    PARTY_COMPARISON_DATA = ROOT_DIR / 'data' / 'party_comparison.csv'
 
+def party_comparison_exists() -> bool:
+    return FilePaths.PARTY_COMPARISON_DATA.value.is_file()
+
+
+@contextmanager
+def append_party_comparison() -> Generator[TextIO]:
+    with open(FilePaths.PARTY_COMPARISON_DATA.value, encoding='utf-8', mode='a', newline='') as f:
+        yield f
 
 def _load_simple_yml_no_fallback(file_path: Path | str) -> dict[str, Any] :
     with open(file_path, "r", encoding="utf-8") as file:

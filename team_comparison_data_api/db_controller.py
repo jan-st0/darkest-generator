@@ -1,43 +1,49 @@
-import enum
-from data_model.party_data_model import Party
-from data_model.hero_data_model import HeroBuild
-from enum import StrEnum
+import csv
+from typing import Iterable
 
-class TableCols(StrEnum):
-    # hero_XZ, where X is hero position: 4, 3, 2, 1 and Z is team id(1 or 2)
-    HERO_PREFIX = 'hero_'
-    # trinket_XYZ, where X is hero number and Y is triket number starting from 1
-    TRINKET_PREFIX = 'trinket_'
-    # skill_XYZ
-    SKILL_PREFIX = 'skill_'
-    BETTER = 'better'
+from fastapi import FastAPI
+from file_manager import append_party_comparison, party_comparison_exists
+from .object_mapper import all_columns
 
+class PartyDB:
+    column_names: list[str]
+    buffer: list[dict[str, str | int]]
 
-def str_hero_col(num: int, team_id: int) -> str:
-    return f'{TableCols.HERO_PREFIX}{num}{team_id}'
+    def create_csv_if_not_exits(self) -> None:
+        if not party_comparison_exists():
+            with append_party_comparison() as file:
+                writer = csv.writer(file)
+                writer.writerow(self.column_names)
 
-def str_trinket_col(hero_pos: int, idx: int, team_id: int) -> str:
-    return f'{TableCols.TRINKET_PREFIX}{hero_pos}{idx}{team_id}'
+    def __init__(self) -> None:
+        # TODO: check 1 row of csv and adjust column_names
+        self.column_names = all_columns()
+        self.create_csv_if_not_exits()
 
-def str_skill_col(hero_pos: int, idx: int, team_id: int) -> str:
-    return f'{TableCols.SKILL_PREFIX}{hero_pos}{idx}{team_id}'
-
-def party_to_csv_row(party1: Party, party2: Party):
-    out = {}
-    for idx, party in enumerate([party1, party2]):
-        # start from 1
-        idx += 1
-        out |= {str_hero_col(4 - i, idx): hero.name for i, hero in enumerate(party.members)}
-        
-        out |= {
-            str_trinket_col(4 - h_idx, t_idx + 1, idx): trinket.name
-            for h_idx, hero in enumerate(party.members)
-            for t_idx, trinket in enumerate(hero.trinkets)
-        }
-
-        out |= {
-            
-        }
-
-
+    def save_rows(self, rows: list[dict[str, str | int]]) -> None:
+        with append_party_comparison() as file:
+            writer = csv.DictWriter(file, fieldnames=self.column_names, delimiter='|')
+            writer.writerows(rows)
     
+    def save_row(self, row: dict[str, str | int]) -> None:
+        with append_party_comparison() as file:
+            writer = csv.DictWriter(file, fieldnames=self.column_names, delimiter='|')
+            writer.writerow(row)
+
+    def buffer_add(self, row: dict[str, str | int]) -> None:
+        self.buffer.append(row)
+    
+    def buffer_mass_add(self, rows: Iterable[dict[str, str | int]]) -> None:
+        self.buffer.extend(rows)
+    
+    def write_buffer(self) -> None:
+        self.save_rows(self.buffer)
+        self.buffer.clear()
+
+
+app = FastAPI(
+    title='PartyAPI',
+    version='0.1.0'
+)
+
+def store_

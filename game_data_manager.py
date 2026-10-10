@@ -116,6 +116,14 @@ class GameDataManager:
     @cached_property
     def heroes_by_name(self) -> dict[str, Hero]:
         return {h.class_name: h for h in self._heroes}
+    
+    @cached_property
+    def skills_by_name(self) -> dict[str, CombatSkill]:
+        return {
+            s.name: s
+            for h in self._heroes
+            for s in h.combat_skills
+        }
 
     def calculate_max_self_heal(self, skill: CombatSkill, hero: Hero) -> float:
         return calculate_max_self_heal(skill, hero)
