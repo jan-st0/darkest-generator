@@ -7,4 +7,6 @@ dependencies = [
     "numpy",
     "scikit-learn",
     "pandas",
+    "fastapi",
+    "pydantic",
 ]

@@ -45,5 +45,3 @@ app = FastAPI(
     title='PartyAPI',
     version='0.1.0'
 )
-
-def store_

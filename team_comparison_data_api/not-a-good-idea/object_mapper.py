@@ -1,3 +1,6 @@
+from pydantic import Field
+from typing import Annotated
+from pydantic import BaseModel
 from typing import Iterable
 
 from data_model.party_data_model import Party
@@ -7,6 +10,12 @@ from enum import StrEnum
 from data_model.trinket_data_model import Trinket
 from game_data_manager import GameDataManager
 
+
+
+
+
+
+# TODO: implement a better design in future versions
 COL_NUM = 2 * ( 4 * (4 + 2)) + 1
 
 class TableCols(StrEnum):
@@ -122,3 +131,4 @@ def csv_to_skill(row: dict[str, str], party_idx: int, hero_idx: int, skill_idx: 
     return gman.skills_by_name.get(
         row.get(str_skill_col(hero_idx, skill_idx, party_idx), ''), None
     )
+
