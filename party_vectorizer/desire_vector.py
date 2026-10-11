@@ -1,14 +1,12 @@
 from pathlib import Path
-from typing import Any, Optional, Sequence, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 import pickle
 import numpy as np
 import numpy.typing as npt
 from file_manager import FilePaths, load_pickle_dict
-from data_model.party_data_model import Party
-from data_model.trinket_data_model import Trinket, TrinketEvaluationContext
+from data_model import Party, Trinket, TrinketEvaluationContext
 if TYPE_CHECKING:
     from game_data_manager import GameDataManager
-    from data_model.hero_data_model import CombatSkill, Hero
 
 type d_vec_type = dict[str, npt.NDArray[np.float64]]
 
@@ -260,8 +258,8 @@ class DVectorManager:
 
 
 def trinket_to_buff_vector(
-    trinket: "Trinket",
-    context: Optional["TrinketEvaluationContext"] = None,
+    trinket: Trinket,
+    context: Optional[TrinketEvaluationContext] = None,
     game_manager: Optional["GameDataManager"] = None,
 ) -> npt.NDArray[np.float64]:
     """Maps the evaluated stats of a trinket into a 12-element normalized buff vector."""
@@ -336,7 +334,7 @@ def trinket_to_buff_vector(
 
 
 def calculate_trinket_score(
-    trinket: "Trinket",
+    trinket: Trinket,
     context: TrinketEvaluationContext,
     d_manager: Optional[DVectorManager] = None,
     game_manager: Optional["GameDataManager"] = None,

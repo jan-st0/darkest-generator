@@ -1,12 +1,19 @@
 from typing import Protocol
 import argparse
+import uvicorn
+from game_data_manager import GameDataManager
+from team_comparison_data_api import create_team_api
+from persistence import JsonlDB
+
 class StrategyDispatch(Protocol):
     def run(self) -> None: ...
 
 class PsService:
     def run(self) -> None:
-        # TODO: create service
-        print('helu')
+        gman = GameDataManager()
+        app = create_team_api(JsonlDB(gman))
+        uvicorn.run(app)
+
 class NoAction:
     def run(self) -> None:
         pass

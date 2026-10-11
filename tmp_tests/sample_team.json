@@ -1,0 +1,116 @@
+{
+    "party_1": {
+      "members": [
+        {
+          "name": "Vestal",
+          "skills": [
+            "Dazzling Light",
+            "Divine Grace",
+            "Divine Comfort",
+            "Judgement"
+          ],
+          "trinkets": [
+            "Junia's Head",
+            "Tome of Holy Healing"
+  
+          ]
+        },
+        {
+          "name": "Plague Doctor",
+          "skills": [
+            "Noxious Blast",
+            "Plague Grenade",
+            "Blinding Gas",
+            "Battlefield Medicine"
+          ],
+          "trinkets": [
+            "Blasphemous Vial",
+            "Witch's Vial"
+          ]
+        },
+        {
+          "name": "Highwayman",
+          "skills": [
+            "Duelist's Advance",
+            "Point Blank Shot",
+            "Open Vein",
+            "Pistol Shot"
+          ],
+          "trinkets": [
+            "Dismas' Head",
+            "Sharpening Sheath"
+          ]
+        },
+        {
+          "name": "Crusader",
+          "skills": [
+            "Smite",
+            "Stunning Blow",
+            "Holy Lance",
+            "Inspiring Cry"
+          ],
+          "trinkets": [
+            "Paralyzer's Crest",
+            "Commander's Orders"
+          ]
+        }
+      ]
+    },
+    "party_2": {
+      "members": [
+        {
+          "name": "Arbalest",
+          "skills": [
+            "Sniper Shot",
+            "Suppressing Fire",
+            "Sniper's Mark",
+            "Battlefield Bandage"
+          ],
+          "trinkets": [
+            "Bull's Eye Bandana",
+            "Wrathful Bandana"
+          ]
+        },
+        {
+          "name": "Houndmaster",
+          "skills": [
+            "Hound's Rush",
+            "Target Whistle",
+            "Blackjack",
+            "Cry Havoc"
+          ],
+          "trinkets": [
+            "Cudgel Weight",
+            "Spiked Collar"
+          ]
+        },
+        {
+          "name": "Bounty Hunter",
+          "skills": [
+            "Collect Bounty",
+            "Mark for Death",
+            "Finish Him",
+            "Flashbang"
+          ],
+          "trinkets": [
+            "Hunter's Talons",
+            "Wounding Helmet"
+          ]
+        },
+        {
+          "name": "Leper",
+          "skills": [
+            "Chop",
+            "Hew",
+            "Solemnity",
+            "Withstand"
+          ],
+          "trinkets": [
+            "Focus Ring",
+            "Immunity Mask"
+          ]
+        }
+      ]
+    },
+    "better": -1
+  }

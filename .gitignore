@@ -1,6 +1,15 @@
+# python
 /darkest_generator.egg-info
 **/__pycache__/
 /.venv
-repomix-output.xml
+
+# repomix
+repomix-output.*
+.repomixignore
+repomix.config.json
+
+# json db
+data/*.jsonl
+
 *.prof
 uv.lock

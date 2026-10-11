@@ -1,11 +1,8 @@
-from typing import Any
-from collections.abc import Sequence
-from party_vectorizer.desire_vector import DVectorManager
 import numpy as np
 from typing import Union, Optional
 from pathlib import Path
 from file_manager import GameDataHandler, FilePaths
-from functools import cache, cached_property
+from functools import cached_property
 from itertools import chain, product
 from collections.abc import Iterator
 from data_model.hero_data_model import (
@@ -15,11 +12,9 @@ from data_model.hero_data_model import (
 )
 from data_model.trinket_data_model import (
     Trinket,
-    TrinketEvaluationContext,
     TrinketSet
 )
 from party_vectorizer.trinket_evaluator import (
-    ALL_IGNORED_TRINKETS,
     UTILITY_STATS,
     evaluate_trinket_stats,
     is_trinket_ignored,
