@@ -54,7 +54,6 @@ class JsonlDB:
         self.gman = gman
         self.mapper = PartyDomainMapper(gman)
 
-    # TODO: Make IO cleaner
     def save_comaparison(self, comp: ComparisonRequest) -> None:
         team1 = self.mapper.to_party_domain(comp.party_1)
         team2 = self.mapper.to_party_domain(comp.party_2)
