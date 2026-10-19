@@ -1,8 +1,7 @@
 import numpy as np
 
 from data_model.party_data_model import Party
-from game_data_manager import GameDataManager
-from party_vectorizer.desire_vector import DVectorManager
+from game_utility import GameContext
 
 # enemy debuffs, Healing, Buffs/self-debuffs,
 # Self-healing, Raw Damage, Backline, vs stunned present,
@@ -17,8 +16,12 @@ from party_vectorizer.desire_vector import DVectorManager
 CATEGORIES_LEN = 19
 UNSCALED_CATEGORIES = [0, 2, 17]
 
+type CatVec = np.typing.NDArray[np.float64]
 
-def party_to_category_vector(party: Party, man: GameDataManager, dvec: DVectorManager):
+
+def party_to_category_vector(party: Party, game_context: GameContext):
+    man = game_context.gman
+    dvec = game_context.dvec
     output = np.zeros(CATEGORIES_LEN, dtype=np.float64)
     # enemy debuffs (unscaled)
     debf = np.zeros(len(dvec.debuff), dtype=np.float64)
