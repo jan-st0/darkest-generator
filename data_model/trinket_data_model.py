@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 import re
 from dataclasses import dataclass
-from typing import Optional
 
 from .hero_data_model import HeroBuild
 from .party_data_model import Party
@@ -10,9 +11,9 @@ from .party_data_model import Party
 class TrinketEffect:
     stat: str
     raw: str
-    modifier: Optional[int] = None
-    unit: Optional[str] = None
-    condition: Optional[str] = None
+    modifier: int | None = None
+    unit: str | None = None
+    condition: str | None = None
 
     def is_torch_effect(self) -> bool:
         if not self.condition:
@@ -26,7 +27,9 @@ class TrinketEffect:
 
     def is_utility(self) -> bool:
         s = self.stat.lower()
-        return any(k in s for k in ("scouting", "trap disarm", "surprised", "surprise chance"))
+        return any(
+            k in s for k in ("scouting", "trap disarm", "surprised", "surprise chance")
+        )
 
     def is_food_effect(self) -> bool:
         if "food" in self.stat.lower():
@@ -43,7 +46,7 @@ class Trinket:
     rarity: str
     category: str
     effects: tuple[TrinketEffect, ...]
-    class_restriction: Optional[str] = None
+    class_restriction: str | None = None
 
     @property
     def is_crimson_court(self) -> bool:
@@ -79,14 +82,17 @@ class TrinketEvaluationContext:
     has_bleed_skills: bool = False
     team_has_mark: bool = False
     is_movement_stable: bool = True
-    hero_name: str = ''
+    hero_name: str = ""
 
     @classmethod
     def from_hero(cls, hero: HeroBuild, party: Party) -> TrinketEvaluationContext:
         return TrinketEvaluationContext(
-            hero.rank, hero.has_melee_skills(),
-            hero.has_ranged_skills(), hero.has_blight_skills(),
-            hero.has_bleed_skills(), party.has_mark, len(party.hero_pos[hero]) == 1,
-            hero.name
-            )
-
+            hero.rank,
+            hero.has_melee_skills(),
+            hero.has_ranged_skills(),
+            hero.has_blight_skills(),
+            hero.has_bleed_skills(),
+            party.has_mark,
+            len(party.hero_pos[hero]) == 1,
+            hero.name,
+        )

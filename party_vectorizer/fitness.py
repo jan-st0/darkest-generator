@@ -15,6 +15,27 @@ from game_utility import GameContext
 # TODO: Make column adressing more robust
 CATEGORIES_LEN = 19
 UNSCALED_CATEGORIES = [0, 2, 17]
+CATEGORY_NAMES: tuple[str, ...] = (
+    "enemy_debuffs",
+    "party_healing",
+    "buffs",
+    "self_healing",
+    "raw_dps",
+    "backline_dps",
+    "vs_stunned_present",
+    "vs_stunned_synergy",
+    "vs_marked_present",
+    "vs_marked_synergy",
+    "bleed_output",
+    "blight_output",
+    "stun_coverage",
+    "enemy_r1_reach",
+    "enemy_r2_reach",
+    "enemy_r3_reach",
+    "enemy_r4_reach",
+    "trinket_score",
+    "active_skill_completeness",
+)
 
 type CatVec = np.typing.NDArray[np.float64]
 

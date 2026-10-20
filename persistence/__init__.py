@@ -1,7 +1,8 @@
-from .db import PartyDB, JsonlDB, PartyDomainMapper
+from .db import JsonlDB, PartyDB
+from .domain_mapper import PartyDomainMapper
 
 __all__ = [
-    "PartyDB",
     "JsonlDB",
+    "PartyDB",
     "PartyDomainMapper",
 ]

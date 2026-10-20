@@ -15,7 +15,7 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import SplineTransformer, StandardScaler
+from sklearn.preprocessing import MinMaxScaler, SplineTransformer
 
 from game_data_manager import GameDataManager
 from game_utility import GameContext
@@ -25,9 +25,8 @@ from .fitness import UNSCALED_CATEGORIES, CatVec, party_to_category_vector
 
 
 def team_features_pipeline() -> Pipeline:
-    """Transforms raw category vector to scaled form with added splines"""
     scaler_step = ColumnTransformer(
-        transformers=[("scale_unbouded", StandardScaler(), UNSCALED_CATEGORIES)],
+        transformers=[("scale_unbouded", MinMaxScaler(), UNSCALED_CATEGORIES)],
         remainder="passthrough",
     )
     steps = [
