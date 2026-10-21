@@ -1,6 +1,8 @@
+from requests import request
 from typing import Protocol
 
 import pandas as pd
+import json
 
 from data_model import (
     ComparisonRequest,
@@ -15,6 +17,7 @@ class PartyDB(Protocol):
     def save_comaparison(self, comp: ComparisonRequest) -> None: ...
     # TODO: Can change all records into a generator
     def load_all_records(self) -> list[ComparisonRequest]: ...
+    def load_unique_records(self) -> list[ComparisonRequest]: ...
     def to_pandas(self) -> pd.DataFrame: ...
 
 
@@ -34,6 +37,14 @@ class JsonlDB:
         return [
             ComparisonRequest.model_validate_json(json) for json in read_party_comp()
         ]
+    
+    def load_unique_records(self) -> list[ComparisonRequest]:
+        return [
+            ComparisonRequest.model_validate_json(req)
+            for req in dict.fromkeys(read_party_comp()) # preserves order of teams
+        ]
+
+        
 
     def to_pandas(self) -> pd.DataFrame:
         return pd.read_json(FilePaths.PARTY_COMPARISON_JSONL.value, lines=True)

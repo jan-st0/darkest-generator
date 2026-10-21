@@ -1,3 +1,7 @@
+from data_model import ComparisonRequest
+from typing import Self
+from sklearn.base import RegressorMixin
+from sklearn.base import BaseEstimator
 from typing import Literal
 
 import numpy as np
@@ -23,6 +27,16 @@ from persistence import JsonlDB, PartyDB
 
 from .fitness import UNSCALED_CATEGORIES, CatVec, party_to_category_vector
 
+class Ranker(BaseEstimator, RegressorMixin):
+    def __init__(self, weights: CatVec) -> None:
+        self.weights = weights
+    
+    def fit(self, X, y = None) -> Self:
+        return self
+    
+    def predict(self, X):
+        vec_1d = np.atleast_1d(X).ravel()
+        return np.dot(self.weights, vec_1d)
 
 def team_features_pipeline() -> Pipeline:
     scaler_step = ColumnTransformer(
@@ -38,7 +52,8 @@ def team_features_pipeline() -> Pipeline:
 
 def parse_data_from_db(db: PartyDB, game_context: GameContext) -> tuple[CatVec, CatVec]:
     mapper = game_context.mapper
-    reqs = db.load_all_records()
+    reqs = db.load_unique_records()
+
     teams_h, teams_l = [], []
 
     for request in reqs:
@@ -113,9 +128,7 @@ def predict_team_score(
     return float(np.dot(model.coef_[0], vec_1d))
 
 
-def run_training_pipeline(
-    use_splines: bool = True,
-) -> tuple[LogisticRegression, Pipeline]:
+def run_training_pipeline() -> tuple[LogisticRegression, Pipeline]:
     """Runs data loading, preprocessing, model fitting, and metric printing."""
     print("=" * 70)
     print("DARKEST GENERATOR - ML RANKING MODEL TRAINING")
@@ -125,17 +138,10 @@ def run_training_pipeline(
     gman = game_context.gman
     db = JsonlDB(gman)
 
-    try:
-        teams_h, teams_l = parse_data_from_db(db, game_context)
-        print(f"Loaded {len(teams_h)} labeled pairwise comparisons from JSONL.")
-    except (FileNotFoundError, ValueError) as err:
-        print(f"\n[Notice] {err}")
-        print(
-            "Synthesizing 6 bootstrap test pairs from domain rules for demonstration..."
-        )
-        teams_h, teams_l = _create_bootstrap_data(game_context)
-        print(f"Generated {len(teams_h)} sample comparisons.")
-
+    teams_h, teams_l = parse_data_from_db(db, game_context)
+    
+    print(f"Loaded {len(teams_h)} labeled pairwise comparisons from JSONL.")
+        
     # 1. Train/Test split on the original paired comparisons
     h_train, h_test, l_train, l_test = train_test_split(
         teams_h, teams_l, test_size=0.25, random_state=42
@@ -161,6 +167,7 @@ def run_training_pipeline(
     # 4. Train model
     model = train_log_reg(X_train, Y_train, C=1.0)
 
+    scoring_model = Ranker(model.coef_[0])
     # 5. Predict & compute metrics on test set
     Y_pred = model.predict(X_test)
     Y_prob = model.predict_proba(X_test)[:, 1]
@@ -176,7 +183,6 @@ def run_training_pipeline(
     except ValueError:
         auc = float("nan")
 
-    # Pairwise ranking accuracy on the held-out non-augmented test pairs
     scores_h = np.array(
         [predict_team_score(model, vec, feature_pipeline) for vec in h_test]
     )
@@ -224,87 +230,6 @@ def run_training_pipeline(
     print("=" * 70)
 
     return model, feature_pipeline
-
-
-def _create_bootstrap_data(game_context: GameContext) -> tuple[CatVec, CatVec]:
-    """Generates sample comparison vectors when DB has no labeled records yet."""
-    from data_model.hero_data_model import HeroBuild
-    from data_model.party_data_model import Party
-
-    gman = game_context.gman
-
-    heroes = {h.class_name: h for h in gman.heroes}
-    trinkets = gman.trinkets_by_name
-
-    def make_party(specs: list[tuple[str, list[str], list[str]]]) -> Party:
-        members = []
-        for rank_idx, (cname, sk_names, tr_names) in enumerate(specs):
-            h = heroes[cname]
-            sks = tuple(s for s in h.combat_skills if s.name in sk_names)
-            trs = tuple(trinkets[t] for t in tr_names if t in trinkets)
-            members.append(
-                HeroBuild(hero=h, rank=4 - rank_idx, skills=sks, trinkets=trs)
-            )
-        return Party(members=tuple(members), man=gman)
-
-    # Cohesive Mark/Stun team with trinkets (Higher)
-    p_high = make_party(
-        [
-            (
-                "Vestal",
-                ["Divine Grace", "Divine Comfort", "Dazzling Light", "Judgement"],
-                ["Junia's Head"],
-            ),
-            (
-                "Plague Doctor",
-                [
-                    "Plague Grenade",
-                    "Blinding Gas",
-                    "Noxious Blast",
-                    "Battlefield Medicine",
-                ],
-                ["Blasphemous Vial"],
-            ),
-            (
-                "Highwayman",
-                ["Duelist's Advance", "Point Blank Shot", "Pistol Shot", "Open Vein"],
-                ["Dismas' Head"],
-            ),
-            (
-                "Crusader",
-                ["Smite", "Stunning Blow", "Holy Lance", "Inspiring Cry"],
-                ["Paralyzer's Crest"],
-            ),
-        ]
-    )
-
-    # Unsynergized team without defensive skills or trinkets (Lower)
-    p_low = make_party(
-        [
-            ("Leper", ["Chop", "Hew", "Revenge", "Withstand"], []),
-            ("Abomination", ["Transform", "Rake", "Rage", "Slam"], []),
-            (
-                "Bounty Hunter",
-                ["Collect Bounty", "Finish Him", "Come Hither", "Uppercut"],
-                [],
-            ),
-            ("Hellion", ["Wicked Hack", "Iron Swan", "If It Bleeds", "Bleed Out"], []),
-        ]
-    )
-
-    vec_h = party_to_category_vector(p_high, game_context)
-    vec_l = party_to_category_vector(p_low, game_context)
-
-    # Create small perturbed variations to simulate comparison records
-    np.random.seed(42)
-    h_list, l_list = [], []
-    for _ in range(6):
-        noise_h = np.random.normal(0, 0.02, size=vec_h.shape)
-        noise_l = np.random.normal(0, 0.02, size=vec_l.shape)
-        h_list.append(np.clip(vec_h + noise_h, 0, None))
-        l_list.append(np.clip(vec_l + noise_l, 0, None))
-
-    return np.vstack(h_list), np.vstack(l_list)
 
 
 if __name__ == "__main__":
