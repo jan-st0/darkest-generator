@@ -1,4 +1,3 @@
-from statistics import mode
 from contextlib import contextmanager
 from typing import Any, Generator, TextIO
 import yaml
@@ -24,6 +23,8 @@ class FilePaths(Enum):
     GAME_INFO_SOURCE = ROOT_DIR / 'data' / 'darkest_dungeon_data-v4.yml'
     HERO_D_VECTORS = ROOT_DIR / 'data' / 'hero_d_vector.pkl'
     PARTY_COMPARISON_JSONL = ROOT_DIR / 'data' / 'party_comparison.jsonl'
+    RANKER_MODEL = ROOT_DIR / 'models' / 'ranker.pkl'
+    LOSS_PLOT = ROOT_DIR / 'models' / 'loss_curve.png'
 
 @contextmanager
 def append_to_party_comp() -> Generator[TextIO]:
@@ -45,6 +46,18 @@ def load_pickle_dict(file_path: Path | str) -> dict[Any, Any]:
     with open(file_path, 'rb') as f:
         table = pickle.load(f)
     return table
+
+def save_model(model: Any, file_path: Path | str = FilePaths.RANKER_MODEL.value) -> Path:
+    target_path = Path(file_path)
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(target_path, 'wb') as f:
+        pickle.dump(model, f)
+    return target_path
+
+def load_model(file_path: Path | str = FilePaths.RANKER_MODEL.value) -> Any:
+    target_path = Path(file_path)
+    with open(target_path, 'rb') as f:
+        return pickle.load(f)
 
 type raw_data_type = dict[str, Any]
 

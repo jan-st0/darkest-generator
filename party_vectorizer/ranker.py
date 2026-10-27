@@ -1,10 +1,12 @@
-from data_model import ComparisonRequest
+from typing import Any, cast
+from pathlib import Path
 from typing import Self
-from sklearn.base import RegressorMixin
-from sklearn.base import BaseEstimator
-from typing import Literal
 
+import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
+from scipy.optimize import minimize
+from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
@@ -21,6 +23,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler, SplineTransformer
 
+from file_manager import FilePaths, load_model, save_model
 from game_data_manager import GameDataManager
 from game_utility import GameContext
 from persistence import JsonlDB, PartyDB
@@ -28,15 +31,95 @@ from persistence import JsonlDB, PartyDB
 from .fitness import UNSCALED_CATEGORIES, CatVec, party_to_category_vector
 
 class Ranker(BaseEstimator, RegressorMixin):
-    def __init__(self, weights: CatVec) -> None:
-        self.weights = weights
-    
-    def fit(self, X, y = None) -> Self:
+    def __init__(self, weights: CatVec, preprocessor: Pipeline | None = None) -> None:
+        self.weights = np.asarray(weights, dtype=np.float64)
+        self.preprocessor = preprocessor
+
+    def fit(self, X, y=None) -> Self:
         return self
-    
-    def predict(self, X):
-        vec_1d = np.atleast_1d(X).ravel()
-        return np.dot(self.weights, vec_1d)
+
+    def predict(self, X: CatVec) -> float | np.ndarray:
+        X_arr = np.asarray(X)
+        features = X_arr
+        if self.preprocessor is not None and X_arr.shape[-1] != len(self.weights):
+            features = self.preprocessor.transform(np.atleast_2d(X_arr))
+
+        if features.ndim == 1:
+            return float(np.dot(self.weights, features))
+
+        scores = np.dot(features, self.weights)
+        if X_arr.ndim == 1 and scores.size == 1:
+            return float(scores.item())
+        return scores
+
+    def save(self, path: Path | str = FilePaths.RANKER_MODEL.value) -> Path:
+        return save_model(self, path)
+
+    @classmethod
+    def load(cls, path: Path | str = FilePaths.RANKER_MODEL.value) -> Self:
+        return load_model(path)
+
+
+def plot_training_loss(
+    iterations: list[int],
+    train_losses: list[float],
+    test_losses: list[float] | None = None,
+    save_path: Path | str | None = FilePaths.LOSS_PLOT.value,
+    show: bool = False,
+) -> Path | None:
+    if not show:
+        matplotlib.use("Agg")
+
+    fig, ax = plt.subplots(figsize=(8, 5), dpi=300)
+    ax.plot(
+        iterations,
+        train_losses,
+        label="Training Loss (BCE)",
+        color="#1f77b4",
+        linewidth=2,
+        marker="o" if len(iterations) <= 25 else None,
+        markersize=4,
+    )
+    if test_losses and len(test_losses) == len(iterations):
+        ax.plot(
+            iterations,
+            test_losses,
+            label="Validation/Test Loss (BCE)",
+            color="#d62728",
+            linewidth=2,
+            linestyle="--",
+            marker="s" if len(iterations) <= 25 else None,
+            markersize=4,
+        )
+
+    ax.set_title(
+        "Darkest Dungeon - Party Ranker Loss Progression (BFGS)",
+        fontsize=13,
+        fontweight="bold",
+        pad=12,
+    )
+    ax.set_xlabel("BFGS Iteration", fontsize=11)
+    ax.set_ylabel("Binary Cross-Entropy Loss", fontsize=11)
+    ax.grid(True, linestyle="--", alpha=0.5)
+    ax.legend(frameon=True, facecolor="white", framealpha=0.9)
+
+    if len(iterations) == 1:
+        ax.set_xlim(0.5, 1.5)
+
+    fig.tight_layout()
+
+    saved_file: Path | None = None
+    if save_path:
+        saved_file = Path(save_path)
+        saved_file.parent.mkdir(parents=True, exist_ok=True)
+        fig.savefig(saved_file, dpi=300, bbox_inches="tight")
+
+    if show:
+        plt.show()
+
+    plt.close(fig)
+    return saved_file
+
 
 def team_features_pipeline() -> Pipeline:
     scaler_step = ColumnTransformer(
@@ -57,7 +140,6 @@ def parse_data_from_db(db: PartyDB, game_context: GameContext) -> tuple[CatVec, 
     teams_h, teams_l = [], []
 
     for request in reqs:
-        # Skip unlabeled comparisons
         if request.better not in (1, 2):
             continue
 
@@ -97,39 +179,85 @@ def create_diff_vectors(teams_h: CatVec, teams_l: CatVec) -> tuple[CatVec, CatVe
     return X, Y
 
 
-def train_log_reg(
-    X: CatVec,
-    Y: CatVec,
-    C: float = 1.0,
-    penalty: Literal["l2", "l1", "elasticnet"] = "l2",
-) -> LogisticRegression:
-    """Trains a logistic regression model with fit_intercept=False for ranking symmetry."""
-    model = LogisticRegression(
-        C=C,
-        penalty=penalty,
-        solver="lbfgs",
-        fit_intercept=False,
-        random_state=42,
-        max_iter=1000,
-    )
-    model.fit(X, Y)
+def _sigmoid(z: np.ndarray) -> np.ndarray:
+    return 1.0 / (1.0 + np.exp(-np.clip(z, -250, 250)))
 
-    return model
+
+def compute_loss_history_bfgs(
+    X_train: np.ndarray,
+    Y_train: np.ndarray,
+    X_test: np.ndarray | None = None,
+    Y_test: np.ndarray | None = None,
+    C: float = 1.0,
+    max_iter: int = 500,
+) -> tuple[LogisticRegression, list[int], list[float], list[float]]:
+    n_samples, n_features = X_train.shape
+    l2_reg = 1.0 / C
+
+    def eval_pure_bce(w: np.ndarray, X: np.ndarray, Y: np.ndarray) -> float:
+        p = np.clip(_sigmoid(X @ w), 1e-15, 1.0 - 1e-15)
+        return float(-np.mean(Y * np.log(p) + (1.0 - Y) * np.log(1.0 - p)))
+
+
+    def loss_func(w: np.ndarray) -> float:
+        p = _sigmoid(X_train @ w)
+        p_clipped = np.clip(p, 1e-15, 1.0 - 1e-15)
+        bce = -np.mean(Y_train * np.log(p_clipped) + (1.0 - Y_train) * np.log(1.0 - p_clipped))
+        reg = 0.5 * (l2_reg / n_samples) * np.dot(w, w)
+        return float(bce + reg)
+
+    def grad_func(w: np.ndarray) -> np.ndarray:
+        p = _sigmoid(X_train @ w)
+        return (1.0 / n_samples) * (X_train.T @ (p - Y_train)) + (l2_reg / n_samples) * w
+
+
+    w0 = np.zeros(n_features)
+    iters: list[int] = [0]
+    tr_losses: list[float] = [eval_pure_bce(w0, X_train, Y_train)]
+    te_losses: list[float] = (
+        [eval_pure_bce(w0, X_test, Y_test)] if X_test is not None and Y_test is not None else []
+    )
+
+    iteration_counter = [0]
+
+    def callback(w_k: np.ndarray[tuple[int], np.dtype[np.float64]]) -> None:
+        iteration_counter[0] += 1
+        iters.append(iteration_counter[0])
+        tr_losses.append(eval_pure_bce(w_k, X_train, Y_train))
+        if X_test is not None and Y_test is not None:
+            te_losses.append(eval_pure_bce(w_k, X_test, Y_test))
+
+    res = minimize(
+        fun=loss_func,
+        x0=w0,
+        method="BFGS",
+        jac=grad_func,
+        callback=cast(Any, callback),
+        options={"maxiter": max_iter, "gtol": 1e-5},
+    )
+
+    model = LogisticRegression(C=C, fit_intercept=False)
+    model.classes_ = np.unique(Y_train)
+    model.coef_ = res.x.reshape(1, -1)
+    model.intercept_ = np.array([0.0])
+    model.n_iter_ = np.array([res.nit])
+
+    return model, iters, tr_losses, te_losses
 
 
 def predict_team_score(
-    model: LogisticRegression,
+    model: Ranker,
     team_catv: CatVec,
-    preprocessor: Pipeline,
 ) -> float:
-    vec2d = np.atleast_2d(team_catv)
-    team_feat = preprocessor.transform(vec2d)
-    vec_1d = np.atleast_1d(team_feat).ravel()
-    return float(np.dot(model.coef_[0], vec_1d))
+    return float(model.predict(team_catv))
 
 
-def run_training_pipeline() -> tuple[LogisticRegression, Pipeline]:
-    """Runs data loading, preprocessing, model fitting, and metric printing."""
+def run_training_pipeline(
+    export_model: bool = True,
+    model_path: Path | str = FilePaths.RANKER_MODEL.value,
+    plot_path: Path | str | None = FilePaths.LOSS_PLOT.value,
+    show_plot: bool = False,
+) -> Ranker:
     print("=" * 70)
     print("DARKEST GENERATOR - ML RANKING MODEL TRAINING")
     print("=" * 70)
@@ -139,9 +267,8 @@ def run_training_pipeline() -> tuple[LogisticRegression, Pipeline]:
     db = JsonlDB(gman)
 
     teams_h, teams_l = parse_data_from_db(db, game_context)
-    
     print(f"Loaded {len(teams_h)} labeled pairwise comparisons from JSONL.")
-        
+
     # 1. Train/Test split on the original paired comparisons
     h_train, h_test, l_train, l_test = train_test_split(
         teams_h, teams_l, test_size=0.25, random_state=42
@@ -164,11 +291,15 @@ def run_training_pipeline() -> tuple[LogisticRegression, Pipeline]:
         f"Train shape: X={X_train.shape}, Test shape: X={X_test.shape} (augmented symmetric pairs)"
     )
 
-    # 4. Train model
-    model = train_log_reg(X_train, Y_train, C=1.0)
+    # 4. Train model using BFGS and track loss history smoothly
+    model, iters, tr_losses, te_losses = compute_loss_history_bfgs(
+        X_train, Y_train, X_test, Y_test, C=1.0
+    )
 
-    scoring_model = Ranker(model.coef_[0])
-    # 5. Predict & compute metrics on test set
+    # 5. Create integrated Ranker scoring model
+    scoring_model = Ranker(model.coef_[0], preprocessor=feature_pipeline)
+
+    # 6. Predict & compute metrics on test set
     Y_pred = model.predict(X_test)
     Y_prob = model.predict_proba(X_test)[:, 1]
 
@@ -183,12 +314,8 @@ def run_training_pipeline() -> tuple[LogisticRegression, Pipeline]:
     except ValueError:
         auc = float("nan")
 
-    scores_h = np.array(
-        [predict_team_score(model, vec, feature_pipeline) for vec in h_test]
-    )
-    scores_l = np.array(
-        [predict_team_score(model, vec, feature_pipeline) for vec in l_test]
-    )
+    scores_h = np.array([scoring_model.predict(vec) for vec in h_test])
+    scores_l = np.array([scoring_model.predict(vec) for vec in l_test])
     pairwise_acc = np.mean(scores_h > scores_l)
 
     print("\n" + "-" * 70)
@@ -229,8 +356,14 @@ def run_training_pipeline() -> tuple[LogisticRegression, Pipeline]:
         print(f"  Feature index {idx:2d} : {coefs[idx]:+.4f}")
     print("=" * 70)
 
-    return model, feature_pipeline
+    saved_plot = plot_training_loss(
+        iters, tr_losses, te_losses, save_path=plot_path, show=show_plot
+    )
+    if saved_plot:
+        print(f"Loss visualization exported to: {saved_plot}")
 
+    if export_model:
+        saved_model_path = scoring_model.save(model_path)
+        print(f"Ranker model serialized and exported to: {saved_model_path}")
 
-if __name__ == "__main__":
-    run_training_pipeline()
+    return scoring_model

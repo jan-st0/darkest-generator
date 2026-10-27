@@ -13,3 +13,6 @@ data/*.jsonl
 
 *.prof
 uv.lock
+
+#model
+models/
