@@ -11,6 +11,9 @@ from party_vectorizer.trinket_evaluator import (
     IGNORED_COLOR_OF_MADNESS_TRINKETS,
     IGNORED_CRIMSON_COURT_TRINKETS,
     UTILITY_STATS,
+    evaluate_trinket_stats,
+    get_max_values_for_utility_stats,
+    get_usable_trinkets,
 )
 
 
@@ -24,13 +27,14 @@ def main() -> None:
     print(f"Ignored Crimson Court trinkets ({len(IGNORED_CRIMSON_COURT_TRINKETS)}): {sorted(IGNORED_CRIMSON_COURT_TRINKETS)}")
     print(f"Ignored Color of Madness trinkets ({len(IGNORED_COLOR_OF_MADNESS_TRINKETS)}): {sorted(IGNORED_COLOR_OF_MADNESS_TRINKETS)}")
     print(f"Total excluded trinkets: {len(ALL_IGNORED_TRINKETS)}")
-    print(f"Total usable trinkets for heuristic: {len(man.usable_trinkets)}")
+    usable = get_usable_trinkets(man.trinkets)
+    print(f"Total usable trinkets for heuristic: {len(usable)}")
     print()
 
     print("=" * 80)
     print("GLOBAL UTILITY STATS (MIN-MAX NORMALIZATION CANDIDATES)")
     print("=" * 80)
-    for stat, max_val in man.max_values_for_utility_stats.items():
+    for stat, max_val in get_max_values_for_utility_stats(usable).items():
         print(f"  {stat:30s} -> Max observed: {max_val}")
     print()
 
@@ -59,7 +63,7 @@ def main() -> None:
         trinket = man.trinkets_by_name.get(clean_name)
         if not trinket:
             continue
-        eval_stats = man.evaluate_trinket(trinket, ctx)
+        eval_stats = evaluate_trinket_stats(trinket, ctx)
         print(f"[{item_desc}]")
         print(f"  Raw effects: {[e.raw for e in trinket.effects]}")
         print(f"  Evaluated stats: {eval_stats}")
@@ -72,8 +76,8 @@ def main() -> None:
     if wounding_helmet:
         melee_ctx = TrinketEvaluationContext(has_melee_skills=True, has_ranged_skills=False)
         ranged_ctx = TrinketEvaluationContext(has_melee_skills=False, has_ranged_skills=True)
-        print("Wounding Helmet with Melee hero:", man.evaluate_trinket(wounding_helmet, melee_ctx))
-        print("Wounding Helmet with Ranged hero:", man.evaluate_trinket(wounding_helmet, ranged_ctx))
+        print("Wounding Helmet with Melee hero:", evaluate_trinket_stats(wounding_helmet, melee_ctx))
+        print("Wounding Helmet with Ranged hero:", evaluate_trinket_stats(wounding_helmet, ranged_ctx))
         print()
 
 

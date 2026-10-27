@@ -9,6 +9,7 @@ from party_vectorizer.trinket_evaluator import (
     IGNORED_COLOR_OF_MADNESS_TRINKETS,
     IGNORED_CRIMSON_COURT_TRINKETS,
     evaluate_trinket_stats,
+    get_usable_trinkets,
     is_trinket_ignored,
 )
 
@@ -48,7 +49,7 @@ def test_ignored_trinkets_count():
 def test_manager_trinket_filtering():
     mgr = GameDataManager()
     total_trinkets = len(mgr.trinkets)
-    usable_trinkets = len(mgr.usable_trinkets)
+    usable_trinkets = len(get_usable_trinkets(mgr.trinkets))
     assert total_trinkets == 286
     # 19 ignored trinkets
     assert usable_trinkets == 286 - 19

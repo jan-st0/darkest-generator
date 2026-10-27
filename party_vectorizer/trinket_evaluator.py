@@ -1,4 +1,5 @@
 import re
+from collections.abc import Iterable
 from typing import Optional
 from data_model import Trinket, TrinketEffect, TrinketEvaluationContext
 
@@ -239,10 +240,6 @@ def evaluate_trinket_stats(
     trinket: Trinket,
     context: Optional[TrinketEvaluationContext] = None,
 ) -> dict[str, float]:
-    """Computes effective numerical stat modifiers of a trinket taking into account exceptions and conditions.
-
-    Returns a mapping of normalized stat name -> effective numeric modifier.
-    """
     if context is None:
         context = TrinketEvaluationContext()
 
@@ -272,3 +269,21 @@ def evaluate_trinket_stats(
         stat_totals[stat_name] = stat_totals.get(stat_name, 0.0) + effective_val
 
     return stat_totals
+
+
+def get_usable_trinkets(trinkets: Iterable[Trinket]) -> tuple[Trinket, ...]:
+    return tuple(t for t in trinkets if not is_trinket_ignored(t.name))
+
+
+
+def get_max_values_for_utility_stats(trinkets: Iterable[Trinket]) -> dict[str, float]:
+    max_vals: dict[str, float] = {}
+    for t in trinkets:
+        stats = evaluate_trinket_stats(t)
+        for k, v in stats.items():
+            if k in UTILITY_STATS:
+                max_vals[k] = max(max_vals.get(k, 0.0), abs(v))
+    return max_vals
+
+
+max_values_for_utility_stats = get_max_values_for_utility_stats

@@ -8,6 +8,7 @@ from typing import Sequence
 
 from party_vectorizer.desire_vector import DVectorManager
 from party_vectorizer.fitness import party_to_category_vector
+from party_vectorizer.trinket_evaluator import get_usable_trinkets
 from game_data_manager import GameDataManager
 from data_model.hero_data_model import CombatSkill, Hero, HeroBuild
 from data_model.party_data_model import Party
@@ -72,9 +73,10 @@ def run_ga_simulation(
     - Instantiating individuals (movement permutation graph traversal + cached setups)
     - Full category vector heuristic scoring
     """
-    usable_generic = [t for t in mgr.usable_trinkets if t.class_restriction is None]
+    usable = get_usable_trinkets(mgr.trinkets)
+    usable_generic = [t for t in usable if t.class_restriction is None]
     class_trinkets: dict[str, list[Trinket]] = {}
-    for t in mgr.usable_trinkets:
+    for t in usable:
         if t.class_restriction:
             class_trinkets.setdefault(t.class_restriction, []).append(t)
 

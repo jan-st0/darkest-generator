@@ -5,19 +5,14 @@ from file_manager import GameDataHandler, FilePaths
 from functools import cached_property
 from itertools import chain, product
 from collections.abc import Iterator
-from data_model.hero_data_model import (
+from data_model import (
     CombatSkill,
     Hero,
     Metadata,
 )
-from data_model.trinket_data_model import (
+from data_model import (
     Trinket,
     TrinketSet
-)
-from party_vectorizer.trinket_evaluator import (
-    UTILITY_STATS,
-    evaluate_trinket_stats,
-    is_trinket_ignored,
 )
 from yaml_parser import parse_raw_game_data
 
@@ -391,22 +386,6 @@ class GameDataManager:
     @cached_property
     def trinkets_by_name(self) -> dict[str, Trinket]:
         return {t.name: t for t in self._trinkets}
-
-    @cached_property
-    def usable_trinkets(self) -> tuple[Trinket, ...]:
-        """Returns only trinkets that are not excluded per diagram.md."""
-        return tuple(t for t in self._trinkets if not is_trinket_ignored(t.name))
-
-    @cached_property
-    def max_values_for_utility_stats(self) -> dict[str, float]:
-        """Maximum observed absolute values for utility stats (scouting, trap disarm, surprise)."""
-        max_vals: dict[str, float] = {}
-        for t in self.usable_trinkets:
-            stats = evaluate_trinket_stats(t)
-            for k, v in stats.items():
-                if k in UTILITY_STATS:
-                    max_vals[k] = max(max_vals.get(k, 0.0), abs(v))
-        return max_vals
 
 
 def get_mark_or_stun_skills(data_manager: Optional[GameDataManager] = None) -> tuple[CombatSkill, ...]:
