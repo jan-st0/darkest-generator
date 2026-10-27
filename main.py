@@ -6,7 +6,7 @@ import uvicorn
 from game_data_manager import GameDataManager
 from game_utility import GameContext
 from persistence import JsonlDB
-from party_vectorizer.ranker import run_training_pipeline
+from party_vectorizer import run_training_pipeline
 from team_comparison_data_api import create_team_api
 
 

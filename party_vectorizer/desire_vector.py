@@ -246,7 +246,6 @@ class DVectorManager:
         """For trinket vectors"""
         return self._raw_data.get("extended_desires", HERO_EXTENDED_DESIRES)
     
-    # TODO: rework trinket scoring asapppp!
     def process_trinket_scores(self, party: Party, man: GameDataManager) -> float:
         out_sum = 0.0        
         for hero in party.members:

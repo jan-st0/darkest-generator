@@ -174,3 +174,5 @@ def party_to_category_vector(party: Party, game_context: GameContext):
     output[18] = len(party.skill_parent_tuple) / 16
 
     return output
+
+#TODO: implement genetic algorithm features
