@@ -7,7 +7,7 @@ from game_data_manager import GameDataManager
 from game_utility import GameContext
 from persistence import JsonlDB
 from party_vectorizer import run_training_pipeline
-from team_comparison_data_api import create_team_api
+from team_api import create_team_api
 
 
 def make_game_ctx() -> GameContext:
@@ -43,7 +43,7 @@ def build_args() -> argparse.ArgumentParser:
     parser.set_defaults(handler=NoAction)
     parser.add_argument(
         "-ps",
-        "--party-comparison-service",
+        "--party-service",
         dest="handler",
         action="store_const",
         const=PsService,

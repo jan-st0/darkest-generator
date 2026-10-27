@@ -22,3 +22,7 @@ class PartyPreviewResponse(BaseModel):
     heroes: list[HeroPreviewResponse]
     category_vector: list[float]
     category_scores: dict[str, float]
+
+
+class PartyScoreResponse(BaseModel):
+    score: float

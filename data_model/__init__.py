@@ -4,6 +4,7 @@ from .dto import (
     HeroPreviewResponse,
     PartyPreviewResponse,
     PartyRequest,
+    PartyScoreResponse,
 )
 from .exceptions import DomainConversionError
 from .hero_data_model import Hero, HeroBuild, Metadata
@@ -28,6 +29,7 @@ __all__ = [
     "Party",
     "PartyPreviewResponse",
     "PartyRequest",
+    "PartyScoreResponse",
     "Trinket",
     "TrinketEffect",
     "TrinketEvaluationContext",

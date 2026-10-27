@@ -16,6 +16,7 @@ from data_model.exceptions import DomainConversionError
 from game_utility import GameContext
 from party_vectorizer.fitness import CATEGORY_NAMES, party_to_category_vector
 from persistence import PartyDB
+from .ranker_controller import router as ranker_router
 
 router = APIRouter(prefix="/team_comparison", tags=["Team Comparison"])
 
@@ -184,4 +185,5 @@ def create_team_api(db: PartyDB, game_ctx: GameContext):
         allow_headers=["*"],
     )
     app.include_router(router)
+    app.include_router(ranker_router)
     return app

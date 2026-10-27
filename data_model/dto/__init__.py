@@ -1,5 +1,5 @@
 from .dto import ComparisonRequest, HeroBuildRequest, PartyRequest
-from .party_stats import HeroPreviewResponse, PartyPreviewResponse
+from .party_stats import HeroPreviewResponse, PartyPreviewResponse, PartyScoreResponse
 
 __all__ = [
     "ComparisonRequest",
@@ -7,4 +7,5 @@ __all__ = [
     "HeroPreviewResponse",
     "PartyPreviewResponse",
     "PartyRequest",
+    "PartyScoreResponse",
 ]
