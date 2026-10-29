@@ -1,22 +1,66 @@
 # Darkest Generator
 
-A Python and Machine Learning engine for analyzing, vectorizing, and ranking team compositions and builds in *Darkest Dungeon*.
+A Python tool and machine learning model that analyzes, scores, and ranks team builds for *Darkest Dungeon*.
 
-The project models game mechanics into structured vector representations, accounts for positional skill viability during dynamic hero movement, and learns team-synergy heuristics from pairwise comparison data via a Bradley-Terry logistic ranking model.
+---
+
+## The Game: *Darkest Dungeon*
+
+*Darkest Dungeon* is a tactical turn-based RPG centered around positional combat:
+
+* Teams consist of four heroes lined up in ranks 1 to 4 (front to back).
+
+
+* Combat skills are rank-restricted: they can only be used from specific positions and can only hit specific enemy ranks.
+
+
+* Movement skills push or pull heroes during combat, dynamically changing their ranks and deciding which abilities remain usable.
+
+
+* Effective teams require balancing position stability, status effects (Stun, Mark, Bleed, Blight), and stat-boosting trinkets.
+
+
+
+## What This Project Does
+
+Building a solid team requires tracking dozens of moving parts. This project automates that analysis and ranks setups using machine learning:
+
+* **Tracks Skill Usability Across Ranks:** Simulates rank shifts caused by movement skills (up to 3 turns deep) to find every rank a hero can reach and filter out unusable skills.
+
+
+* **Turns Teams into 19 Measurable Stats:** Converts a 4-hero setup—including base stats, active skills, trinkets, and synergies—into a normalized 19-number vector.
+
+
+* **Ranks Builds with Machine Learning:** Uses a pairwise comparison model (Team A vs. Team B) trained with logistic regression and BFGS optimization to predict an overall score for any team.
+
+
+* **Serves Real-Time Insights:** Provides a FastAPI service to inspect active skills, reachable positions, team synergy breakdowns, and composite scores.
+
+
 
 ---
 
 ## Key Features
 
-- **Domain Modeling & Position Graph Traversal**: Models hero combat skills, stats, and trinkets. Uses depth-limited permutation graph traversal to evaluate dynamic active skills enabled by movement skills (e.g., Lunge, Duelist's Advance).
-- **19-Dimensional Team Feature Vectorizer**: Translates a 4-hero party into a normalized vector capturing party/self healing, raw DPS, backline reach, rank coverage, crowd control (stun/bleed/blight), conditional synergies (Marked / Stunned combos), and contextual trinket valuation.
-- **Context-Aware Trinket Evaluator**: Scores trinkets dynamically against hero stat desire vectors, item restrictions, condition scaling (torch levels, combat position stability), and Crimson Court item sets.
-- **Pairwise ML Ranker (Bradley-Terry Formulation)**: Fits a logistic ranking model over team feature difference vectors $(\mathbf{x}_A - \mathbf{x}_B)$ using BFGS optimization with L2 regularization to score arbitrary party compositions.
-- **FastAPI Service**: Provides endpoints for manual team evaluation, feature preview, and model scoring inference.
+* **Hero Movement & Skill Verification:** Recursively checks rank swaps (e.g., Highwayman's *Duelist's Advance* or Grave Robber's *Lunge*) to determine which skills actually stay active during a battle.
+
+
+* **19-Metric Team Vector:** Evaluates damage output, healing, backline threat reach, stun/DoT coverage, and combo readiness (such as pairing Mark appliers with Mark consumers).
+
+
+* **Context-Aware Trinket Scoring:** Evaluates trinkets based on whether their stat bonuses match a hero's primary role, position requirements, and team status conditions.
+
+
+* **Pairwise Ranking Model:** Learns feature weights from head-to-head match-up comparisons stored in JSONL format, producing a single quality rating for any lineup.
+
+
+* **FastAPI Endpoints:** Clean REST endpoints for evaluating party builds, inspecting vectors, and running model inference.
+
+
 
 ---
 
-## Architecture Overview
+## Architecture
 
 ```text
                         +----------------------------+
@@ -38,58 +82,105 @@ The project models game mechanics into structured vector representations, accoun
                    |                                       |
                    v                                       v
            [Ranker / Scorer]                       [FastAPI Service]
-      (Bradley-Terry ML Weights)            (/preview_party, /ranker/score)
+         (ML Ranking Weights)               (/preview_party, /ranker/score)
 
 ```
+
+
 
 ---
 
 ## Tech Stack
 
-* **Core**: Python, NumPy, SciPy, Scikit-learn, Pandas
-* **API & Schemas**: FastAPI, Pydantic, Uvicorn
-* **Data & Configuration**: PyYAML, Pickle
+* **Language:** Python
+
+
+* **Machine Learning & Math:** scikit-learn, SciPy, NumPy, Pandas
+
+
+* **Web API & Validation:** FastAPI, Uvicorn, Pydantic
+
+
+* **Data & Plots:** PyYAML, Matplotlib
+
+
 
 ---
 
-### Installation
+## Getting Started
 
-Clone repository and install required packages.
-You can use this command.
+### 1. Installation
+
+Clone the repository and install the project in editable mode:
 
 ```bash
-pip install -r pyproject.toml
+git clone <repo-url>
+cd darkest-generator
+pip install -e .
 
 ```
 
-### Usage
+*(Dependencies: `fastapi`, `uvicorn`, `pydantic`, `numpy`, `scipy`, `scikit-learn`, `pandas`, `PyYAML`, `matplotlib`)*
 
-#### 1. Start the API Service
+### 2. Run the API Server
+
+Start the local FastAPI server:
 
 ```bash
 python main.py -ps
 
 ```
 
-Interactive documentation is available at `http://localhost:8000/docs`.
+Interactive Swagger documentation will be available at `http://localhost:8000/docs`.
 
-#### 2. Train the Pairwise Ranking Model
+### 3. Train the Ranking Model
 
-Trains the regression ranker on unique labeled match-ups stored in `data/party_comparison.jsonl`:
+Train the pairwise ranking model on labeled comparison data from `data/party_comparison.jsonl` and export the model to `models/ranker.pkl`:
 
 ```bash
-# Train model and export artifact to models/ranker.pkl
+# Train and save the model
 python main.py -r
 
-# Train and view convergence loss plot
+# Train and view the loss plot interactively
 python main.py -r --show-plot
 
 ```
 
+
+
 ---
+
+## API Overview
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/ranker/score` | Returns a quality score for a 4-hero team using the trained model.
+
+ |
+| `POST` | `/team_comparison/preview_party` | Returns active skills, reachable ranks, and the 19-stat vector for a team.
+
+ |
+| `POST` | `/team_comparison/create_new` | Saves a new pairwise team comparison to the training dataset.
+
+ |
+| `GET` | `/team_comparison/all_heroes/` | Lists all 18 available hero classes.
+
+ |
+| `GET` | `/team_comparison/game_data_bundle/` | Returns base stats, skills, and trinkets in a single payload.
+
+ |
+
+---
+
 ## Planned Features
 
-* [ ] **Genetic Algorithm Optimization**: Evolutionary search over a user-defined pool of heroes and trinkets to output Pareto-optimal team loadouts.
-* [ ] **Automated Testing Suite**: Migrate diagnostic routines in `tmp_tests/` to automated unit and regression tests with `pytest`.
-* [ ] **Save File & Roster Synchronization**: Directly ingest player roster and trinket inventories from game save files.
-* [ ] **Deployment & Observability**: Docker containerization, structured logging, and health metrics.
+* [ ] **Genetic Algorithm Team Generator:** Run evolutionary searches across hero and trinket pools to find top-tier team builds automatically.
+
+
+* [ ] **Automated Test Suite:** Migrate existing test scripts in `tmp_tests/` into standard `pytest` unit test suites.
+
+
+* [ ] **Save File Sync:** Import hero rosters and trinket inventories directly from game save files.
+
+
+* [ ] **Containerization:** Add Docker support and structured logging.
