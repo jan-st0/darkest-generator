@@ -136,6 +136,7 @@ Interactive Swagger documentation will be available at `http://localhost:8000/do
 ### 3. Train the Ranking Model
 
 Train the pairwise ranking model on labeled comparison data from `data/party_comparison.jsonl` and export the model to `models/ranker.pkl`:
+Sample of .jsonl dataset for trainig comming soon...
 
 ```bash
 # Train and save the model
