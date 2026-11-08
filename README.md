@@ -178,8 +178,6 @@ python main.py -r --show-plot
 * [ ] **Genetic Algorithm Team Generator:** Run evolutionary searches across hero and trinket pools to find top-tier team builds automatically.
 
 
-* [ ] **Automated Test Suite:** Migrate existing test scripts in `tmp_tests/` into standard `pytest` unit test suites.
-
 
 * [ ] **Save File Sync:** Import hero rosters and trinket inventories directly from game save files.
 
