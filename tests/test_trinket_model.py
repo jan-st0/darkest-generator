@@ -1,3 +1,4 @@
+import pytest
 from game_data_manager import GameDataManager
 from data_model.trinket_data_model import (
     Trinket,
@@ -12,6 +13,11 @@ from party_vectorizer.trinket_evaluator import (
     get_usable_trinkets,
     is_trinket_ignored,
 )
+
+
+@pytest.fixture(scope="module")
+def mgr():
+    return GameDataManager()
 
 
 def test_trinket_data_models():
@@ -46,98 +52,78 @@ def test_ignored_trinkets_count():
     assert len(ALL_IGNORED_TRINKETS) == 19
 
 
-def test_manager_trinket_filtering():
-    mgr = GameDataManager()
+def test_manager_trinket_filtering(mgr):
     total_trinkets = len(mgr.trinkets)
     usable_trinkets = len(get_usable_trinkets(mgr.trinkets))
     assert total_trinkets == 286
-    # 19 ignored trinkets
     assert usable_trinkets == 286 - 19
 
-    # Specific ignored item check
     assert is_trinket_ignored("Baron's Lash")
     assert is_trinket_ignored("Lens of the Comet")
     assert not is_trinket_ignored("Blasphemous Vial")
 
 
-def test_item_exceptions():
-    mgr = GameDataManager()
-
-    # Camper's Helmet: ignore stress heal while camping
+def test_item_exceptions(mgr):
     camper = mgr.trinkets_by_name["Camper's Helmet"]
     stats_camper = evaluate_trinket_stats(camper)
     assert "Stress Heal Received" not in stats_camper
     assert "Scouting Chance" in stats_camper
 
-    # Vvulf's Tassle: ignore CRIT vs size 2+
     vvulf = mgr.trinkets_by_name["Vvulf's Tassle"]
-    # With mark theme
     ctx_mark = TrinketEvaluationContext(team_has_mark=True)
     stats_vvulf_mark = evaluate_trinket_stats(vvulf, ctx_mark)
     assert "CRIT" not in stats_vvulf_mark
-    assert stats_vvulf_mark["DMG"] == 20 * 0.7  # 14.0
-    assert stats_vvulf_mark["ACC"] == 10 * 0.7  # 7.0
+    assert stats_vvulf_mark["DMG"] == 20 * 0.7
+    assert stats_vvulf_mark["ACC"] == 10 * 0.7
 
-    # Without mark theme
     ctx_no_mark = TrinketEvaluationContext(team_has_mark=False)
     stats_vvulf_nomark = evaluate_trinket_stats(vvulf, ctx_no_mark)
     assert stats_vvulf_nomark.get("DMG", 0.0) == 0.0
     assert stats_vvulf_nomark.get("ACC", 0.0) == 0.0
 
-    # Acidic Husk Ichor: ignore vs Husk
     ichor = mgr.trinkets_by_name["Acidic Husk Ichor"]
     stats_ichor = evaluate_trinket_stats(ichor)
     assert "Bleed Skill Chance" not in stats_ichor
     assert stats_ichor["MAX HP"] == -25.0
     assert stats_ichor["DMG"] == 30.0
 
-    # Topshelf Tonic: ignore Herbs
     tonic = mgr.trinkets_by_name["Topshelf Tonic"]
     stats_tonic = evaluate_trinket_stats(tonic)
     assert "DODGE" not in stats_tonic
     assert stats_tonic["SPD"] == 3.0
 
-    # Dirge For The Devoured: ignore Laudanum
     dirge = mgr.trinkets_by_name["Dirge For The Devoured"]
     stats_dirge = evaluate_trinket_stats(dirge)
     assert stats_dirge["Stress Skills"] == 25.0
     assert stats_dirge["Stress"] == 10.0
     assert "DMG" not in stats_dirge
 
-    # Sickening Satchel: 0 if no blight, 0.5 * 20 = 10 if blight
     satchel = mgr.trinkets_by_name["Sickening Satchel"]
     assert evaluate_trinket_stats(satchel, TrinketEvaluationContext(has_blight_skills=False)).get("DMG", 0.0) == 0.0
     assert evaluate_trinket_stats(satchel, TrinketEvaluationContext(has_blight_skills=True))["DMG"] == 10.0
 
-    # Restraining Padlock: custom fixed value
     padlock = mgr.trinkets_by_name["Restraining Padlock"]
     stats_padlock = evaluate_trinket_stats(padlock)
     assert stats_padlock["Transformation Stress"] == -40.0
     assert stats_padlock["Stress Inflicted on Party"] == -40.0
 
 
-def test_torch_conditions():
-    mgr = GameDataManager()
+def test_torch_conditions(mgr):
     sun_ring = mgr.trinkets_by_name["Sun Ring"]
     moon_ring = mgr.trinkets_by_name["Moon Ring"]
 
-    # Sun Ring requires Torch > 75 (assumed active)
     sun_stats = evaluate_trinket_stats(sun_ring)
     assert sun_stats["DMG"] == 10.0
     assert sun_stats["ACC"] == 5.0
     assert sun_stats["Stress"] == 10.0
 
-    # Moon Ring requires Torch < 26 (assumed inactive)
     moon_stats = evaluate_trinket_stats(moon_ring)
     assert moon_stats.get("DMG", 0.0) == 0.0
     assert moon_stats.get("ACC", 0.0) == 0.0
-    assert moon_stats["Stress"] == 10.0  # unconditional penalty applies
+    assert moon_stats["Stress"] == 10.0
 
 
-def test_position_conditions():
-    mgr = GameDataManager()
-
-    # Tyrant's Fingerbone has 'SPD in pos 1' and 'DODGE in pos 1' (no condition, stat has pos)
+def test_position_conditions(mgr):
     fingerbone = mgr.trinkets_by_name["Tyrant's Fingerbone"]
     assert all(eff.is_position_dependent() for eff in fingerbone.effects)
 
@@ -147,30 +133,24 @@ def test_position_conditions():
     assert "SPD in pos 1" not in stats_pos1
     assert "DODGE in pos 1" not in stats_pos1
 
-    # In rank 2, pos 1 stats should scale to 0
     stats_pos2 = evaluate_trinket_stats(fingerbone, TrinketEvaluationContext(hero_rank=2))
     assert "SPD" not in stats_pos2
     assert "DODGE" not in stats_pos2
 
-    # Movement unstable scales down to 0.6
     stats_unstable = evaluate_trinket_stats(fingerbone, TrinketEvaluationContext(hero_rank=1, is_movement_stable=False))
     assert round(stats_unstable.get("SPD", 0.0), 2) == round(3.0 * 0.6, 2)
     assert round(stats_unstable.get("DODGE", 0.0), 2) == round(20.0 * 0.6, 2)
 
-    # Condition-based positions:
-    # Profane Scroll: 'if in position 2'
     scroll = mgr.trinkets_by_name["Profane Scroll"]
     assert any(eff.is_position_dependent() for eff in scroll.effects)
     assert evaluate_trinket_stats(scroll, TrinketEvaluationContext(hero_rank=2)).get("Healing Skills") == 33.0
     assert "Healing Skills" not in evaluate_trinket_stats(scroll, TrinketEvaluationContext(hero_rank=1))
 
-    # Prophet's Eye: 'if in position 4'
     eye = mgr.trinkets_by_name["Prophet's Eye"]
     assert any(eff.is_position_dependent() for eff in eye.effects)
     assert evaluate_trinket_stats(eye, TrinketEvaluationContext(hero_rank=4)).get("ACC") == 15.0
     assert "ACC" not in evaluate_trinket_stats(eye, TrinketEvaluationContext(hero_rank=3))
 
-    # Test synthetic effects for positions 3 and 4 in stat name
     syn_pos3 = Trinket(
         name="Custom Pos 3 Charm",
         rarity="Common",
@@ -181,13 +161,3 @@ def test_position_conditions():
     assert evaluate_trinket_stats(syn_pos3, TrinketEvaluationContext(hero_rank=3)).get("CRIT") == 8.0
     assert "CRIT" not in evaluate_trinket_stats(syn_pos3, TrinketEvaluationContext(hero_rank=1))
     assert "CRIT in pos 3" not in evaluate_trinket_stats(syn_pos3, TrinketEvaluationContext(hero_rank=3))
-
-
-if __name__ == "__main__":
-    test_trinket_data_models()
-    test_ignored_trinkets_count()
-    test_manager_trinket_filtering()
-    test_item_exceptions()
-    test_torch_conditions()
-    test_position_conditions()
-    print("ALL TRINKET MODEL & EVALUATION TESTS PASSED!")

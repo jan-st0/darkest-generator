@@ -1,7 +1,6 @@
 import pytest
-
 from game_data_manager import GameDataManager
-from data_model.hero_data_model import HeroBuild, Party
+from data_model import HeroBuild, Party
 
 
 @pytest.fixture(scope="module")
@@ -29,7 +28,7 @@ def test_party_size_invariance(mgr):
         HeroBuild(hero=vestal, rank=2, skills=(mace,)),
         HeroBuild(hero=vestal, rank=1, skills=(mace,)),
     )
-    party = Party(members=members)
+    party = Party(members=members, man=mgr)
     hero_positions = {hero: {4 - i} for i, hero in enumerate(party.members)}
 
     party._traverse_permutations(hero_positions, party.members, 1)
@@ -51,7 +50,7 @@ def test_backline_advance_indexing(mgr):
         HeroBuild(hero=vestal, rank=2, skills=(mace,)),
         HeroBuild(hero=vestal, rank=1, skills=(mace,)),
     )
-    party = Party(members=members)
+    party = Party(members=members, man=mgr)
     party.set_active_skills()
 
     assert holy_lance in c4.active_skills
@@ -69,7 +68,7 @@ def test_valid_rank_bounds(mgr):
         HeroBuild(hero=vestal, rank=2, skills=(mace,)),
         HeroBuild(hero=sb, rank=1, skills=(pierce,)),
     )
-    party = Party(members=members)
+    party = Party(members=members, man=mgr)
     hero_positions = {hero: {4 - i} for i, hero in enumerate(party.members)}
 
     party._traverse_permutations(hero_positions, party.members, 1)
@@ -91,7 +90,7 @@ def test_multi_rank_advance_reach(mgr):
         HeroBuild(hero=vestal, rank=2, skills=(mace,)),
         HeroBuild(hero=vestal, rank=1, skills=(mace,)),
     )
-    party = Party(members=members)
+    party = Party(members=members, man=mgr)
     hero_positions = {hero: {4 - i} for i, hero in enumerate(party.members)}
 
     party._traverse_permutations(hero_positions, party.members, 1)
@@ -112,7 +111,7 @@ def test_launch_rank_prerequisite_enforcement(mgr):
         h2,
         HeroBuild(hero=vestal, rank=1, skills=(mace,)),
     )
-    party = Party(members=members)
+    party = Party(members=members, man=mgr)
     party.set_active_skills()
 
     assert pbs not in h2.active_skills
@@ -132,7 +131,7 @@ def test_highwayman_dance_convergence(mgr):
         h2,
         HeroBuild(hero=vestal, rank=1, skills=(mace,)),
     )
-    party = Party(members=members)
+    party = Party(members=members, man=mgr)
     party.set_active_skills()
 
     assert pbs in h2.active_skills
@@ -154,10 +153,11 @@ def test_displacement_cascade_and_passive_unlock(mgr):
         v2,
         HeroBuild(hero=vestal, rank=1, skills=(mace,)),
     )
-    party = Party(members=members)
+    party = Party(members=members, man=mgr)
     party.set_active_skills()
 
     assert divine_grace in v2.active_skills
+
 
 def test_boundary_clamping_saturation(mgr):
     sb = get_hero(mgr, "Shieldbreaker")
@@ -172,7 +172,7 @@ def test_boundary_clamping_saturation(mgr):
         HeroBuild(hero=vestal, rank=2, skills=(mace,)),
         sb1,
     )
-    party = Party(members=members)
+    party = Party(members=members, man=mgr)
     hero_positions = {hero: {4 - i} for i, hero in enumerate(party.members)}
 
     party._traverse_permutations(hero_positions, party.members, 1)
