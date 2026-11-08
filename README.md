@@ -116,11 +116,11 @@ Clone the repository and install the project in editable mode:
 ```bash
 git clone <repo-url>
 cd darkest-generator
-pip install -e .
+pip install -r pyproject.toml
 
 ```
 
-*(Dependencies: `fastapi`, `uvicorn`, `pydantic`, `numpy`, `scipy`, `scikit-learn`, `pandas`, `PyYAML`, `matplotlib`)*
+*(Dependencies: `fastapi`, `uvicorn`, `pydantic`, `numpy`, `scipy`, `scikit-learn`, `pandas`, `PyYAML`, `matplotlib`, `pytest`)*
 
 ### 2. Run the API Server
 
