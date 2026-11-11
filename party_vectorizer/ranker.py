@@ -1,6 +1,5 @@
-from typing import Any, cast
 from pathlib import Path
-from typing import Self
+from typing import Any, Self, cast
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -24,11 +23,11 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler, SplineTransformer
 
 from file_manager import FilePaths, load_model, save_model
-from game_data_manager import GameDataManager
 from game_utility import GameContext
 from persistence import JsonlDB, PartyDB
 
 from .fitness import UNSCALED_CATEGORIES, CatVec, party_to_category_vector
+
 
 class Ranker(BaseEstimator, RegressorMixin):
     def __init__(self, weights: CatVec, preprocessor: Pipeline | None = None) -> None:
@@ -64,6 +63,7 @@ def plot_training_loss(
     iterations: list[int],
     train_losses: list[float],
     test_losses: list[float] | None = None,
+    train_grad: list[float] | None = None,
     save_path: Path | str | None = FilePaths.LOSS_PLOT.value,
     show: bool = False,
 ) -> Path | None:
@@ -92,6 +92,18 @@ def plot_training_loss(
             markersize=4,
         )
 
+    if train_grad and len(train_grad) == len(iterations):
+        ax.plot(
+            iterations,
+            train_grad,
+            label="Gradient Norm",
+            color="#00a12b",
+            linewidth=2,
+            linestyle="--",
+            marker="s" if len(iterations) <= 25 else None,
+            markersize=4,
+        )
+
     ax.set_title(
         "Darkest Dungeon - Party Ranker Loss Progression (BFGS)",
         fontsize=13,
@@ -99,7 +111,7 @@ def plot_training_loss(
         pad=12,
     )
     ax.set_xlabel("BFGS Iteration", fontsize=11)
-    ax.set_ylabel("Binary Cross-Entropy Loss", fontsize=11)
+    ax.set_ylabel("Loss Metrics", fontsize=11)
     ax.grid(True, linestyle="--", alpha=0.5)
     ax.legend(frameon=True, facecolor="white", framealpha=0.9)
 
@@ -189,8 +201,8 @@ def compute_loss_history_bfgs(
     X_test: np.ndarray | None = None,
     Y_test: np.ndarray | None = None,
     C: float = 1.0,
-    max_iter: int = 500,
-) -> tuple[LogisticRegression, list[int], list[float], list[float]]:
+    max_iter: int = 10,
+) -> tuple[LogisticRegression, list[int], list[float], list[float], list[float]]:
     n_samples, n_features = X_train.shape
     l2_reg = 1.0 / C
 
@@ -198,25 +210,30 @@ def compute_loss_history_bfgs(
         p = np.clip(_sigmoid(X @ w), 1e-15, 1.0 - 1e-15)
         return float(-np.mean(Y * np.log(p) + (1.0 - Y) * np.log(1.0 - p)))
 
-
     def loss_func(w: np.ndarray) -> float:
         p = _sigmoid(X_train @ w)
         p_clipped = np.clip(p, 1e-15, 1.0 - 1e-15)
-        bce = -np.mean(Y_train * np.log(p_clipped) + (1.0 - Y_train) * np.log(1.0 - p_clipped))
+        bce = -np.mean(
+            Y_train * np.log(p_clipped) + (1.0 - Y_train) * np.log(1.0 - p_clipped)
+        )
         reg = 0.5 * (l2_reg / n_samples) * np.dot(w, w)
         return float(bce + reg)
 
     def grad_func(w: np.ndarray) -> np.ndarray:
         p = _sigmoid(X_train @ w)
-        return (1.0 / n_samples) * (X_train.T @ (p - Y_train)) + (l2_reg / n_samples) * w
-
+        return (1.0 / n_samples) * (X_train.T @ (p - Y_train)) + (
+            l2_reg / n_samples
+        ) * w
 
     w0 = np.zeros(n_features)
     iters: list[int] = [0]
     tr_losses: list[float] = [eval_pure_bce(w0, X_train, Y_train)]
     te_losses: list[float] = (
-        [eval_pure_bce(w0, X_test, Y_test)] if X_test is not None and Y_test is not None else []
+        [eval_pure_bce(w0, X_test, Y_test)]
+        if X_test is not None and Y_test is not None
+        else []
     )
+    tr_grad = [np.linalg.norm(grad_func(w0))]
 
     iteration_counter = [0]
 
@@ -224,6 +241,7 @@ def compute_loss_history_bfgs(
         iteration_counter[0] += 1
         iters.append(iteration_counter[0])
         tr_losses.append(eval_pure_bce(w_k, X_train, Y_train))
+        tr_grad.append(np.linalg.norm(grad_func(w_k)))
         if X_test is not None and Y_test is not None:
             te_losses.append(eval_pure_bce(w_k, X_test, Y_test))
 
@@ -242,7 +260,7 @@ def compute_loss_history_bfgs(
     model.intercept_ = np.array([0.0])
     model.n_iter_ = np.array([res.nit])
 
-    return model, iters, tr_losses, te_losses
+    return model, iters, tr_losses, te_losses, tr_grad
 
 
 def predict_team_score(
@@ -253,6 +271,7 @@ def predict_team_score(
 
 
 def run_training_pipeline(
+    game_ctx: GameContext,
     export_model: bool = True,
     model_path: Path | str = FilePaths.RANKER_MODEL.value,
     plot_path: Path | str | None = FilePaths.LOSS_PLOT.value,
@@ -262,16 +281,15 @@ def run_training_pipeline(
     print("DARKEST GENERATOR - ML RANKING MODEL TRAINING")
     print("=" * 70)
 
-    game_context = GameContext(GameDataManager())
-    gman = game_context.gman
-    db = JsonlDB(gman)
+    db = JsonlDB(game_ctx.gman)
+    model_conf = game_ctx.model_conf()
 
-    teams_h, teams_l = parse_data_from_db(db, game_context)
+    teams_h, teams_l = parse_data_from_db(db, game_ctx)
     print(f"Loaded {len(teams_h)} labeled pairwise comparisons from JSONL.")
 
     # 1. Train/Test split on the original paired comparisons
     h_train, h_test, l_train, l_test = train_test_split(
-        teams_h, teams_l, test_size=0.25, random_state=42
+        teams_h, teams_l, test_size=model_conf.test_split, random_state=42
     )
 
     # 2. Fit preprocessor strictly on training team vectors
@@ -292,8 +310,13 @@ def run_training_pipeline(
     )
 
     # 4. Train model using BFGS and track loss history smoothly
-    model, iters, tr_losses, te_losses = compute_loss_history_bfgs(
-        X_train, Y_train, X_test, Y_test, C=1.0
+    model, iters, tr_losses, te_losses, tr_grad = compute_loss_history_bfgs(
+        X_train,
+        Y_train,
+        X_test,
+        Y_test,
+        C=model_conf.c_regularization,
+        max_iter=model_conf.max_iterations,
     )
 
     # 5. Create integrated Ranker scoring model
@@ -357,7 +380,7 @@ def run_training_pipeline(
     print("=" * 70)
 
     saved_plot = plot_training_loss(
-        iters, tr_losses, te_losses, save_path=plot_path, show=show_plot
+        iters, tr_losses, te_losses, tr_grad, save_path=plot_path, show=show_plot
     )
     if saved_plot:
         print(f"Loss visualization exported to: {saved_plot}")

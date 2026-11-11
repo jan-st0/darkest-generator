@@ -338,7 +338,7 @@ def calculate_trinket_score(
     d_manager: Optional[DVectorManager] = None,
     game_manager: Optional["GameDataManager"] = None,
 ) -> float:
-    """Calculates overall trinket suitability score for a hero (diagram.md n12 -> n15, n20, n22, n23).
+    """Calculates overall trinket suitability score for a hero.
 
     Evaluates:
     1. Special conditions and ignored item exceptions.

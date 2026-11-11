@@ -3,15 +3,14 @@ from typing import Protocol
 
 import uvicorn
 
-from game_data_manager import GameDataManager
 from game_utility import GameContext
-from persistence import JsonlDB
 from party_vectorizer import run_training_pipeline
+from persistence import JsonlDB
 from team_api import create_team_api
 
 
 def make_game_ctx() -> GameContext:
-    return GameContext(GameDataManager())
+    return GameContext()
 
 
 class StrategyDispatch(Protocol):
@@ -30,7 +29,8 @@ class TrainRankerService:
         self.show_plot = show_plot
 
     def run(self) -> None:
-        run_training_pipeline(show_plot=self.show_plot)
+        game_ctx = make_game_ctx()
+        run_training_pipeline(game_ctx, show_plot=self.show_plot)
 
 
 class NoAction:
@@ -74,4 +74,3 @@ if __name__ == "__main__":
         handler(show_plot=args.show_plot).run()
     else:
         handler().run()
-
